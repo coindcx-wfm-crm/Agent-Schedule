@@ -253,7 +253,12 @@ button{cursor:pointer;border:0}
  <!-- PLOTTER -->
  <section id="plotSection">
   <div class="toolbar">
-   <input id="scheduleDate" class="managerOnly" type="date" onchange="renderPlot()">
+   <!-- FROM AND TO DATE SELECTION FOR WFM ADMIN & TEAM LEADS -->
+   <label class="managerOnly" style="font-size:13px;font-weight:700">From Date:</label>
+   <input id="scheduleFromDate" class="managerOnly" type="date" onchange="renderPlot()" oninput="renderPlot()">
+   <label class="managerOnly" style="font-size:13px;font-weight:700">To Date:</label>
+   <input id="scheduleToDate" class="managerOnly" type="date" onchange="renderPlot()" oninput="renderPlot()">
+   
    <input id="searchAgent" class="managerOnly" placeholder="Search agent..." oninput="renderPlot()">
    <select id="agencyFilter" class="managerOnly" onchange="renderPlot()"><option value="">All Agencies</option></select>
    <select id="queueFilter" class="managerOnly" onchange="renderPlot()"><option value="">All Queues</option></select>
@@ -655,7 +660,13 @@ function initializeAppView(){
  document.getElementById("app").classList.remove("hidden");
  document.getElementById("roleBadge").textContent=(getRoleObj(currentUser.role)?.label || currentUser.role).toUpperCase();
  document.getElementById("topUser").textContent=currentUser.name;
+ 
  document.getElementById("scheduleDate").value=selectedDate;
+ const schedFromElem = document.getElementById("scheduleFromDate");
+ const schedToElem = document.getElementById("scheduleToDate");
+ if(schedFromElem) schedFromElem.value = selectedDate;
+ if(schedToElem) schedToElem.value = selectedDate;
+
  document.getElementById("reportDate").value=selectedDate;
  document.getElementById("historyDate").value=selectedDate;
  
@@ -968,10 +979,9 @@ function getAgentScheduleDates(agentId){
  return arr.length > 0 ? arr : [today()];
 }
 
+/* RENDER PLOTTER WITH DYNAMIC MULTI-DATE RANGE SUPPORT FOR WFM ADMIN & TEAM LEADS */
 function renderPlot(){
  renderTimelineHeader();
- const date=document.getElementById("scheduleDate").value||today();
- selectedDate=date;
  let agents=users.filter(u=>u.role==="agent" || u.role==="team_leader");
 
  if(currentUser && !isManagerOrAdmin()){
@@ -987,13 +997,119 @@ function renderPlot(){
   if(activePlotMode==="timeline"){ renderAgentAllDaysTimelineView(targetAgent, agentDates); }
   else { renderAgentAllDays15mGridView(targetAgent, agentDates); }
  } else {
+  let fromVal = document.getElementById("scheduleFromDate")?.value;
+  let toVal = document.getElementById("scheduleToDate")?.value;
+  
+  if(!fromVal) { fromVal = today(); if(document.getElementById("scheduleFromDate")) document.getElementById("scheduleFromDate").value = fromVal; }
+  if(!toVal) { toVal = fromVal; if(document.getElementById("scheduleToDate")) document.getElementById("scheduleToDate").value = toVal; }
+  selectedDate = fromVal;
+
+  const dateList = getDateRangeArray(fromVal, toVal);
   const search=document.getElementById("searchAgent").value.toLowerCase();
   const agency=document.getElementById("agencyFilter").value;
   const queue=document.getElementById("queueFilter").value;
   agents=agents.filter(u=> (!search||u.name.toLowerCase().includes(search)||u.username.toLowerCase().includes(search)) && (!agency||u.agency===agency)&&(!queue||u.queue===queue) );
-  if(activePlotMode==="timeline"){ renderContinuousTimelineView(agents, date); }
-  else { render15mGridView(agents, date); }
+  
+  if(activePlotMode==="timeline"){ renderMultiDateTimelineView(agents, dateList); }
+  else { renderMultiDate15mGridView(agents, dateList); }
  }
+}
+
+/* RENDERS MULTI-DATE TIMELINE VIEW FOR WFM ADMIN & TEAM LEADS */
+function renderMultiDateTimelineView(agents, dateList){
+ const labelsCol=document.getElementById("agentRowsContainer");
+ const tracksCol=document.getElementById("timelineTracksContainer");
+ labelsCol.innerHTML=""; tracksCol.innerHTML="";
+
+ dateList.forEach(dateStr => {
+  agents.forEach(agent => {
+   const lbl=document.createElement("div");
+   lbl.className="agent-row-label";
+   lbl.innerHTML=`<div class="agent-info"><div class="agent-name">📅 ${dateStr} • ${esc(agent.name)}</div> <div class="agent-meta">${esc(agent.agency)} • ${esc(agent.queue)}</div></div> ${isWriteAdmin()?` <div style="display:flex;gap:4px"> <button class="secondary" style="padding:4px 8px;font-size:10px;font-weight:bold" onclick="copySchedule('${agent.id}')">Copy</button> <button class="primary" style="padding:4px 8px;font-size:10px;font-weight:bold" onclick="pasteSchedule('${agent.id}')">Paste</button> <button class="danger" style="padding:4px 8px;font-size:10px;font-weight:bold;background:#dc2626" onclick="clearAgentDaySchedule('${agent.id}', '${dateStr}')">Clear</button> </div>`:""}`;
+   labelsCol.appendChild(lbl);
+
+   const track=document.createElement("div");
+   track.className="timeline-track-container";
+   const bgGrid=document.createElement("div");
+   bgGrid.className="timeline-grid-overlay";
+   for(let h=0; h<24; h++){ const gh=document.createElement("div"); gh.className="grid-hour"; bgGrid.appendChild(gh); }
+   track.appendChild(bgGrid);
+
+   if(isWriteAdmin()){
+    track.ondragover=(e)=>e.preventDefault();
+    track.ondrop=(e)=>{
+     e.preventDefault();
+     const auxKey=e.dataTransfer.getData("text/plain");
+     if(auxKey){
+      const rect=track.getBoundingClientRect();
+      const dropX=Math.max(0, Math.min(1439, Math.floor(e.clientX - rect.left)));
+      const snappedStart=Math.floor(dropX/15)*15;
+      const blocks=getAgentBlocks(agent.id, dateStr);
+      blocks.push({auxKey, startMin: snappedStart, endMin: Math.min(1440, snappedStart+60)});
+      saveAll(); renderPlot();
+     }
+    };
+   }
+
+   const blocks=getAgentBlocks(agent.id, dateStr);
+   blocks.forEach((blk, idx)=>{
+    const blockEl=document.createElement("div");
+    const a=auxByKey(blk.auxKey);
+    blockEl.className=`aux-block ${blk.auxKey}`;
+    blockEl.style.left=blk.startMin+"px";
+    blockEl.style.width=(blk.endMin-blk.startMin)+"px";
+    blockEl.innerHTML=`<span>${a?.short||""} ${timeLabel(blk.startMin)}-${timeLabel(blk.endMin)}</span> ${isWriteAdmin()?`<span class="delete-btn" title="Delete AUX Block" onclick="deleteAuxBlock(event, '${agent.id}', '${dateStr}', ${idx})">✕</span>`:""}`;
+    if(isWriteAdmin()){
+     blockEl.onmousedown=(e)=>{
+      if(e.target.classList.contains("delete-btn")) return;
+      e.stopPropagation();
+      initDragMoveBlock(e, agent.id, dateStr, idx, track);
+     };
+     blockEl.oncontextmenu=(e)=>{ e.preventDefault(); deleteAuxBlock(e, agent.id, dateStr, idx); };
+    }
+    track.appendChild(blockEl);
+   });
+
+   if(isWriteAdmin()){
+    track.ondblclick=(e)=>{
+     if(e.target!==track && !e.target.classList.contains("timeline-grid-overlay")) return;
+     const rect=track.getBoundingClientRect();
+     const clickedMin=Math.max(0, Math.min(1439, Math.floor(e.clientX - rect.left)));
+     selectedDate = dateStr;
+     openTimePlotModal(agent.id, clickedMin);
+    };
+   }
+   tracksCol.appendChild(track);
+  });
+ });
+}
+
+/* RENDERS MULTI-DATE 15-MINUTE GRID VIEW FOR WFM ADMIN & TEAM LEADS */
+function renderMultiDate15mGridView(agents, dateList){
+ const container=document.getElementById("grid15mContainer");
+ container.innerHTML="";
+ const head=document.createElement("div");head.className="agent-head-cell"; head.innerHTML="<b>Date / Agent Info</b><br><small>15-Min Plotter</small>";container.appendChild(head);
+ for(let i=0;i<96;i++){ const h=document.createElement("div");h.className="time-head-15m";h.textContent=timeLabel15m(i);container.appendChild(h); }
+
+ dateList.forEach(dateStr => {
+  agents.forEach(agent=>{
+   const ac=document.createElement("div");ac.className="agent-row-label";
+   ac.innerHTML=`<div class="agent-info"><div class="agent-name">📅 ${dateStr} • ${esc(agent.name)}</div> <div class="agent-meta">${esc(agent.agency)} • ${esc(agent.queue)}</div></div> ${isWriteAdmin()?` <div style="display:flex;gap:4px"> <button class="secondary" style="padding:4px 8px;font-size:10px;font-weight:bold" onclick="copySchedule('${agent.id}')">Copy</button> <button class="primary" style="padding:4px 8px;font-size:10px;font-weight:bold" onclick="pasteSchedule('${agent.id}')">Paste</button> </div>`:""}`;
+   container.appendChild(ac);
+   const day=get15mGridSchedule(agent.id, dateStr);
+   for(let i=0;i<96;i++){
+    const c=document.createElement("div"); const key=day[i];
+    c.className="aux-cell-15m "+(key||"empty"); c.textContent=key?(auxByKey(key)?.short||""):"";
+    c.title=`${dateStr} ${timeLabel15m(i)} - ${auxByKey(key)?.label||"Unplotted"}`;
+    if(isWriteAdmin()){
+     c.onmousedown=()=>{set15mSlot(agent.id, dateStr, i, selectedAux)};
+     c.onmouseenter=()=>{if(isMouseDown)set15mSlot(agent.id, dateStr, i, selectedAux)};
+     c.oncontextmenu=(e)=>{e.preventDefault(); set15mSlot(agent.id, dateStr, i, "")};
+    }
+    container.appendChild(c);
+   }
+  });
+ });
 }
 
 function renderAgentAllDaysTimelineView(agent, dates){
@@ -1060,71 +1176,6 @@ function renderTimelineHeader(){
  }
 }
 
-function renderContinuousTimelineView(agents, date){
- const labelsCol=document.getElementById("agentRowsContainer");
- const tracksCol=document.getElementById("timelineTracksContainer");
- labelsCol.innerHTML=""; tracksCol.innerHTML="";
-
- agents.forEach(agent=>{
-  const lbl=document.createElement("div");
-  lbl.className="agent-row-label";
-  lbl.innerHTML=`<div class="agent-info"><div class="agent-name">${esc(agent.name)}</div> <div class="agent-meta">${esc(agent.agency)} • ${esc(agent.queue)}</div></div> ${isWriteAdmin()?` <div style="display:flex;gap:4px"> <button class="secondary" style="padding:4px 8px;font-size:10px;font-weight:bold" onclick="copySchedule('${agent.id}')">Copy</button> <button class="primary" style="padding:4px 8px;font-size:10px;font-weight:bold" onclick="pasteSchedule('${agent.id}')">Paste</button> <button class="danger" style="padding:4px 8px;font-size:10px;font-weight:bold;background:#dc2626" onclick="clearAgentDaySchedule('${agent.id}', '${date}')">Clear</button> </div>`:""}`;
-  labelsCol.appendChild(lbl);
-
-  const track=document.createElement("div");
-  track.className="timeline-track-container";
-  const bgGrid=document.createElement("div");
-  bgGrid.className="timeline-grid-overlay";
-  for(let h=0; h<24; h++){ const gh=document.createElement("div"); gh.className="grid-hour"; bgGrid.appendChild(gh); }
-  track.appendChild(bgGrid);
-
-  if(isWriteAdmin()){
-   track.ondragover=(e)=>e.preventDefault();
-   track.ondrop=(e)=>{
-    e.preventDefault();
-    const auxKey=e.dataTransfer.getData("text/plain");
-    if(auxKey){
-     const rect=track.getBoundingClientRect();
-     const dropX=Math.max(0, Math.min(1439, Math.floor(e.clientX - rect.left)));
-     const snappedStart=Math.floor(dropX/15)*15;
-     const blocks=getAgentBlocks(agent.id, date);
-     blocks.push({auxKey, startMin: snappedStart, endMin: Math.min(1440, snappedStart+60)});
-     saveAll(); renderPlot();
-    }
-   };
-  }
-
-  const blocks=getAgentBlocks(agent.id, date);
-  blocks.forEach((blk, idx)=>{
-   const blockEl=document.createElement("div");
-   const a=auxByKey(blk.auxKey);
-   blockEl.className=`aux-block ${blk.auxKey}`;
-   blockEl.style.left=blk.startMin+"px";
-   blockEl.style.width=(blk.endMin-blk.startMin)+"px";
-   blockEl.innerHTML=`<span>${a?.short||""} ${timeLabel(blk.startMin)}-${timeLabel(blk.endMin)}</span> ${isWriteAdmin()?`<span class="delete-btn" title="Delete AUX Block" onclick="deleteAuxBlock(event, '${agent.id}', '${date}', ${idx})">✕</span>`:""}`;
-   if(isWriteAdmin()){
-    blockEl.onmousedown=(e)=>{
-     if(e.target.classList.contains("delete-btn")) return;
-     e.stopPropagation();
-     initDragMoveBlock(e, agent.id, date, idx, track);
-    };
-    blockEl.oncontextmenu=(e)=>{ e.preventDefault(); deleteAuxBlock(e, agent.id, date, idx); };
-   }
-   track.appendChild(blockEl);
-  });
-
-  if(isWriteAdmin()){
-   track.ondblclick=(e)=>{
-    if(e.target!==track && !e.target.classList.contains("timeline-grid-overlay")) return;
-    const rect=track.getBoundingClientRect();
-    const clickedMin=Math.max(0, Math.min(1439, Math.floor(e.clientX - rect.left)));
-    openTimePlotModal(agent.id, clickedMin);
-   };
-  }
-  tracksCol.appendChild(track);
- });
-}
-
 function initDragMoveBlock(e, agentId, date, blockIdx, track){
  const blocks=getAgentBlocks(agentId, date);
  const target=blocks[blockIdx];
@@ -1149,31 +1200,6 @@ function initDragMoveBlock(e, agentId, date, blockIdx, track){
 
  document.addEventListener("mousemove", onMouseMove);
  document.addEventListener("mouseup", onMouseUp);
-}
-
-function render15mGridView(agents, date){
- const container=document.getElementById("grid15mContainer");
- container.innerHTML="";
- const head=document.createElement("div");head.className="agent-head-cell"; head.innerHTML="<b>Agent Info</b><br><small>15-Min Plotter</small>";container.appendChild(head);
- for(let i=0;i<96;i++){ const h=document.createElement("div");h.className="time-head-15m";h.textContent=timeLabel15m(i);container.appendChild(h); }
-
- agents.forEach(agent=>{
-  const ac=document.createElement("div");ac.className="agent-row-label";
-  ac.innerHTML=`<div class="agent-info"><div class="agent-name">${esc(agent.name)}</div> <div class="agent-meta">${esc(agent.agency)} • ${esc(agent.queue)}</div></div> ${isWriteAdmin()?` <div style="display:flex;gap:4px"> <button class="secondary" style="padding:4px 8px;font-size:10px;font-weight:bold" onclick="copySchedule('${agent.id}')">Copy</button> <button class="primary" style="padding:4px 8px;font-size:10px;font-weight:bold" onclick="pasteSchedule('${agent.id}')">Paste</button> </div>`:""}`;
-  container.appendChild(ac);
-  const day=get15mGridSchedule(agent.id, date);
-  for(let i=0;i<96;i++){
-   const c=document.createElement("div"); const key=day[i];
-   c.className="aux-cell-15m "+(key||"empty"); c.textContent=key?(auxByKey(key)?.short||""):"";
-   c.title=`${timeLabel15m(i)} - ${auxByKey(key)?.label||"Unplotted"}`;
-   if(isWriteAdmin()){
-    c.onmousedown=()=>{set15mSlot(agent.id, date, i, selectedAux)};
-    c.onmouseenter=()=>{if(isMouseDown)set15mSlot(agent.id, date, i, selectedAux)};
-    c.oncontextmenu=(e)=>{e.preventDefault(); set15mSlot(agent.id, date, i, "")};
-   }
-   container.appendChild(c);
-  }
- });
 }
 
 function set15mSlot(agentId, date, i, auxKey){
