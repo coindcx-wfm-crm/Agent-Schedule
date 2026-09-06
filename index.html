@@ -5,118 +5,78 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>WFM Schedule Plotter</title>
 <style>
-:root{
-  --bg-gradient: linear-gradient(135deg, #0b0f19 0%, #111827 50%, #1e293b 100%);
-  --card: #ffffff;
-  --card-dark: #1e293b;
-  --text: #0f172a;
-  --muted: #64748b;
-  --border: #cbd5e1;
-  --primary: #2563eb;
-  --primary-hover: #1d4ed8;
-  --danger: #dc2626;
-  --rowH: 52px;
-  --cellW: 56px;
-}
+:root{ --bg:#f5f7fb; --card:#fff; --text:#172033; --muted:#667085; --border:#dfe4ec; --primary:#2563eb; --danger:#dc2626; --rowH:52px; --cellW:56px;}
 *{box-sizing:border-box}
-body{
-  margin:0;
-  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  background: #0f172a;
-  background-image: 
-    radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 0),
-    linear-gradient(135deg, #0b0f19 0%, #111827 50%, #1e293b 100%);
-  background-size: 24px 24px, 100% 100%;
-  background-position: 0 0, 0 0;
-  background-attachment: fixed;
-  color: var(--text);
-  user-select: none;
-  min-height: 100vh;
-}
+body{margin:0;font-family:Inter,Arial,sans-serif;background:var(--bg);color:var(--text);user-select:none}
 button,input,select{font:inherit}
 button{cursor:pointer;border:0}
 .hidden{display:none!important}
-
 /* Login & Modals */
-.login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px; background:transparent}
-.login-card{width:420px;background:#ffffff;border-radius:18px;padding:32px;box-shadow:0 25px 60px rgba(0,0,0,0.45);border:1px solid #334155}
-.login-card h1{margin:0 0 8px;font-size:24px;font-weight:900;color:#0f172a}
-.login-card p{color:var(--muted);margin:0 0 24px;font-size:13px}
+.login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px; background:linear-gradient(135deg,#0f172a,#1e3a8a)}
+.login-card{width:420px;background:#fff;border-radius:18px;padding:32px;box-shadow:0 20px 60px #0005}
+.login-card h1{margin:0 0 8px}
+.login-card p{color:var(--muted);margin:0 0 24px}
 .field{margin-bottom:14px}
-.field label{display:block;font-size:13px;font-weight:700;margin-bottom:6px;color:#334155}
-.field input,.field select{width:100%;padding:11px;border:1px solid var(--border);border-radius:8px;outline:none;transition:border-color 0.2s}
-.field input:focus,.field select:focus{border-color:var(--primary)}
-.primary{background:var(--primary);color:#fff;padding:11px 16px;border-radius:8px;font-weight:700;transition:background 0.2s}
-.primary:hover{background:var(--primary-hover)}
-.secondary{background:#e2e8f0;color:#1e293b;padding:10px 14px;border-radius:8px;font-weight:600}
-.secondary:hover{background:#cbd5e1}
+.field label{display:block;font-size:13px;font-weight:700;margin-bottom:6px}
+.field input,.field select{width:100%;padding:11px;border:1px solid var(--border);border-radius:8px}
+.primary{background:var(--primary);color:#fff;padding:11px 16px;border-radius:8px;font-weight:700}
+.secondary{background:#eef2f7;color:#243047;padding:10px 14px;border-radius:8px}
 .danger{color:#fff;background:var(--danger);padding:8px 14px;border-radius:8px;font-weight:700}
 .login-error{color:var(--danger);font-size:13px;margin-top:12px}
 .reset-link{color:var(--primary);font-size:13px;text-align:right;cursor:pointer;font-weight:600;margin-top:6px;display:block}
 .reset-link:hover{text-decoration:underline}
-
 /* Modal Overlay */
-.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(15,23,42,0.8);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:1000}
-.modal-card{width:450px;background:#fff;border-radius:16px;padding:28px;box-shadow:0 20px 50px rgba(0,0,0,0.4);border:1px solid #cbd5e1}
-
+.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(15,23,42,0.7);display:flex;align-items:center;justify-content:center;z-index:1000}
+.modal-card{width:450px;background:#fff;border-radius:16px;padding:28px;box-shadow:0 20px 50px rgba(0,0,0,0.3)}
 /* App Topbar */
-.topbar{height:64px;background:#ffffff;border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 20px;gap:12px;position:sticky;top:0;z-index:50;box-shadow:0 4px 15px rgba(0,0,0,0.05)}
+.topbar{height:64px;background:#fff;border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 18px;gap:12px;position:sticky;top:0;z-index:50}
 .brand{font-weight:800;font-size:18px;margin-right:auto}
-.topbar .clock{font-weight:700;font-variant-numeric:tabular-nums;font-size:13px;color:#334155}
-.badge{padding:5px 11px;border-radius:999px;font-size:12px;font-weight:700;background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe}
-.container{padding:20px;max-width:100%;overflow:hidden}
-
+.topbar .clock{font-weight:700;font-variant-numeric:tabular-nums;font-size:13px}
+.badge{padding:5px 9px;border-radius:999px;font-size:12px;font-weight:700;background:#eaf2ff;color:#1d4ed8}
+.container{padding:18px;max-width:100%;overflow:hidden}
 /* Top-Right Live AUX Status Dropdown */
 .aux-dropdown-container{position:relative;margin-left:auto;display:flex;align-items:center}
-.aux-status-pill{display:flex;align-items:center;gap:8px;background:#f8fafc;border:1px solid #cbd5e1;border-radius:999px;padding:6px 14px;font-size:13px;font-weight:800;cursor:pointer;box-shadow:0 2px 5px rgba(0,0,0,0.05);transition:all 0.2s}
+.aux-status-pill{display:flex;align-items:center;gap:8px;background:#f1f5f9;border:1px solid #cbd5e1;border-radius:999px;padding:6px 14px;font-size:13px;font-weight:800;cursor:pointer;box-shadow:0 2px 5px #0001;transition:all 0.2s}
 .aux-status-pill:hover{background:#e2e8f0}
 .status-dot{width:10px;height:10px;border-radius:50%;display:inline-block}
-.aux-dropdown-menu{position:absolute;top:110%;right:0;width:260px;background:#fff;border:1px solid var(--border);border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,0.18);padding:10px;z-index:200}
+.aux-dropdown-menu{position:absolute;top:110%;right:0;width:260px;background:#fff;border:1px solid var(--border);border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,0.15);padding:10px;z-index:200}
 .aux-search-input{width:100%;padding:8px 12px;border:1px solid #3b82f6;border-radius:8px;margin-bottom:8px;font-size:13px;outline:none}
 .aux-option-list{max-height:260px;overflow-y:auto;display:flex;flex-direction:column;gap:4px}
 .aux-option-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;color:#334155}
 .aux-option-item:hover{background:#f1f5f9}
 .aux-option-item.active{background:#e2e8f0;font-weight:800}
-
 /* Toolbar & Tabs */
 .toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:14px}
-.toolbar input,.toolbar select{padding:9px 12px;border:1px solid var(--border);border-radius:8px;background:#fff;font-size:13px}
-.tabs{display:flex;gap:6px;margin-bottom:16px}
-.tab{padding:10px 16px;border-radius:8px;background:rgba(255,255,255,0.1);color:#e2e8f0;font-weight:700;border:1px solid rgba(255,255,255,0.15);transition:all 0.2s}
-.tab:hover{background:rgba(255,255,255,0.2);color:#fff}
-.tab.active{background:var(--primary);color:#fff;border-color:var(--primary);box-shadow:0 4px 12px rgba(37,99,235,0.3)}
-
-/* Cards & Containers */
-.card{background:#ffffff;border:1px solid rgba(226,232,240,0.8);border-radius:14px;padding:18px;margin-bottom:16px;box-shadow:0 10px 25px rgba(0,0,0,0.08)}
+.toolbar input,.toolbar select{padding:9px;border:1px solid var(--border);border-radius:8px;background:#fff}
+.tabs{display:flex;gap:4px;margin-bottom:14px}
+.tab{padding:9px 14px;border-radius:8px;background:#e8edf4;font-weight:700}
+.tab.active{background:var(--primary);color:#fff}
+.card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:14px}
 .legend{display:flex;gap:7px;flex-wrap:wrap}
-.legend span{padding:6px 10px;border-radius:6px;font-size:12px;font-weight:700;cursor:grab;box-shadow:0 2px 4px rgba(0,0,0,0.05)}
-
+.legend span{padding:6px 9px;border-radius:6px;font-size:12px;font-weight:700;cursor:grab}
 /* MODE 1: Continuous 24-Hour Timeline Plotter */
-.plot-wrap{border:1px solid var(--border);border-radius:12px;background:#fff;overflow:auto;max-height:72vh;box-shadow:0 10px 25px rgba(0,0,0,0.1)}
+.plot-wrap{border:1px solid var(--border);border-radius:10px;background:#fff;overflow:auto;max-height:70vh}
 .plot-grid{display:grid;grid-template-columns:360px 1440px;min-width:1800px}
 .timeline-header{display:flex;height:45px;background:#f8fafc;border-bottom:1px solid var(--border);border-right:1px solid var(--border)}
-.hour-tick{width:60px;flex-shrink:0;border-right:1px solid #e2e8f0;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;color:#64748b}
-.agent-head-cell{position:sticky;left:0;z-index:20;background:#f8fafc;border-right:1px solid var(--border);border-bottom:1px solid var(--border);height:45px;padding:10px;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:space-between;color:#1e293b}
+.hour-tick{width:60px;flex-shrink:0;border-right:1px solid #e2e8f0;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;color:#64748b}
+.agent-head-cell{position:sticky;left:0;z-index:20;background:#f8fafc;border-right:1px solid var(--border);border-bottom:1px solid var(--border);height:45px;padding:10px;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:space-between}
 .agent-row-label{position:sticky;left:0;z-index:10;background:#fff;border-right:1px solid var(--border);border-bottom:1px solid var(--border);height:var(--rowH);padding:6px 10px;display:flex;align-items:center;justify-content:space-between;gap:8px}
 .agent-info{min-width:0}
-.agent-name{font-weight:700;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#0f172a}
+.agent-name{font-weight:700;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .agent-meta{font-size:10px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .timeline-track-container{position:relative;height:var(--rowH);background:#fafafa;border-bottom:1px solid var(--border);width:1440px;overflow:hidden;cursor:crosshair}
 .timeline-grid-overlay{position:absolute;top:0;bottom:0;left:0;right:0;display:flex;pointer-events:none}
 .grid-hour{width:60px;border-right:1px dashed #e2e8f0;height:100%}
-
 /* AUX Block Styling */
-.aux-block{position:absolute;top:6px;bottom:6px;border-radius:6px;padding:2px 8px;font-size:10px;font-weight:800;color:#fff;display:flex;align-items:center;justify-content:space-between;box-shadow:0 3px 8px rgba(0,0,0,0.25);cursor:grab;overflow:hidden;white-space:nowrap;transition:box-shadow 0.2s}
-.aux-block:active{cursor:grabbing;box-shadow:0 6px 14px rgba(0,0,0,0.35);z-index:30}
+.aux-block{position:absolute;top:6px;bottom:6px;border-radius:6px;padding:2px 6px;font-size:10px;font-weight:800;color:#fff;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 5px rgba(0,0,0,0.25);cursor:grab;overflow:hidden;white-space:nowrap;transition:box-shadow 0.2s}
+.aux-block:active{cursor:grabbing;box-shadow:0 4px 10px rgba(0,0,0,0.35);z-index:30}
 .aux-block .delete-btn{font-size:11px;font-weight:900;margin-left:6px;cursor:pointer;background:rgba(0,0,0,0.3);border-radius:50%;width:16px;height:16px;display:inline-flex;align-items:center;justify-content:center;transition:background 0.2s}
 .aux-block .delete-btn:hover{background:rgba(220,38,38,0.9)}
-
 /* MODE 2: 15-Minute Grid Interval Plotter */
 .plot-grid-15m{display:grid;grid-template-columns:360px repeat(96,var(--cellW));min-width:5760px}
 .time-head-15m{height:45px;background:#f8fafc;border-right:1px solid var(--border);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;writing-mode:vertical-rl;transform:rotate(180deg)}
 .aux-cell-15m{height:var(--rowH);border-right:1px solid #e8ecf2;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;user-select:none;cursor:pointer}
 .aux-cell-15m:hover{outline:2px solid #111;outline-offset:-2px}
-
 /* AUX Colors */
 .unavailable{background:#ef4444;color:#fff}
 .available{background:#22c55e;color:#063b19}
@@ -132,7 +92,6 @@ button{cursor:pointer;border:0}
 .training{background:#6366f1;color:#fff}
 .coaching{background:#f97316;color:#fff}
 .offline{background:#64748b;color:#fff}
-
 /* Leave / Off-time Schedule-only AUX Colors */
 .weekoff{background:#64748b;color:#fff}
 .plannedleave{background:#0284c7;color:#fff}
@@ -144,10 +103,9 @@ button{cursor:pointer;border:0}
 .compoff{background:#7c3aed;color:#fff}
 .unplannedleave{background:#b91c1c;color:#fff}
 .empty{background:#fff}
-
 /* Agent timer */
 .agent-panel{display:grid;grid-template-columns:2fr 1fr;gap:14px}
-.current-status{display:flex;align-items:center;justify-content:space-between;padding:18px;border-radius:12px;background:#f8fafc;border:1px solid #e2e8f0}
+.current-status{display:flex;align-items:center;justify-content:space-between;padding:18px;border-radius:12px;background:#f8fafc}
 .status-code{font-size:28px;font-weight:900}
 .status-timer{font-size:30px;font-weight:900;font-variant-numeric:tabular-nums}
 .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
@@ -156,7 +114,6 @@ button{cursor:pointer;border:0}
 .kpi small{color:var(--muted)}
 .summary-table{width:100%;border-collapse:collapse}
 .summary-table th,.summary-table td{padding:9px;border-bottom:1px solid var(--border);text-align:left;font-size:13px}
-
 /* Admin & Tables */
 .table-scroll{overflow:auto}
 .data-table{width:100%;border-collapse:collapse;min-width:800px}
@@ -352,7 +309,7 @@ button{cursor:pointer;border:0}
  <!-- MY STATUS & HISTORICAL CALENDAR -->
  <section id="agentSection" class="hidden">
   <div class="toolbar">
-   <label style="font-size:13px;font-weight:700;color:#e2e8f0">Historical Date Filter:</label>
+   <label style="font-size:13px;font-weight:700">Historical Date Filter:</label>
    <input id="historyDate" type="date" onchange="renderAgentHistory()">
    <button class="secondary" onclick="resetHistoryToToday()">Today</button>
   </div>
@@ -851,7 +808,7 @@ function changeActiveAux(key, preservedStartTime){
  if(currentUser){
   safeStorage.setItem("wfm_user_aux_state_" + currentUser.id, JSON.stringify({ auxKey: key, startTime: auxStartTime }));
   let liveStatus = JSON.parse(safeStorage.getItem("wfm_live_agent_status") || "{}");
-  liveStatus[currentUser.id] = { auxKey: key, startTime: auxStartTime, userRole: currentUser.role };
+  liveStatus[currentUser.id] = { auxKey: key, startTime: auxStartTime, userRole: currentUser.role, username: currentUser.username, email: currentUser.email, name: currentUser.name };
   safeStorage.setItem("wfm_live_agent_status", JSON.stringify(liveStatus));
  }
  const a = auxByKey(key);
@@ -859,7 +816,7 @@ function changeActiveAux(key, preservedStartTime){
  document.getElementById("pillText").textContent = a?.label || "Unavailable";
  updateLiveTimer();
  renderAgentHistory();
- if(currentUser && isManagerOrAdmin()){ renderDashboard(); }
+ if(currentUser && isManagerOrAdmin()){ renderDashboard(); renderAttendance(); }
 }
 
 function logAuxSession(userId, date, auxKey, start, end, durationSec){
@@ -904,18 +861,21 @@ function resetHistoryToToday(){
 
 function dayKey(date,userId){return date+"_"+userId}
 
-/* MULTI-IDENTIFIER SCHEDULE KEY MATCHER TO ENSURE IMPORTED SCHEDULES ALWAYS LOAD */
+/* MULTI-IDENTIFIER SCHEDULE SCANNING TO ENSURE AGENT SCHEDULES ALWAYS REFLECT */
 function getAgentIdentifiers(agent) {
  const ids = new Set();
  if(!agent) return ids;
  if(agent.id) ids.add(agent.id);
  if(agent.username) {
-  ids.add(agent.username.trim().toLowerCase());
-  ids.add(agent.username.trim().toLowerCase().split("@")[0]);
+  const uClean = agent.username.trim().toLowerCase();
+  ids.add(uClean);
+  ids.add(uClean.split("@")[0]);
+  ids.add(uClean.replace("external-", ""));
  }
  if(agent.email) {
-  ids.add(agent.email.trim().toLowerCase());
-  ids.add(agent.email.trim().toLowerCase().split("@")[0]);
+  const eClean = agent.email.trim().toLowerCase();
+  ids.add(eClean);
+  ids.add(eClean.split("@")[0]);
  }
  return ids;
 }
@@ -926,12 +886,28 @@ function getAgentBlocks(agentId, date){
  ids.add(agentId);
 
  let combinedBlocks = [];
- ids.forEach(idVal => {
-  const key = dayKey(date, idVal);
-  if(continuousSchedules[key] && continuousSchedules[key].length > 0){
-   combinedBlocks = combinedBlocks.concat(continuousSchedules[key]);
+ const seen = new Set();
+
+ Object.keys(continuousSchedules).forEach(key => {
+  if(!key.startsWith(date + "_")) return;
+  const keyUserId = key.substring(date.length + 1).toLowerCase();
+  for(let idVal of ids) {
+   if(keyUserId === idVal.toLowerCase() || keyUserId.includes(idVal.toLowerCase()) || idVal.toLowerCase().includes(keyUserId)) {
+    const blocks = continuousSchedules[key];
+    if(blocks && blocks.length > 0) {
+     blocks.forEach(b => {
+      const bSig = `${b.auxKey}_${b.startMin}_${b.endMin}`;
+      if(!seen.has(bSig)) {
+       seen.add(bSig);
+       combinedBlocks.push(b);
+      }
+     });
+    }
+    break;
+   }
   }
  });
+
  return combinedBlocks;
 }
 
@@ -940,12 +916,18 @@ function get15mGridSchedule(agentId, date){
  const ids = getAgentIdentifiers(agent || {id: agentId});
  ids.add(agentId);
 
- for(let idVal of ids) {
-  const key = dayKey(date, idVal);
-  if(grid15mSchedules[key] && grid15mSchedules[key].some(x => x !== "")){
-   return grid15mSchedules[key];
+ for(let key of Object.keys(grid15mSchedules)) {
+  if(!key.startsWith(date + "_")) continue;
+  const keyUserId = key.substring(date.length + 1).toLowerCase();
+  for(let idVal of ids) {
+   if(keyUserId === idVal.toLowerCase() || keyUserId.includes(idVal.toLowerCase()) || idVal.toLowerCase().includes(keyUserId)) {
+    if(grid15mSchedules[key] && grid15mSchedules[key].some(x => x !== "")){
+     return grid15mSchedules[key];
+    }
+   }
   }
  }
+
  const defaultKey = dayKey(date, agentId);
  if(!grid15mSchedules[defaultKey]) grid15mSchedules[defaultKey] = Array(96).fill("");
  return grid15mSchedules[defaultKey];
@@ -959,20 +941,20 @@ function getAgentScheduleDates(agentId){
  ids.add(agentId);
 
  const datesSet = new Set();
- ids.forEach(idVal => {
-  const suffix = "_" + idVal;
-  Object.keys(continuousSchedules).forEach(key => {
-   if(key.toLowerCase().endsWith(suffix.toLowerCase()) && continuousSchedules[key] && continuousSchedules[key].length > 0){
-    const d = key.substring(0, key.length - suffix.length);
-    datesSet.add(d);
+ const allKeys = Object.keys(continuousSchedules).concat(Object.keys(grid15mSchedules));
+
+ allKeys.forEach(key => {
+  const parts = key.split("_");
+  if(parts.length < 2) return;
+  const datePart = parts[0];
+  const keyUserId = parts.slice(1).join("_").toLowerCase();
+
+  for(let idVal of ids) {
+   if(keyUserId === idVal.toLowerCase() || keyUserId.includes(idVal.toLowerCase()) || idVal.toLowerCase().includes(keyUserId)) {
+    datesSet.add(datePart);
+    break;
    }
-  });
-  Object.keys(grid15mSchedules).forEach(key => {
-   if(key.toLowerCase().endsWith(suffix.toLowerCase()) && grid15mSchedules[key] && grid15mSchedules[key].some(x=>x!=="")){
-    const d = key.substring(0, key.length - suffix.length);
-    datesSet.add(d);
-   }
-  });
+  }
  });
 
  const arr = Array.from(datesSet).sort();
@@ -985,7 +967,7 @@ function renderPlot(){
  let agents=users.filter(u=>u.role==="agent" || u.role==="team_leader");
 
  if(currentUser && !isManagerOrAdmin()){
-  const targetAgent = agents.find(u=>u.id===currentUser.id || u.username.toLowerCase()===currentUser.username.toLowerCase());
+  const targetAgent = agents.find(u=>u.id===currentUser.id || u.username.toLowerCase()===currentUser.username.toLowerCase() || u.email.toLowerCase()===currentUser.email.toLowerCase());
   if(!targetAgent) return;
   const agentDates = getAgentScheduleDates(targetAgent.id);
   if(activePlotMode==="timeline"){ renderAgentAllDaysTimelineView(targetAgent, agentDates); }
@@ -1560,6 +1542,7 @@ function renderAgentHistory(){
  document.getElementById("agentUsageTable").innerHTML=rows;
 }
 
+/* REAL-TIME DYNAMIC REPORTING DASHBOARD UPDATE (INCLUDES AGENTS & TEAM LEADERS) */
 function renderDashboard(){
  if(!currentUser||!isManagerOrAdmin())return;
  const date=document.getElementById("reportDate").value||today();
@@ -1604,7 +1587,7 @@ function renderDashboard(){
   rows+=`<tr><td>${esc(a.name)}</td><td>${esc(a.agency)}</td><td>${esc(a.queue)}</td><td>${esc(a.shift)}</td> <td><span class="status-dot" style="background:${currentAuxObj?.color||'#ef4444'}"></span> <b>${esc(currentAuxObj?.label||'Unavailable')}</b></td> <td>${fmt(avail)}</td><td>${fmt(brk)}</td> <td>${fmt(lnch)}</td><td>${fmt(oth)}</td></tr>`;
  });
 
- document.getElementById("dashboardKpis").innerHTML=` <div class="kpi"><b>${agents.length}</b><small>Total Agents</small></div> <div class="kpi"><b>${online}</b><small>Active Users Logged</small></div> <div class="kpi"><b>${fmt(availableSec)}</b><small>Total Available Time</small></div> <div class="kpi"><b>${fmt(breakSec)}</b><small>Total Break Time</small></div>`;
+ document.getElementById("dashboardKpis").innerHTML=` <div class="kpi"><b>${agents.length}</b><small>Total Agents & Leads</small></div> <div class="kpi"><b>${online}</b><small>Active Users Logged</small></div> <div class="kpi"><b>${fmt(availableSec)}</b><small>Total Available Time</small></div> <div class="kpi"><b>${fmt(breakSec)}</b><small>Total Break Time</small></div>`;
  document.getElementById("dashboardBody").innerHTML=rows;
 }
 
@@ -1621,6 +1604,7 @@ function getDateRangeArray(startDateStr, endDateStr) {
  return dates;
 }
 
+/* RENDER ATTENDANCE LOGS WITH HYBRID HISTORICAL + REAL-TIME SESSION RECOGNITION */
 function renderAttendance(){
  if(!currentUser||!isManagerOrAdmin())return;
  let fromVal = document.getElementById("attendanceFromDate")?.value;
@@ -1632,6 +1616,7 @@ function renderAttendance(){
  const dateList = getDateRangeArray(fromVal, toVal);
  const search = (document.getElementById("searchAttendanceAgent")?.value || "").toLowerCase();
  const agents = users.filter(u=>u.role==="agent" || u.role==="team_leader");
+ let liveStatus = JSON.parse(safeStorage.getItem("wfm_live_agent_status") || "{}");
 
  let rows = "";
  dateList.forEach(date => {
@@ -1644,11 +1629,32 @@ function renderAttendance(){
    let firstAvailableLog = logs.find(l => l.auxKey === "available");
    let firstAvailTime = firstAvailableLog ? firstAvailableLog.startTime : "N/A";
 
+   let agentLiveAux = "unavailable";
+   let agentLiveTime = null;
+   if(a.id === currentUser.id) {
+    agentLiveAux = currentActiveAux;
+    agentLiveTime = auxStartTime;
+   } else if(liveStatus[a.id]) {
+    agentLiveAux = liveStatus[a.id].auxKey || "unavailable";
+    agentLiveTime = liveStatus[a.id].startTime;
+   }
+
+   if(firstAvailTime === "N/A" && date === today() && agentLiveAux === "available" && agentLiveTime) {
+    firstAvailTime = new Date(agentLiveTime).toLocaleTimeString("en-IN", {hour12:false});
+   }
+
    let offlineLogs = logs.filter(l => l.auxKey === "offline" || l.auxKey === "unavailable");
    let lastOfflineLog = offlineLogs.length > 0 ? offlineLogs[offlineLogs.length - 1] : null;
    let lastOfflineTime = "Active / In Session";
-   if(lastOfflineLog && lastOfflineLog.endTime){ lastOfflineTime = lastOfflineLog.endTime; }
-   else if(date !== today() && !firstAvailableLog){ lastOfflineTime = "N/A"; }
+   
+   if(lastOfflineLog && lastOfflineLog.endTime){ 
+    lastOfflineTime = lastOfflineLog.endTime; 
+   } else if(date === today() && agentLiveAux !== "offline" && agentLiveAux !== "unavailable") {
+    const liveObj = auxByKey(agentLiveAux);
+    lastOfflineTime = `Active (${liveObj?.label || 'In Session'})`;
+   } else if(date !== today() && !firstAvailableLog){ 
+    lastOfflineTime = "N/A"; 
+   }
 
    const dynamicShifts = getAgentDynamicShifts(a, date);
    const assignedShiftStr = (dynamicShifts && dynamicShifts.length > 0) ? dynamicShifts[0] : (a.shift || "09:00-18:00");
@@ -1668,12 +1674,27 @@ function exportAttendanceCSV(){
 
  const lines = [["Agent Name","Username/Email","Start Date","End Date","Assigned Shift","First Available Timestamp","Last Offline Timestamp"].join(",")];
  const agents = users.filter(u=>u.role==="agent" || u.role==="team_leader");
+ let liveStatus = JSON.parse(safeStorage.getItem("wfm_live_agent_status") || "{}");
 
  dateList.forEach(date => {
   agents.forEach(a => {
    const logs = auxLogs[date + "_" + a.id] || [];
    let firstAvailableLog = logs.find(l => l.auxKey === "available");
    let firstAvailTime = firstAvailableLog ? firstAvailableLog.startTime : "N/A";
+
+   let agentLiveAux = "unavailable";
+   let agentLiveTime = null;
+   if(a.id === currentUser.id) {
+    agentLiveAux = currentActiveAux;
+    agentLiveTime = auxStartTime;
+   } else if(liveStatus[a.id]) {
+    agentLiveAux = liveStatus[a.id].auxKey || "unavailable";
+    agentLiveTime = liveStatus[a.id].startTime;
+   }
+
+   if(firstAvailTime === "N/A" && date === today() && agentLiveAux === "available" && agentLiveTime) {
+    firstAvailTime = new Date(agentLiveTime).toLocaleTimeString("en-IN", {hour12:false});
+   }
 
    let offlineLogs = logs.filter(l => l.auxKey === "offline" || l.auxKey === "unavailable");
    let lastOfflineLog = offlineLogs.length > 0 ? offlineLogs[offlineLogs.length - 1] : null;
