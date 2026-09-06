@@ -582,7 +582,8 @@ function login(){
   (x.username && x.username.trim().toLowerCase() === u) ||
   (x.email && x.email.trim().toLowerCase() === u) ||
   (x.username && x.username.trim().toLowerCase().split("@")[0] === u.split("@")[0]) ||
-  (x.email && x.email.trim().toLowerCase().split("@")[0] === u.split("@")[0])
+  (x.email && x.email.trim().toLowerCase().split("@")[0] === u.split("@")[0]) ||
+  (x.username && x.username.trim().toLowerCase().replace("external-","").split("@")[0] === u.replace("external-","").split("@")[0])
  );
 
  if(!found && (u === "wfm@coindcx.com" || u === "wfm.admin" || u === "admin")){
@@ -865,25 +866,28 @@ function dayKey(date,userId){return date+"_"+userId}
 function getAgentIdentifiers(agent) {
  const ids = new Set();
  if(!agent) return ids;
- if(agent.id) ids.add(agent.id);
+ if(agent.id) ids.add(String(agent.id).toLowerCase());
  if(agent.username) {
   const uClean = agent.username.trim().toLowerCase();
   ids.add(uClean);
   ids.add(uClean.split("@")[0]);
   ids.add(uClean.replace("external-", ""));
+  ids.add(uClean.replace("external-", "").split("@")[0]);
  }
  if(agent.email) {
   const eClean = agent.email.trim().toLowerCase();
   ids.add(eClean);
   ids.add(eClean.split("@")[0]);
+  ids.add(eClean.replace("external-", ""));
+  ids.add(eClean.replace("external-", "").split("@")[0]);
  }
  return ids;
 }
 
 function getAgentBlocks(agentId, date){
- const agent = users.find(u => u.id === agentId || u.username === agentId || u.email === agentId);
+ const agent = users.find(u => u.id === agentId || u.username === agentId || u.email === agentId) || currentUser;
  const ids = getAgentIdentifiers(agent || {id: agentId});
- ids.add(agentId);
+ ids.add(String(agentId).toLowerCase());
 
  let combinedBlocks = [];
  const seen = new Set();
@@ -892,7 +896,8 @@ function getAgentBlocks(agentId, date){
   if(!key.startsWith(date + "_")) return;
   const keyUserId = key.substring(date.length + 1).toLowerCase();
   for(let idVal of ids) {
-   if(keyUserId === idVal.toLowerCase() || keyUserId.includes(idVal.toLowerCase()) || idVal.toLowerCase().includes(keyUserId)) {
+   if(!idVal) continue;
+   if(keyUserId === idVal || keyUserId.includes(idVal) || idVal.includes(keyUserId)) {
     const blocks = continuousSchedules[key];
     if(blocks && blocks.length > 0) {
      blocks.forEach(b => {
@@ -912,15 +917,16 @@ function getAgentBlocks(agentId, date){
 }
 
 function get15mGridSchedule(agentId, date){
- const agent = users.find(u => u.id === agentId || u.username === agentId || u.email === agentId);
+ const agent = users.find(u => u.id === agentId || u.username === agentId || u.email === agentId) || currentUser;
  const ids = getAgentIdentifiers(agent || {id: agentId});
- ids.add(agentId);
+ ids.add(String(agentId).toLowerCase());
 
  for(let key of Object.keys(grid15mSchedules)) {
   if(!key.startsWith(date + "_")) continue;
   const keyUserId = key.substring(date.length + 1).toLowerCase();
   for(let idVal of ids) {
-   if(keyUserId === idVal.toLowerCase() || keyUserId.includes(idVal.toLowerCase()) || idVal.toLowerCase().includes(keyUserId)) {
+   if(!idVal) continue;
+   if(keyUserId === idVal || keyUserId.includes(idVal) || idVal.includes(keyUserId)) {
     if(grid15mSchedules[key] && grid15mSchedules[key].some(x => x !== "")){
      return grid15mSchedules[key];
     }
@@ -936,9 +942,9 @@ function get15mGridSchedule(agentId, date){
 function timeLabel15m(i){ const h=Math.floor(i/4), m=(i%4)*15; return String(h).padStart(2,"0")+":"+String(m).padStart(2,"0");}
 
 function getAgentScheduleDates(agentId){
- const agent = users.find(u => u.id === agentId || u.username === agentId || u.email === agentId);
+ const agent = users.find(u => u.id === agentId || u.username === agentId || u.email === agentId) || currentUser;
  const ids = getAgentIdentifiers(agent || {id: agentId});
- ids.add(agentId);
+ ids.add(String(agentId).toLowerCase());
 
  const datesSet = new Set();
  const allKeys = Object.keys(continuousSchedules).concat(Object.keys(grid15mSchedules));
@@ -950,7 +956,8 @@ function getAgentScheduleDates(agentId){
   const keyUserId = parts.slice(1).join("_").toLowerCase();
 
   for(let idVal of ids) {
-   if(keyUserId === idVal.toLowerCase() || keyUserId.includes(idVal.toLowerCase()) || idVal.toLowerCase().includes(keyUserId)) {
+   if(!idVal) continue;
+   if(keyUserId === idVal || keyUserId.includes(idVal) || idVal.includes(keyUserId)) {
     datesSet.add(datePart);
     break;
    }
@@ -962,13 +969,20 @@ function getAgentScheduleDates(agentId){
 }
 
 function renderPlot(){
+ renderTimelineHeader();
  const date=document.getElementById("scheduleDate").value||today();
  selectedDate=date;
  let agents=users.filter(u=>u.role==="agent" || u.role==="team_leader");
 
  if(currentUser && !isManagerOrAdmin()){
-  const targetAgent = agents.find(u=>u.id===currentUser.id || u.username.toLowerCase()===currentUser.username.toLowerCase() || u.email.toLowerCase()===currentUser.email.toLowerCase());
-  if(!targetAgent) return;
+  let targetAgent = agents.find(u => 
+   u.id === currentUser.id || 
+   u.username.toLowerCase() === currentUser.username.toLowerCase() || 
+   (u.email && currentUser.email && u.email.toLowerCase() === currentUser.email.toLowerCase()) ||
+   u.username.toLowerCase().replace("external-","").split("@")[0] === currentUser.username.toLowerCase().replace("external-","").split("@")[0]
+  );
+  if(!targetAgent) targetAgent = currentUser;
+  
   const agentDates = getAgentScheduleDates(targetAgent.id);
   if(activePlotMode==="timeline"){ renderAgentAllDaysTimelineView(targetAgent, agentDates); }
   else { renderAgentAllDays15mGridView(targetAgent, agentDates); }
@@ -1036,6 +1050,7 @@ function renderAgentAllDays15mGridView(agent, dates){
 
 function renderTimelineHeader(){
  const hdr=document.getElementById("timelineHeader");
+ if(!hdr) return;
  hdr.innerHTML="";
  for(let h=0; h<24; h++){
   const tick=document.createElement("div");
@@ -1399,7 +1414,8 @@ function processImportedMatrix(rows, fileName){
   let agent = users.find(u => 
    u.username.trim().toLowerCase() === username.toLowerCase() || 
    (u.email && u.email.trim().toLowerCase() === username.toLowerCase()) ||
-   u.username.trim().toLowerCase().split("@")[0] === username.toLowerCase().split("@")[0]
+   u.username.trim().toLowerCase().split("@")[0] === username.toLowerCase().split("@")[0] ||
+   u.username.trim().toLowerCase().replace("external-","").split("@")[0] === username.toLowerCase().replace("external-","").split("@")[0]
   );
   
   if(!agent){
@@ -1542,7 +1558,7 @@ function renderAgentHistory(){
  document.getElementById("agentUsageTable").innerHTML=rows;
 }
 
-/* REAL-TIME DYNAMIC REPORTING DASHBOARD UPDATE (INCLUDES AGENTS & TEAM LEADERS) */
+/* REAL-TIME DYNAMIC REPORTING DASHBOARD UPDATE */
 function renderDashboard(){
  if(!currentUser||!isManagerOrAdmin())return;
  const date=document.getElementById("reportDate").value||today();
