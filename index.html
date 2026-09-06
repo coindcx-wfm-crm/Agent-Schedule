@@ -3,37 +3,106 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WFM Schedule Plotter</title>
+<title>CoinDCX | WFM Schedule Plotter</title>
 <style>
-:root{ --bg:#f5f7fb; --card:#fff; --text:#172033; --muted:#667085; --border:#dfe4ec; --primary:#2563eb; --danger:#dc2626; --rowH:52px; --cellW:56px;}
+:root{ --bg:#f5f7fb; --card:#fff; --text:#172033; --muted:#667085; --border:#dfe4ec; --primary:#0052ff; --primary-hover:#0038b8; --danger:#dc2626; --rowH:52px; --cellW:56px;}
 *{box-sizing:border-box}
 body{margin:0;font-family:Inter,Arial,sans-serif;background:var(--bg);color:var(--text);user-select:none}
 button,input,select{font:inherit}
 button{cursor:pointer;border:0}
 .hidden{display:none!important}
-/* Login & Modals */
-.login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px; background:linear-gradient(135deg,#0f172a,#1e3a8a)}
-.login-card{width:420px;background:#fff;border-radius:18px;padding:32px;box-shadow:0 20px 60px #0005}
-.login-card h1{margin:0 0 8px}
-.login-card p{color:var(--muted);margin:0 0 24px}
-.field{margin-bottom:14px}
-.field label{display:block;font-size:13px;font-weight:700;margin-bottom:6px}
-.field input,.field select{width:100%;padding:11px;border:1px solid var(--border);border-radius:8px}
-.primary{background:var(--primary);color:#fff;padding:11px 16px;border-radius:8px;font-weight:700}
+
+/* ENTERPRISE COINDCX CRM LOGIN SCREEN */
+.login-screen{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  padding:0 8vw;
+  background: radial-gradient(circle at 80% 20%, #1e3a8a 0%, #0f172a 45%, #080d1a 100%);
+  position:relative;
+  overflow:hidden;
+}
+/* Subtle background accent grid */
+.login-screen::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 0);
+  background-size: 28px 28px;
+  pointer-events: none;
+}
+/* Large Right-Side Brand Title (Matching T-CRM Reference Layout) */
+.login-brand-watermark {
+  position: absolute;
+  right: 8vw;
+  top: 10vh;
+  font-size: 64px;
+  font-weight: 900;
+  letter-spacing: -1.5px;
+  color: #ffffff;
+  opacity: 0.95;
+  text-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.login-brand-watermark span {
+  font-size: 20px;
+  font-weight: 600;
+  color: #60a5fa;
+  background: rgba(37, 99, 235, 0.2);
+  padding: 4px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(96, 165, 250, 0.3);
+  letter-spacing: 0;
+}
+.login-card{
+  width:420px;
+  background:#ffffff;
+  border-radius:20px;
+  padding:36px;
+  box-shadow:0 25px 60px rgba(0, 0, 0, 0.45);
+  position:relative;
+  z-index:10;
+  border:1px solid rgba(255,255,255,0.1);
+}
+.login-logo-badge {
+  width: 48px;
+  height: 48px;
+  background: #eff6ff;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  border: 1px solid #bfdbfe;
+}
+.login-card h1{margin:0 0 6px; font-size:22px; font-weight:900; color:#0f172a}
+.login-card p{color:var(--muted);margin:0 0 24px; font-size:13px}
+.field{margin-bottom:16px}
+.field label{display:block;font-size:13px;font-weight:700;margin-bottom:6px; color:#334155}
+.field input,.field select{width:100%;padding:12px;border:1px solid var(--border);border-radius:10px; outline:none; transition:all 0.2s}
+.field input:focus,.field select:focus{border-color:var(--primary); box-shadow:0 0 0 3px rgba(0, 82, 255, 0.15)}
+.primary{background:var(--primary);color:#fff;padding:12px 18px;border-radius:10px;font-weight:700; font-size:14px; transition:background 0.2s}
+.primary:hover{background:var(--primary-hover)}
 .secondary{background:#eef2f7;color:#243047;padding:10px 14px;border-radius:8px}
 .danger{color:#fff;background:var(--danger);padding:8px 14px;border-radius:8px;font-weight:700}
 .login-error{color:var(--danger);font-size:13px;margin-top:12px}
 .reset-link{color:var(--primary);font-size:13px;text-align:right;cursor:pointer;font-weight:600;margin-top:6px;display:block}
 .reset-link:hover{text-decoration:underline}
+
 /* Modal Overlay */
 .modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(15,23,42,0.7);display:flex;align-items:center;justify-content:center;z-index:1000}
 .modal-card{width:450px;background:#fff;border-radius:16px;padding:28px;box-shadow:0 20px 50px rgba(0,0,0,0.3)}
+
 /* App Topbar & Centered User Info + Clock */
 .topbar{height:64px;background:#fff;border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 18px;gap:12px;position:sticky;top:0;z-index:50}
 .brand{font-weight:800;font-size:18px;margin-right:auto}
 .header-center-clock{position:absolute;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:10px;background:#f1f5f9;border:1px solid #cbd5e1;border-radius:999px;padding:6px 18px;font-weight:800;font-size:13px;color:#0f172a;box-shadow:0 2px 5px rgba(0,0,0,0.04)}
 .badge{padding:5px 9px;border-radius:999px;font-size:12px;font-weight:700;background:#eaf2ff;color:#1d4ed8}
 .container{padding:18px;max-width:100%;overflow:hidden}
+
 /* Top-Right Live AUX Status Dropdown */
 .aux-dropdown-container{position:relative;margin-left:auto;display:flex;align-items:center}
 .aux-status-pill{display:flex;align-items:center;gap:8px;background:#f1f5f9;border:1px solid #cbd5e1;border-radius:999px;padding:6px 14px;font-size:13px;font-weight:800;cursor:pointer;box-shadow:0 2px 5px #0001;transition:all 0.2s}
@@ -45,6 +114,7 @@ button{cursor:pointer;border:0}
 .aux-option-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;color:#334155}
 .aux-option-item:hover{background:#f1f5f9}
 .aux-option-item.active{background:#e2e8f0;font-weight:800}
+
 /* Toolbar & Tabs */
 .toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:14px}
 .toolbar input,.toolbar select{padding:9px;border:1px solid var(--border);border-radius:8px;background:#fff}
@@ -54,6 +124,7 @@ button{cursor:pointer;border:0}
 .card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:14px}
 .legend{display:flex;gap:7px;flex-wrap:wrap}
 .legend span{padding:6px 9px;border-radius:6px;font-size:12px;font-weight:700;cursor:grab}
+
 /* MODE 1: Continuous 24-Hour Timeline Plotter */
 .plot-wrap{border:1px solid var(--border);border-radius:10px;background:#fff;overflow:auto;max-height:70vh}
 .plot-grid{display:grid;grid-template-columns:360px 1440px;min-width:1800px}
@@ -67,16 +138,19 @@ button{cursor:pointer;border:0}
 .timeline-track-container{position:relative;height:var(--rowH);background:#fafafa;border-bottom:1px solid var(--border);width:1440px;overflow:hidden;cursor:crosshair}
 .timeline-grid-overlay{position:absolute;top:0;bottom:0;left:0;right:0;display:flex;pointer-events:none}
 .grid-hour{width:60px;border-right:1px dashed #e2e8f0;height:100%}
+
 /* AUX Block Styling */
 .aux-block{position:absolute;top:6px;bottom:6px;border-radius:6px;padding:2px 6px;font-size:10px;font-weight:800;color:#fff;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 5px rgba(0,0,0,0.25);cursor:grab;overflow:hidden;white-space:nowrap;transition:box-shadow 0.2s}
 .aux-block:active{cursor:grabbing;box-shadow:0 4px 10px rgba(0,0,0,0.35);z-index:30}
 .aux-block .delete-btn{font-size:11px;font-weight:900;margin-left:6px;cursor:pointer;background:rgba(0,0,0,0.3);border-radius:50%;width:16px;height:16px;display:inline-flex;align-items:center;justify-content:center;transition:background 0.2s}
 .aux-block .delete-btn:hover{background:rgba(220,38,38,0.9)}
+
 /* MODE 2: 15-Minute Grid Interval Plotter */
 .plot-grid-15m{display:grid;grid-template-columns:360px repeat(96,var(--cellW));min-width:5760px}
 .time-head-15m{height:45px;background:#f8fafc;border-right:1px solid var(--border);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;writing-mode:vertical-rl;transform:rotate(180deg)}
 .aux-cell-15m{height:var(--rowH);border-right:1px solid #e8ecf2;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;user-select:none;cursor:pointer}
 .aux-cell-15m:hover{outline:2px solid #111;outline-offset:-2px}
+
 /* AUX Colors */
 .unavailable{background:#ef4444;color:#fff}
 .available{background:#22c55e;color:#063b19}
@@ -92,6 +166,7 @@ button{cursor:pointer;border:0}
 .training{background:#6366f1;color:#fff}
 .coaching{background:#f97316;color:#fff}
 .offline{background:#64748b;color:#fff}
+
 /* Leave / Off-time Schedule-only AUX Colors */
 .weekoff{background:#64748b;color:#fff}
 .plannedleave{background:#0284c7;color:#fff}
@@ -103,6 +178,7 @@ button{cursor:pointer;border:0}
 .compoff{background:#7c3aed;color:#fff}
 .unplannedleave{background:#b91c1c;color:#fff}
 .empty{background:#fff}
+
 /* Agent timer */
 .agent-panel{display:grid;grid-template-columns:2fr 1fr;gap:14px}
 .current-status{display:flex;align-items:center;justify-content:space-between;padding:18px;border-radius:12px;background:#f8fafc}
@@ -114,19 +190,31 @@ button{cursor:pointer;border:0}
 .kpi small{color:var(--muted)}
 .summary-table{width:100%;border-collapse:collapse}
 .summary-table th,.summary-table td{padding:9px;border-bottom:1px solid var(--border);text-align:left;font-size:13px}
+
 /* Admin & Tables */
 .table-scroll{overflow:auto}
 .data-table{width:100%;border-collapse:collapse;min-width:800px}
 .data-table th,.data-table td{padding:9px;border-bottom:1px solid var(--border);font-size:13px;text-align:left}
-@media(max-width:900px){.agent-panel{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,1fr)}.header-center-clock{position:static;transform:none}}
+@media(max-width:900px){.agent-panel{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,1fr)}.header-center-clock{position:static;transform:none}.login-brand-watermark{display:none}}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 <body>
 
-<!-- LOGIN -->
+<!-- LOGIN SCREEN WITH COINDCX BRANDING AND LOGO BADGE -->
 <section id="loginScreen" class="login-screen">
+ <div class="login-brand-watermark">
+  CoinDCX <span>WFM CRM</span>
+ </div>
+
  <div class="login-card">
+  <div class="login-logo-badge">
+   <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="#0052FF"/>
+    <path d="M2 17L12 22L22 17" stroke="#0052FF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M2 12L12 17L22 12" stroke="#0052FF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+   </svg>
+  </div>
   <h1>WFM Schedule Plotter</h1>
   <p>Sign in with your assigned account credentials.</p>
   <div class="field"><label>Email / Username</label><input id="loginUser" placeholder="Enter your email or username"></div>
@@ -226,7 +314,7 @@ button{cursor:pointer;border:0}
 
  <!-- CENTERED AGENT NAME, ROLE, SYSTEM DATE & TIME DISPLAY FOR ALL LOGINS -->
  <div class="header-center-clock">
-  <span style="color:#2563eb;font-weight:900">👤 <span id="centerUserNameRole"></span></span>
+  <span style="color:#0052ff;font-weight:900">👤 <span id="centerUserNameRole"></span></span>
   <span style="color:#cbd5e1">|</span>
   <span>📅 <span id="liveHeaderDate"></span></span>
   <span style="color:#cbd5e1">|</span>
@@ -639,7 +727,6 @@ function login(){
   return; 
  }
 
- /* STRICT CHECK AGAINST ADMIN-SET ACCOUNT PASSWORD ONLY */
  if(found.password !== pInput){
   document.getElementById("loginError").textContent = "Invalid password. Please try again or use 'Reset Password?'."; 
   return; 
@@ -1612,7 +1699,7 @@ function renderAgentHistory(){
  document.getElementById("agentUsageTable").innerHTML=rows;
 }
 
-/* REAL-TIME DYNAMIC REPORTING DASHBOARD UPDATE (LOOKS UP AGENTS, TEAM LEADS & ADMINS) */
+/* REAL-TIME DYNAMIC REPORTING DASHBOARD UPDATE (LOOKS UP ALL TRACKED USERS) */
 function renderDashboard(){
  if(!currentUser||!isManagerOrAdmin())return;
  const date=document.getElementById("reportDate").value||today();
@@ -2051,7 +2138,7 @@ document.getElementById("historyDate").value=today();
   if(savedUserId){
    let found = users.find(x => x.id === savedUserId || x.username.toLowerCase() === savedUserId.toLowerCase() || (x.email && x.email.toLowerCase() === savedUserId.toLowerCase()));
    if(!found && (savedUserId === "admin_1" || savedUserId.toLowerCase() === "wfm@coindcx.com")){
-    found = {id:"admin_1", name:"WFM Admin", username:"wfm@coindcx.com", email:"wfm@coindcx.com", password:"Admin@007", role:"admin", agency:"Internal", unit:"WFM", department:"WFM", queue:"All", shift:"09:00-18:00", requirePasswordReset:false};
+    found = {id:"admin_1", name:"WFM Admin", username:"wfm@coindcx.com", email:"wfm@coindcx.com", password:"Admin@007", role:"admin", agency:"Internal", unit:"WFM", queue:"All", shift:"09:00-18:00", requirePasswordReset:false};
    }
    if(found && !found.requirePasswordReset){
     currentUser = found;
