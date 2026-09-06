@@ -23,7 +23,6 @@ button{cursor:pointer;border:0}
   position:relative;
   overflow:hidden;
 }
-/* Subtle background accent grid */
 .login-screen::before {
   content: "";
   position: absolute;
@@ -32,7 +31,6 @@ button{cursor:pointer;border:0}
   background-size: 28px 28px;
   pointer-events: none;
 }
-/* Large Right-Side Brand Title (Matching T-CRM Reference Layout) */
 .login-brand-watermark {
   position: absolute;
   right: 8vw;
@@ -47,7 +45,9 @@ button{cursor:pointer;border:0}
   align-items: center;
   gap: 16px;
 }
-.login-brand-watermark span {
+.login-brand-watermark .coindcx-blue { color: #ffffff; }
+.login-brand-watermark .coindcx-red { color: #f97316; }
+.login-brand-watermark span.sub-badge {
   font-size: 20px;
   font-weight: 600;
   color: #60a5fa;
@@ -57,6 +57,7 @@ button{cursor:pointer;border:0}
   border: 1px solid rgba(96, 165, 250, 0.3);
   letter-spacing: 0;
 }
+
 .login-card{
   width:420px;
   background:#ffffff;
@@ -67,18 +68,19 @@ button{cursor:pointer;border:0}
   z-index:10;
   border:1px solid rgba(255,255,255,0.1);
 }
-.login-logo-badge {
-  width: 48px;
-  height: 48px;
-  background: #eff6ff;
-  border-radius: 12px;
-  display: flex;
+
+.coindcx-text-logo {
+  font-size: 28px;
+  font-weight: 900;
+  letter-spacing: -0.5px;
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  margin-bottom: 20px;
-  border: 1px solid #bfdbfe;
+  margin-bottom: 8px;
 }
-.login-card h1{margin:0 0 6px; font-size:22px; font-weight:900; color:#0f172a}
+.coindcx-text-logo .blue-text { color: #172554; }
+.coindcx-text-logo .red-text { color: #ff3b00; }
+
+.login-card h1{margin:4px 0 6px; font-size:20px; font-weight:900; color:#0f172a}
 .login-card p{color:var(--muted);margin:0 0 24px; font-size:13px}
 .field{margin-bottom:16px}
 .field label{display:block;font-size:13px;font-weight:700;margin-bottom:6px; color:#334155}
@@ -201,19 +203,16 @@ button{cursor:pointer;border:0}
 </head>
 <body>
 
-<!-- LOGIN SCREEN WITH COINDCX BRANDING AND LOGO BADGE -->
+<!-- LOGIN SCREEN WITH COINDCX DUAL-COLOR LOGO BRANDING -->
 <section id="loginScreen" class="login-screen">
  <div class="login-brand-watermark">
-  CoinDCX <span>WFM CRM</span>
+  <span class="coindcx-blue">Coin</span><span class="coindcx-red">DCX</span> <span class="sub-badge">WFM CRM</span>
  </div>
 
  <div class="login-card">
-  <div class="login-logo-badge">
-   <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="#0052FF"/>
-    <path d="M2 17L12 22L22 17" stroke="#0052FF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-    <path d="M2 12L12 17L22 12" stroke="#0052FF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-   </svg>
+  <!-- DUAL COLOR COINDCX LOGO BRANDING -->
+  <div class="coindcx-text-logo">
+   <span class="blue-text">Coin</span><span class="red-text">DCX</span>
   </div>
   <h1>WFM Schedule Plotter</h1>
   <p>Sign in with your assigned account credentials.</p>
@@ -309,7 +308,10 @@ button{cursor:pointer;border:0}
 <section id="app" class="hidden">
 <header class="topbar">
  <div class="brand" style="display:flex;align-items:center;gap:12px">
-  <span style="font-weight:900;font-size:18px;letter-spacing:-0.5px;color:#0f172a">CoinDCX <span style="font-weight:500;font-size:14px;color:#64748b">| WFM Schedule Plotter</span></span>
+  <span style="font-weight:900;font-size:18px;letter-spacing:-0.5px">
+   <span style="color:#172554">Coin</span><span style="color:#ff3b00">DCX</span> 
+   <span style="font-weight:500;font-size:14px;color:#64748b">| WFM Schedule Plotter</span>
+  </span>
  </div>
 
  <!-- CENTERED AGENT NAME, ROLE, SYSTEM DATE & TIME DISPLAY FOR ALL LOGINS -->
