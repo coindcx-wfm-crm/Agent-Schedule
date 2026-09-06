@@ -585,6 +585,7 @@ function normalizeDateStr(dateStr) {
  return dateStr;
 }
 
+/* STRICT ADMIN-SET PASSWORD LOGIN VERIFICATION */
 function login(){
  const uInput = document.getElementById("loginUser").value.trim();
  const pInput = document.getElementById("loginPass").value.trim();
@@ -605,7 +606,7 @@ function login(){
  );
 
  if(!found && (u === "wfm@coindcx.com" || u === "wfm.admin" || u === "admin")){
-  found = { id: "admin_1", name: "WFM Admin", username: "wfm@coindcx.com", email: "wfm@coindcx.com", password: pInput, role: "admin", agency: "Internal", unit: "WFM", department: "WFM", queue: "All", shift: "09:00-18:00", requirePasswordReset: false };
+  found = { id: "admin_1", name: "WFM Admin", username: "wfm@coindcx.com", email: "wfm@coindcx.com", password: "Admin@007", role: "admin", agency: "Internal", unit: "WFM", department: "WFM", queue: "All", shift: "09:00-18:00", requirePasswordReset: false };
   users.push(found);
   saveAll();
  }
@@ -619,7 +620,7 @@ function login(){
     name: cleanName,
     username: uInput,
     email: u.includes("@") ? uInput : uInput + "@company.com",
-    password: pInput || "Agent@123",
+    password: pInput,
     role: u.startsWith("tl") ? "team_leader" : "agent",
     agency: "External",
     unit: "Support",
@@ -638,13 +639,10 @@ function login(){
   return; 
  }
 
+ /* STRICT CHECK AGAINST ADMIN-SET ACCOUNT PASSWORD ONLY */
  if(found.password !== pInput){
-  if((pInput === "Admin@007" || pInput === "Wfm@123") && (found.role === "admin" || found.role === "wfm_admin")){ found.password = pInput; saveAll(); }
-  else if((pInput === "CoinDCX@135" || pInput === "Agent@123")){ found.password = pInput; saveAll(); }
-  else { 
-   document.getElementById("loginError").textContent = "Invalid password. Please try again or use 'Reset Password?'."; 
-   return; 
-  }
+  document.getElementById("loginError").textContent = "Invalid password. Please try again or use 'Reset Password?'."; 
+  return; 
  }
 
  currentUser = found;
@@ -1614,11 +1612,11 @@ function renderAgentHistory(){
  document.getElementById("agentUsageTable").innerHTML=rows;
 }
 
-/* REAL-TIME DYNAMIC REPORTING DASHBOARD UPDATE (LOOKS UP AGENTS & LEADS BY ID AND USERNAME) */
+/* REAL-TIME DYNAMIC REPORTING DASHBOARD UPDATE (LOOKS UP AGENTS, TEAM LEADS & ADMINS) */
 function renderDashboard(){
  if(!currentUser||!isManagerOrAdmin())return;
  const date=document.getElementById("reportDate").value||today();
- const agents=users.filter(u=>u.role==="agent" || u.role==="team_leader");
+ const agents=users.filter(u=>u.role !== "admin" || u.id === currentUser.id);
  let liveStatus = JSON.parse(safeStorage.getItem("wfm_live_agent_status") || "{}");
  let online=0,availableSec=0,breakSec=0;
  let rows="";
@@ -1661,7 +1659,7 @@ function renderDashboard(){
   rows+=`<tr><td>${esc(a.name)}</td><td>${esc(a.agency)}</td><td>${esc(a.queue)}</td><td>${esc(a.shift)}</td> <td><span class="status-dot" style="background:${currentAuxObj?.color||'#ef4444'}"></span> <b>${esc(currentAuxObj?.label||'Unavailable')}</b></td> <td>${fmt(avail)}</td><td>${fmt(brk)}</td> <td>${fmt(lnch)}</td><td>${fmt(oth)}</td></tr>`;
  });
 
- document.getElementById("dashboardKpis").innerHTML=` <div class="kpi"><b>${agents.length}</b><small>Total Agents & Leads</small></div> <div class="kpi"><b>${online}</b><small>Active Users Logged</small></div> <div class="kpi"><b>${fmt(availableSec)}</b><small>Total Available Time</small></div> <div class="kpi"><b>${fmt(breakSec)}</b><small>Total Break Time</small></div>`;
+ document.getElementById("dashboardKpis").innerHTML=` <div class="kpi"><b>${agents.length}</b><small>Total Tracked Users</small></div> <div class="kpi"><b>${online}</b><small>Active Users Logged</small></div> <div class="kpi"><b>${fmt(availableSec)}</b><small>Total Available Time</small></div> <div class="kpi"><b>${fmt(breakSec)}</b><small>Total Break Time</small></div>`;
  document.getElementById("dashboardBody").innerHTML=rows;
 }
 
@@ -1678,7 +1676,7 @@ function getDateRangeArray(startDateStr, endDateStr) {
  return dates;
 }
 
-/* RENDER ATTENDANCE LOGS WITH HYBRID HISTORICAL + REAL-TIME SESSION RECOGNITION */
+/* RENDER ATTENDANCE LOGS WITH HYBRID HISTORICAL + REAL-TIME SESSION RECOGNITION FOR ALL LOGGED-IN USERS */
 function renderAttendance(){
  if(!currentUser||!isManagerOrAdmin())return;
  let fromVal = document.getElementById("attendanceFromDate")?.value;
@@ -1689,7 +1687,7 @@ function renderAttendance(){
 
  const dateList = getDateRangeArray(fromVal, toVal);
  const search = (document.getElementById("searchAttendanceAgent")?.value || "").toLowerCase();
- const agents = users.filter(u=>u.role==="agent" || u.role==="team_leader");
+ const agents = users.filter(u => u.role !== "admin" || u.id === currentUser.id);
  let liveStatus = JSON.parse(safeStorage.getItem("wfm_live_agent_status") || "{}");
 
  let rows = "";
@@ -1749,7 +1747,7 @@ function exportAttendanceCSV(){
  const dateList = getDateRangeArray(fromInput, toInput);
 
  const lines = [["Agent Name","Username/Email","Start Date","End Date","Assigned Shift","First Available Timestamp","Last Offline Timestamp"].join(",")];
- const agents = users.filter(u=>u.role==="agent" || u.role==="team_leader");
+ const agents = users.filter(u => u.role !== "admin" || u.id === currentUser.id);
  let liveStatus = JSON.parse(safeStorage.getItem("wfm_live_agent_status") || "{}");
 
  dateList.forEach(date => {
@@ -1924,8 +1922,8 @@ function addAgent(){
  if(users.some(u=>u.username===username))return alert("Username exists.");
  const email=prompt("Agent Email Address", username+"@company.com");if(!email)return;
  const password=prompt("Unique Password for Agent","Agent@123");if(!password||password.length<6)return alert("Password must be at least 6 characters.");
- const agency=prompt("Agency","RM")||"RM",unit=prompt("Unit","Support")||"Support", queue=prompt("Queue","Live Chat")||"Live Chat",shift=prompt("Shift","09:00-18:00")||"09:00-18:00";
- users.push({id:"u"+Date.now(),name,username,email,password,role:"agent",agency,unit,queue,shift,requirePasswordReset:false});
+ const agency=prompt("Agency","RM")||"RM",unit=prompt("Unit","Support")||"Support", queue=prompt("Queue","Livechat")||"Livechat";
+ users.push({id:"u"+Date.now(),name,username,email,password,role:"agent",agency,unit,department:"CS Delivery",queue,shift:"09:00-18:00",requirePasswordReset:false});
  saveAll();populateFilters();renderPlot();renderAdmin();
 }
 
@@ -2053,7 +2051,7 @@ document.getElementById("historyDate").value=today();
   if(savedUserId){
    let found = users.find(x => x.id === savedUserId || x.username.toLowerCase() === savedUserId.toLowerCase() || (x.email && x.email.toLowerCase() === savedUserId.toLowerCase()));
    if(!found && (savedUserId === "admin_1" || savedUserId.toLowerCase() === "wfm@coindcx.com")){
-    found = {id:"admin_1", name:"WFM Admin", username:"wfm@coindcx.com", email:"wfm@coindcx.com", password:"Admin@007", role:"admin", agency:"Internal", unit:"WFM", queue:"All", shift:"09:00-18:00", requirePasswordReset:false};
+    found = {id:"admin_1", name:"WFM Admin", username:"wfm@coindcx.com", email:"wfm@coindcx.com", password:"Admin@007", role:"admin", agency:"Internal", unit:"WFM", department:"WFM", queue:"All", shift:"09:00-18:00", requirePasswordReset:false};
    }
    if(found && !found.requirePasswordReset){
     currentUser = found;
