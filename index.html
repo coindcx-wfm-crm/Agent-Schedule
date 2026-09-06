@@ -31,10 +31,10 @@ button{cursor:pointer;border:0}
 .modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(15,23,42,0.7);display:flex;align-items:center;justify-content:center;z-index:1000}
 .modal-card{width:450px;background:#fff;border-radius:16px;padding:28px;box-shadow:0 20px 50px rgba(0,0,0,0.3)}
 
-/* App Topbar & Centered Clock */
+/* App Topbar & Centered User Info + Clock */
 .topbar{height:64px;background:#fff;border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 18px;gap:12px;position:sticky;top:0;z-index:50}
 .brand{font-weight:800;font-size:18px;margin-right:auto}
-.header-center-clock{position:absolute;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:8px;background:#f1f5f9;border:1px solid #cbd5e1;border-radius:999px;padding:6px 18px;font-weight:800;font-size:13px;color:#0f172a;box-shadow:0 2px 5px rgba(0,0,0,0.04)}
+.header-center-clock{position:absolute;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:10px;background:#f1f5f9;border:1px solid #cbd5e1;border-radius:999px;padding:6px 18px;font-weight:800;font-size:13px;color:#0f172a;box-shadow:0 2px 5px rgba(0,0,0,0.04)}
 .badge{padding:5px 9px;border-radius:999px;font-size:12px;font-weight:700;background:#eaf2ff;color:#1d4ed8}
 .container{padding:18px;max-width:100%;overflow:hidden}
 
@@ -236,8 +236,10 @@ button{cursor:pointer;border:0}
   <span style="font-weight:900;font-size:18px;letter-spacing:-0.5px;color:#0f172a">CoinDCX <span style="font-weight:500;font-size:14px;color:#64748b">| WFM Schedule Plotter</span></span>
  </div>
 
- <!-- CENTERED SYSTEM DATE & TIME DISPLAY FOR ALL LOGINS -->
+ <!-- CENTERED AGENT NAME, ROLE, SYSTEM DATE & TIME DISPLAY FOR ALL LOGINS -->
  <div class="header-center-clock">
+  <span style="color:#2563eb;font-weight:900">👤 <span id="centerUserNameRole"></span></span>
+  <span style="color:#cbd5e1">|</span>
   <span>📅 <span id="liveHeaderDate"></span></span>
   <span style="color:#cbd5e1">|</span>
   <span>⏰ <span id="liveClock"></span></span>
@@ -404,7 +406,7 @@ button{cursor:pointer;border:0}
   </div>
  </section>
 
- <!-- SETTINGS TAB -->
+ <!-- SETTINGS TAB (ROLE MANAGEMENT & PERMISSIONS CONFIGURATION) -->
  <section id="settingsSection" class="hidden">
   <div class="card">
    <h2 style="margin-top:0;margin-bottom:6px">System Role & Access Settings</h2>
@@ -679,8 +681,15 @@ function submitFirstLoginChange(){
 function initializeAppView(){
  document.getElementById("loginScreen").classList.add("hidden");
  document.getElementById("app").classList.remove("hidden");
- document.getElementById("roleBadge").textContent=(getRoleObj(currentUser.role)?.label || currentUser.role).toUpperCase();
- document.getElementById("topUser").textContent=currentUser.name;
+ 
+ const roleObj = getRoleObj(currentUser.role);
+ const roleLabel = roleObj ? roleObj.label : currentUser.role;
+ document.getElementById("roleBadge").textContent = roleLabel.toUpperCase();
+ document.getElementById("topUser").textContent = currentUser.name;
+ 
+ const centerUserLabel = `${currentUser.name} (${roleLabel})`;
+ const centerElem = document.getElementById("centerUserNameRole");
+ if(centerElem) centerElem.textContent = centerUserLabel;
  
  const schedElem = document.getElementById("scheduleDate");
  if(schedElem) schedElem.value = selectedDate;
@@ -902,7 +911,7 @@ function resetHistoryToToday(){
 
 function dayKey(date,userId){return date+"_"+userId}
 
-/* MULTI-IDENTIFIER SCHEDULE SCANNING TO ENSURE AGENT SCHEDULES ALWAYS REFLECT */
+/* DEEP SCAN IDENTIFIERS MATCHING ALL CREATED ACCOUNTS FOR USERNAME & ID VARIATIONS */
 function getAgentIdentifiers(agent) {
  const ids = new Set();
  if(!agent) return ids;
@@ -1613,7 +1622,7 @@ function renderAgentHistory(){
  document.getElementById("agentUsageTable").innerHTML=rows;
 }
 
-/* REAL-TIME DYNAMIC REPORTING DASHBOARD UPDATE */
+/* REAL-TIME DYNAMIC REPORTING DASHBOARD UPDATE (LOOKS UP AGENTS & LEADS BY ID AND USERNAME) */
 function renderDashboard(){
  if(!currentUser||!isManagerOrAdmin())return;
  const date=document.getElementById("reportDate").value||today();
@@ -1622,7 +1631,7 @@ function renderDashboard(){
  let online=0,availableSec=0,breakSec=0;
  let rows="";
  agents.forEach(a=>{
-  const logs=auxLogs[date+"_"+a.id]||[];
+  const logs = auxLogs[date+"_"+a.id] || auxLogs[date+"_"+a.username] || [];
   let avail=0,brk=0,lnch=0,oth=0;
   logs.forEach(l=>{
    if(l.auxKey==="available") avail+=l.durationSec;
@@ -1632,7 +1641,9 @@ function renderDashboard(){
   });
 
   let agentLiveAuxKey = "unavailable";
-  if(a.id === currentUser.id){
+  let liveObj = liveStatus[a.id] || Object.values(liveStatus).find(ls => ls && (ls.username === a.username || ls.email === a.email || (ls.username && a.username && ls.username.toLowerCase().includes(a.username.toLowerCase()))));
+
+  if(a.id === currentUser.id || (currentUser.username && a.username && a.username.toLowerCase() === currentUser.username.toLowerCase())){
    agentLiveAuxKey = currentActiveAux;
    if(date === today()){
     const currentElapsed = Math.floor((Date.now() - auxStartTime) / 1000);
@@ -1641,10 +1652,10 @@ function renderDashboard(){
     else if(currentActiveAux === "lunch") lnch += currentElapsed;
     else oth += currentElapsed;
    }
-  } else if(liveStatus[a.id]){
-   agentLiveAuxKey = liveStatus[a.id].auxKey || "unavailable";
-   if(date === today() && liveStatus[a.id].startTime){
-    const currentElapsed = Math.floor((Date.now() - liveStatus[a.id].startTime) / 1000);
+  } else if(liveObj){
+   agentLiveAuxKey = liveObj.auxKey || "unavailable";
+   if(date === today() && liveObj.startTime){
+    const currentElapsed = Math.floor((Date.now() - liveObj.startTime) / 1000);
     if(agentLiveAuxKey === "available") avail += currentElapsed;
     else if(agentLiveAuxKey === "break") brk += currentElapsed;
     else if(agentLiveAuxKey === "lunch") lnch += currentElapsed;
@@ -1696,18 +1707,20 @@ function renderAttendance(){
     return;
    }
 
-   const logs = auxLogs[date + "_" + a.id] || [];
+   const logs = auxLogs[date + "_" + a.id] || auxLogs[date + "_" + a.username] || [];
    let firstAvailableLog = logs.find(l => l.auxKey === "available");
    let firstAvailTime = firstAvailableLog ? firstAvailableLog.startTime : "N/A";
 
+   let liveObj = liveStatus[a.id] || Object.values(liveStatus).find(ls => ls && (ls.username === a.username || ls.email === a.email || (ls.username && a.username && ls.username.toLowerCase().includes(a.username.toLowerCase()))));
+   
    let agentLiveAux = "unavailable";
    let agentLiveTime = null;
-   if(a.id === currentUser.id) {
+   if(a.id === currentUser.id || (currentUser.username && a.username && a.username.toLowerCase() === currentUser.username.toLowerCase())) {
     agentLiveAux = currentActiveAux;
     agentLiveTime = auxStartTime;
-   } else if(liveStatus[a.id]) {
-    agentLiveAux = liveStatus[a.id].auxKey || "unavailable";
-    agentLiveTime = liveStatus[a.id].startTime;
+   } else if(liveObj) {
+    agentLiveAux = liveObj.auxKey || "unavailable";
+    agentLiveTime = liveObj.startTime;
    }
 
    if(firstAvailTime === "N/A" && date === today() && agentLiveAux === "available" && agentLiveTime) {
@@ -1721,8 +1734,8 @@ function renderAttendance(){
    if(lastOfflineLog && lastOfflineLog.endTime){ 
     lastOfflineTime = lastOfflineLog.endTime; 
    } else if(date === today() && agentLiveAux !== "offline" && agentLiveAux !== "unavailable") {
-    const liveObj = auxByKey(agentLiveAux);
-    lastOfflineTime = `Active (${liveObj?.label || 'In Session'})`;
+    const liveAuxObj = auxByKey(agentLiveAux);
+    lastOfflineTime = `Active (${liveAuxObj?.label || 'In Session'})`;
    } else if(date !== today() && !firstAvailableLog){ 
     lastOfflineTime = "N/A"; 
    }
@@ -1749,18 +1762,20 @@ function exportAttendanceCSV(){
 
  dateList.forEach(date => {
   agents.forEach(a => {
-   const logs = auxLogs[date + "_" + a.id] || [];
+   const logs = auxLogs[date + "_" + a.id] || auxLogs[date + "_" + a.username] || [];
    let firstAvailableLog = logs.find(l => l.auxKey === "available");
    let firstAvailTime = firstAvailableLog ? firstAvailableLog.startTime : "N/A";
 
+   let liveObj = liveStatus[a.id] || Object.values(liveStatus).find(ls => ls && (ls.username === a.username || ls.email === a.email || (ls.username && a.username && ls.username.toLowerCase().includes(a.username.toLowerCase()))));
+
    let agentLiveAux = "unavailable";
    let agentLiveTime = null;
-   if(a.id === currentUser.id) {
+   if(a.id === currentUser.id || (currentUser.username && a.username && a.username.toLowerCase() === currentUser.username.toLowerCase())) {
     agentLiveAux = currentActiveAux;
     agentLiveTime = auxStartTime;
-   } else if(liveStatus[a.id]) {
-    agentLiveAux = liveStatus[a.id].auxKey || "unavailable";
-    agentLiveTime = liveStatus[a.id].startTime;
+   } else if(liveObj) {
+    agentLiveAux = liveObj.auxKey || "unavailable";
+    agentLiveTime = liveObj.startTime;
    }
 
    if(firstAvailTime === "N/A" && date === today() && agentLiveAux === "available" && agentLiveTime) {
