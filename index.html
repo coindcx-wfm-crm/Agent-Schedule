@@ -1609,31 +1609,18 @@ function processImportedMatrix(rows, fileName){
   const realEndMin = (endMin === 0 && startMin > 0) ? 1440 : endMin;
 
   if(aux){
-   if(normStartDate !== normEndDate && normEndDate !== ""){
-    const key1 = dayKey(normStartDate, agent.id);
-    if(!continuousSchedules[key1]) continuousSchedules[key1] = [];
-    continuousSchedules[key1].push({auxKey: aux.key, startMin: startMin, endMin: 1440});
+   const targetKeys = [
+    dayKey(normStartDate, agent.id),
+    dayKey(normStartDate, agent.username.trim().toLowerCase()),
+    dayKey(normStartDate, agent.username.trim().toLowerCase().split("@")[0]),
+    dayKey(normStartDate, agent.username.trim().toLowerCase().replace("external-","").split("@")[0])
+   ];
 
-    const key2 = dayKey(normEndDate, agent.id);
-    if(!continuousSchedules[key2]) continuousSchedules[key2] = [];
-    continuousSchedules[key2].push({auxKey: aux.key, startMin: 0, endMin: realEndMin});
-    count++;
-   } else if(realEndMin <= startMin && endMin > 0){
-    const key1 = dayKey(normStartDate, agent.id);
-    if(!continuousSchedules[key1]) continuousSchedules[key1] = [];
-    continuousSchedules[key1].push({auxKey: aux.key, startMin: startMin, endMin: 1440});
-
-    const day2Date = calculateNextDate(normStartDate);
-    const key2 = dayKey(day2Date, agent.id);
-    if(!continuousSchedules[key2]) continuousSchedules[key2] = [];
-    continuousSchedules[key2].push({auxKey: aux.key, startMin: 0, endMin: endMin});
-    count++;
-   } else {
-    const keySame = dayKey(normStartDate, agent.id);
-    if(!continuousSchedules[keySame]) continuousSchedules[keySame] = [];
-    continuousSchedules[keySame].push({auxKey: aux.key, startMin: startMin, endMin: realEndMin});
-    count++;
-   }
+   targetKeys.forEach(kSame => {
+    if(!continuousSchedules[kSame]) continuousSchedules[kSame] = [];
+    continuousSchedules[kSame].push({auxKey: aux.key, startMin: startMin, endMin: realEndMin});
+   });
+   count++;
   }
  }
 
@@ -2143,7 +2130,7 @@ document.getElementById("historyDate").value=today();
   if(savedUserId){
    let found = users.find(x => x.id === savedUserId || x.username.toLowerCase() === savedUserId.toLowerCase() || (x.email && x.email.toLowerCase() === savedUserId.toLowerCase()));
    if(!found && (savedUserId === "admin_1" || savedUserId.toLowerCase() === "wfm@coindcx.com")){
-    found = {id:"admin_1", name:"WFM Admin", username:"wfm@coindcx.com", email:"wfm@coindcx.com", password:"Admin@007", role:"admin", agency:"Internal", unit:"WFM", department:"WFM", queue:"All", shift:"09:00-18:00", requirePasswordReset:false};
+    found = {id:"admin_1", name:"WFM Admin", username:"wfm@coindcx.com", email:"wfm@coindcx.com", password:"Admin@007", role:"admin", agency:"Internal", unit:"WFM", queue:"All", shift:"09:00-18:00", requirePasswordReset:false};
    }
    if(found && !found.requirePasswordReset){
     currentUser = found;
