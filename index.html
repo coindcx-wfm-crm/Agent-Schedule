@@ -12,7 +12,7 @@ button,input,select{font:inherit}
 button{cursor:pointer;border:0}
 .hidden{display:none!important}
 
-/* ENTERPRISE COINDCX CRM LOGIN SCREEN (CENTERED LAYOUT) */
+/* ENTERPRISE COINDCX CRM LOGIN SCREEN */
 .login-screen{
   min-height:100vh;
   display:flex;
@@ -638,11 +638,20 @@ function saveAll(){
  safeStorage.setItem("wfm_system_roles",JSON.stringify(systemRoles));
 }
 
+function syncStorageData(){
+ users = __safeParse(safeStorage.getItem("wfm_users"), users);
+ continuousSchedules = __safeParse(safeStorage.getItem("wfm_continuous_schedules"), continuousSchedules);
+ grid15mSchedules = __safeParse(safeStorage.getItem("wfm_grid15m_schedules"), grid15mSchedules);
+ auxLogs = __safeParse(safeStorage.getItem("wfm_aux_logs"), auxLogs);
+ systemRoles = __safeParse(safeStorage.getItem("wfm_system_roles"), systemRoles);
+}
+
 document.addEventListener("mousedown",()=>isMouseDown=true);
 document.addEventListener("mouseup",()=>isMouseDown=false);
 
 window.addEventListener("storage", (e) => {
- if(e.key === "wfm_live_agent_status" || e.key === "wfm_aux_logs"){
+ if(e.key === "wfm_live_agent_status" || e.key === "wfm_aux_logs" || e.key === "wfm_continuous_schedules"){
+  syncStorageData();
   if(currentUser && isManagerOrAdmin()){
    renderDashboard();
    renderAttendance();
@@ -677,6 +686,7 @@ function normalizeDateStr(dateStr) {
 
 /* STRICT ADMIN-SET PASSWORD LOGIN VERIFICATION */
 function login(){
+ syncStorageData();
  const uInput = document.getElementById("loginUser").value.trim();
  const pInput = document.getElementById("loginPass").value.trim();
  const u = uInput.toLowerCase();
@@ -757,6 +767,7 @@ function submitFirstLoginChange(){
 }
 
 function initializeAppView(){
+ syncStorageData();
  document.getElementById("loginScreen").classList.add("hidden");
  document.getElementById("app").classList.remove("hidden");
  
@@ -929,7 +940,21 @@ function changeActiveAux(key, preservedStartTime){
  if(currentUser){
   safeStorage.setItem("wfm_user_aux_state_" + currentUser.id, JSON.stringify({ auxKey: key, startTime: auxStartTime }));
   let liveStatus = JSON.parse(safeStorage.getItem("wfm_live_agent_status") || "{}");
-  liveStatus[currentUser.id] = { auxKey: key, startTime: auxStartTime, userRole: currentUser.role, username: currentUser.username, email: currentUser.email, name: currentUser.name };
+  
+  let firstAvailRecorded = liveStatus[currentUser.id]?.firstAvailableTime;
+  if(key === "available" && !firstAvailRecorded){
+   firstAvailRecorded = auxStartTime;
+  }
+
+  liveStatus[currentUser.id] = { 
+   auxKey: key, 
+   startTime: auxStartTime, 
+   firstAvailableTime: firstAvailRecorded,
+   userRole: currentUser.role, 
+   username: currentUser.username, 
+   email: currentUser.email, 
+   name: currentUser.name 
+  };
   safeStorage.setItem("wfm_live_agent_status", JSON.stringify(liveStatus));
  }
  const a = auxByKey(key);
@@ -941,6 +966,7 @@ function changeActiveAux(key, preservedStartTime){
 }
 
 function logAuxSession(userId, date, auxKey, start, end, durationSec){
+ syncStorageData();
  const key=date+"_"+userId;
  if(!auxLogs[key]) auxLogs[key]=[];
  auxLogs[key].push({ auxKey, startTime: new Date(start).toLocaleTimeString("en-IN", {hour12:false}), endTime: new Date(end).toLocaleTimeString("en-IN", {hour12:false}), durationSec: Math.round(durationSec) });
@@ -1000,6 +1026,7 @@ function getAgentIdentifiers(agent) {
   if(agent.username && u.username && u.username.toLowerCase() === agent.username.toLowerCase()) return true;
   if(agent.email && u.email && u.email.toLowerCase() === agent.email.toLowerCase()) return true;
   if(agent.username && u.username && u.username.toLowerCase().replace("external-","").split("@")[0] === agent.username.toLowerCase().replace("external-","").split("@")[0]) return true;
+  if(agent.name && u.name && u.name.toLowerCase() === agent.name.toLowerCase()) return true;
   return false;
  });
 
@@ -1029,6 +1056,7 @@ function getAgentIdentifiers(agent) {
 }
 
 function getAgentBlocks(agentId, date){
+ syncStorageData();
  const agent = users.find(u => u.id === agentId || u.username === agentId || u.email === agentId) || currentUser;
  const ids = getAgentIdentifiers(agent || {id: agentId});
  ids.add(String(agentId).toLowerCase());
@@ -1061,6 +1089,7 @@ function getAgentBlocks(agentId, date){
 }
 
 function get15mGridSchedule(agentId, date){
+ syncStorageData();
  const agent = users.find(u => u.id === agentId || u.username === agentId || u.email === agentId) || currentUser;
  const ids = getAgentIdentifiers(agent || {id: agentId});
  ids.add(String(agentId).toLowerCase());
@@ -1086,6 +1115,7 @@ function get15mGridSchedule(agentId, date){
 function timeLabel15m(i){ const h=Math.floor(i/4), m=(i%4)*15; return String(h).padStart(2,"0")+":"+String(m).padStart(2,"0");}
 
 function getAgentScheduleDates(agentId){
+ syncStorageData();
  const agent = users.find(u => u.id === agentId || u.username === agentId || u.email === agentId) || currentUser;
  const ids = getAgentIdentifiers(agent || {id: agentId});
  ids.add(String(agentId).toLowerCase());
@@ -1114,6 +1144,7 @@ function getAgentScheduleDates(agentId){
 
 /* RENDER PLOTTER WITH DYNAMIC MULTI-DATE RANGE SUPPORT FOR WFM ADMIN & TEAM LEADS */
 function renderPlot(){
+ syncStorageData();
  renderTimelineHeader();
  let agents=users.filter(u=>u.role==="agent" || u.role==="team_leader");
 
