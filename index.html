@@ -12,14 +12,14 @@ button,input,select{font:inherit}
 button{cursor:pointer;border:0}
 .hidden{display:none!important}
 
-/* ENTERPRISE COINDCX CRM LOGIN SCREEN */
+/* ENTERPRISE COINDCX CRM LOGIN SCREEN (CENTERED LAYOUT) */
 .login-screen{
   min-height:100vh;
   display:flex;
   align-items:center;
-  justify-content:flex-start;
-  padding:0 8vw;
-  background: radial-gradient(circle at 80% 20%, #1e3a8a 0%, #0f172a 45%, #080d1a 100%);
+  justify-content:center;
+  padding:24px;
+  background: radial-gradient(circle at 50% 30%, #1e3a8a 0%, #0f172a 50%, #080d1a 100%);
   position:relative;
   overflow:hidden;
 }
@@ -33,9 +33,9 @@ button{cursor:pointer;border:0}
 }
 .login-brand-watermark {
   position: absolute;
-  right: 8vw;
-  top: 10vh;
-  font-size: 64px;
+  right: 6vw;
+  top: 6vh;
+  font-size: 48px;
   font-weight: 900;
   letter-spacing: -1.5px;
   color: #ffffff;
@@ -43,16 +43,16 @@ button{cursor:pointer;border:0}
   text-shadow: 0 10px 30px rgba(0,0,0,0.5);
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 14px;
 }
 .login-brand-watermark .coindcx-blue { color: #ffffff; }
 .login-brand-watermark .coindcx-red { color: #f97316; }
 .login-brand-watermark span.sub-badge {
-  font-size: 20px;
+  font-size: 16px;
   font-weight: 600;
   color: #60a5fa;
   background: rgba(37, 99, 235, 0.2);
-  padding: 4px 14px;
+  padding: 4px 12px;
   border-radius: 999px;
   border: 1px solid rgba(96, 165, 250, 0.3);
   letter-spacing: 0;
@@ -63,10 +63,10 @@ button{cursor:pointer;border:0}
   background:#ffffff;
   border-radius:20px;
   padding:36px;
-  box-shadow:0 25px 60px rgba(0, 0, 0, 0.45);
+  box-shadow:0 25px 60px rgba(0, 0, 0, 0.5);
   position:relative;
   z-index:10;
-  border:1px solid rgba(255,255,255,0.1);
+  border:1px solid rgba(255,255,255,0.15);
 }
 
 .coindcx-text-logo {
@@ -203,7 +203,7 @@ button{cursor:pointer;border:0}
 </head>
 <body>
 
-<!-- LOGIN SCREEN WITH COINDCX DUAL-COLOR LOGO BRANDING -->
+<!-- LOGIN SCREEN WITH CENTERED CARD LAYOUT -->
 <section id="loginScreen" class="login-screen">
  <div class="login-brand-watermark">
   <span class="coindcx-blue">Coin</span><span class="coindcx-red">DCX</span> <span class="sub-badge">WFM CRM</span>
