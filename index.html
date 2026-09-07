@@ -1764,6 +1764,20 @@ function matchLiveStatusObj(liveStatus, agent) {
  }) || null;
 }
 
+/* FORMATTER TO GUARANTEE VALID HH:MM:SS TIMESTAMPS IN ATTENDANCE LOGS */
+function formatTimeDisplay(rawVal) {
+ if(!rawVal) return "N/A";
+ if(typeof rawVal === "number") {
+  return new Date(rawVal).toLocaleTimeString("en-IN", {hour12:false});
+ }
+ let str = String(rawVal).trim();
+ if(str.length >= 5 && str.includes(":")) return str;
+ if(!isNaN(str) && parseFloat(str) > 100000) {
+  return new Date(parseFloat(str)).toLocaleTimeString("en-IN", {hour12:false});
+ }
+ return str || "N/A";
+}
+
 /* REAL-TIME DYNAMIC REPORTING DASHBOARD UPDATE WITH REAL-TIME TIMER DISPLAY */
 function renderDashboard(){
  if(!currentUser||!isManagerOrAdmin())return;
@@ -1878,7 +1892,7 @@ function renderAttendance(){
 
    if(firstAvailTime === "N/A" && date === today() && (agentLiveAux === "available" || liveObj?.firstAvailableTime)) {
     const tVal = liveObj?.firstAvailableTime || agentLiveTime;
-    if(tVal) firstAvailTime = new Date(tVal).toLocaleTimeString("en-IN", {hour12:false});
+    if(tVal) firstAvailTime = formatTimeDisplay(tVal);
    }
 
    let offlineLogs = logs.filter(l => l.auxKey === "offline" || l.auxKey === "unavailable");
@@ -1886,7 +1900,7 @@ function renderAttendance(){
    let lastOfflineTime = "Active / In Session";
    
    if(lastOfflineLog && lastOfflineLog.endTime){ 
-    lastOfflineTime = lastOfflineLog.endTime; 
+    lastOfflineTime = formatTimeDisplay(lastOfflineLog.endTime); 
    } else if(date === today() && agentLiveAux !== "offline" && agentLiveAux !== "unavailable") {
     const liveAuxObj = auxByKey(agentLiveAux);
     lastOfflineTime = `Active (${liveAuxObj?.label || 'In Session'})`;
@@ -1934,12 +1948,12 @@ function exportAttendanceCSV(){
 
    if(firstAvailTime === "N/A" && date === today() && (agentLiveAux === "available" || liveObj?.firstAvailableTime)) {
     const tVal = liveObj?.firstAvailableTime || agentLiveTime;
-    if(tVal) firstAvailTime = new Date(tVal).toLocaleTimeString("en-IN", {hour12:false});
+    if(tVal) firstAvailTime = formatTimeDisplay(tVal);
    }
 
    let offlineLogs = logs.filter(l => l.auxKey === "offline" || l.auxKey === "unavailable");
    let lastOfflineLog = offlineLogs.length > 0 ? offlineLogs[offlineLogs.length - 1] : null;
-   let lastOfflineTime = (lastOfflineLog && lastOfflineLog.endTime) ? lastOfflineLog.endTime : (date === today() ? "Active / In Session" : "N/A");
+   let lastOfflineTime = (lastOfflineLog && lastOfflineLog.endTime) ? formatTimeDisplay(lastOfflineLog.endTime) : (date === today() ? "Active / In Session" : "N/A");
 
    const dynamicShifts = getAgentDynamicShifts(a, date);
    const assignedShiftStr = (dynamicShifts && dynamicShifts.length > 0) ? dynamicShifts[0] : (a.shift || "09:00-18:00");
@@ -2171,7 +2185,7 @@ function showTab(tab){
   const el = document.getElementById(t+"Section");
   if(el) el.classList.toggle("hidden", t!==tab);
   const btn = document.getElementById(t+"Tab");
-  if(btn) btn.classList.toggle("active", t!==tab);
+  if(btn) btn.classList.toggle("active", t===tab);
  });
  if(tab==="plot")renderPlot();
  if(tab==="agent")renderAgentHistory();
