@@ -2060,16 +2060,19 @@ function getRoleObj(roleKey){
  return systemRoles.find(r => r.key === roleKey) || {key:roleKey, label:roleKey, accessMode:(roleKey==="admin"?"write":"agent")};
 }
 
+/* ROBUST WRITE ADMIN EVALUATOR ACCEPTING ALL ADMIN ROLE VARIATIONS */
 function isWriteAdmin(){
  if(!currentUser) return false;
- if(currentUser.role === "admin" || currentUser.role === "wfm_admin") return true;
+ const rKey = String(currentUser.role || "").toLowerCase();
+ if(rKey === "admin" || rKey === "wfm_admin" || rKey === "wfm admin") return true;
  const r = getRoleObj(currentUser.role);
  return r.canEdit || r.canAdmin || r.accessMode === "write";
 }
 
 function isManagerOrAdmin(){
  if(!currentUser) return false;
- if(currentUser.role === "admin" || currentUser.role === "team_leader" || currentUser.role === "wfm_admin") return true;
+ const rKey = String(currentUser.role || "").toLowerCase();
+ if(rKey === "admin" || rKey === "team_leader" || rKey === "team leader" || rKey === "wfm_admin" || rKey === "wfm admin") return true;
  const r = getRoleObj(currentUser.role);
  return r.canViewAll || r.accessMode === "read" || r.accessMode === "write";
 }
@@ -2140,7 +2143,7 @@ document.getElementById("historyDate").value=today();
   if(savedUserId){
    let found = users.find(x => x.id === savedUserId || x.username.toLowerCase() === savedUserId.toLowerCase() || (x.email && x.email.toLowerCase() === savedUserId.toLowerCase()));
    if(!found && (savedUserId === "admin_1" || savedUserId.toLowerCase() === "wfm@coindcx.com")){
-    found = {id:"admin_1", name:"WFM Admin", username:"wfm@coindcx.com", email:"wfm@coindcx.com", password:"Admin@007", role:"admin", agency:"Internal", unit:"WFM", queue:"All", shift:"09:00-18:00", requirePasswordReset:false};
+    found = {id:"admin_1", name:"WFM Admin", username:"wfm@coindcx.com", email:"wfm@coindcx.com", password:"Admin@007", role:"admin", agency:"Internal", unit:"WFM", department:"WFM", queue:"All", shift:"09:00-18:00", requirePasswordReset:false};
    }
    if(found && !found.requirePasswordReset){
     currentUser = found;
