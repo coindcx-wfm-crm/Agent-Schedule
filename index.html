@@ -1764,9 +1764,10 @@ function matchLiveStatusObj(liveStatus, agent) {
  }) || null;
 }
 
-/* REAL-TIME DYNAMIC REPORTING DASHBOARD UPDATE */
+/* REAL-TIME DYNAMIC REPORTING DASHBOARD UPDATE WITH REAL-TIME TIMER DISPLAY */
 function renderDashboard(){
  if(!currentUser||!isManagerOrAdmin())return;
+ syncStorageData();
  const date=document.getElementById("reportDate").value||today();
  const agents=users.filter(u=>u.role !== "admin" || u.id === currentUser.id);
  let liveStatus = JSON.parse(safeStorage.getItem("wfm_live_agent_status") || "{}");
@@ -1783,10 +1784,12 @@ function renderDashboard(){
   });
 
   let agentLiveAuxKey = "unavailable";
+  let liveStartTimeMs = null;
   let liveObj = matchLiveStatusObj(liveStatus, a);
 
   if(a.id === currentUser.id || (currentUser.username && a.username && a.username.toLowerCase() === currentUser.username.toLowerCase())){
    agentLiveAuxKey = currentActiveAux;
+   liveStartTimeMs = auxStartTime;
    if(date === today()){
     const currentElapsed = Math.floor((Date.now() - auxStartTime) / 1000);
     if(currentActiveAux === "available") avail += currentElapsed;
@@ -1796,6 +1799,7 @@ function renderDashboard(){
    }
   } else if(liveObj){
    agentLiveAuxKey = liveObj.auxKey || "unavailable";
+   liveStartTimeMs = liveObj.startTime;
    if(date === today() && liveObj.startTime){
     const currentElapsed = Math.floor((Date.now() - liveObj.startTime) / 1000);
     if(agentLiveAuxKey === "available") avail += currentElapsed;
@@ -1808,7 +1812,13 @@ function renderDashboard(){
   if(logs.length>0 || (date === today() && agentLiveAuxKey !== "unavailable")) online++;
 
   const currentAuxObj = auxByKey(agentLiveAuxKey);
-  rows+=`<tr><td>${esc(a.name)}</td><td>${esc(a.agency)}</td><td>${esc(a.queue)}</td><td>${esc(a.shift)}</td> <td><span class="status-dot" style="background:${currentAuxObj?.color||'#ef4444'}"></span> <b>${esc(currentAuxObj?.label||'Unavailable')}</b></td> <td>${fmt(avail)}</td><td>${fmt(brk)}</td> <td>${fmt(lnch)}</td><td>${fmt(oth)}</td></tr>`;
+  let liveTimerText = "";
+  if(date === today() && agentLiveAuxKey !== "unavailable" && liveStartTimeMs){
+   const currentElapsed = Math.max(0, Math.floor((Date.now() - liveStartTimeMs) / 1000));
+   liveTimerText = ` (${fmt(currentElapsed)})`;
+  }
+
+  rows+=`<tr><td>${esc(a.name)}</td><td>${esc(a.agency)}</td><td>${esc(a.queue)}</td><td>${esc(a.shift)}</td> <td><span class="status-dot" style="background:${currentAuxObj?.color||'#ef4444'}"></span> <b>${esc(currentAuxObj?.label||'Unavailable')}${liveTimerText}</b></td> <td>${fmt(avail)}</td><td>${fmt(brk)}</td> <td>${fmt(lnch)}</td><td>${fmt(oth)}</td></tr>`;
  });
 
  document.getElementById("dashboardKpis").innerHTML=` <div class="kpi"><b>${agents.length}</b><small>Total Tracked Users</small></div> <div class="kpi"><b>${online}</b><small>Active Users Logged</small></div> <div class="kpi"><b>${fmt(availableSec)}</b><small>Total Available Time</small></div> <div class="kpi"><b>${fmt(breakSec)}</b><small>Total Break Time</small></div>`;
@@ -1831,6 +1841,7 @@ function getDateRangeArray(startDateStr, endDateStr) {
 /* RENDER ATTENDANCE LOGS WITH HYBRID HISTORICAL + REAL-TIME SESSION RECOGNITION FOR ALL LOGGED-IN USERS */
 function renderAttendance(){
  if(!currentUser||!isManagerOrAdmin())return;
+ syncStorageData();
  let fromVal = document.getElementById("attendanceFromDate")?.value;
  let toVal = document.getElementById("attendanceToDate")?.value;
  
@@ -2160,7 +2171,7 @@ function showTab(tab){
   const el = document.getElementById(t+"Section");
   if(el) el.classList.toggle("hidden", t!==tab);
   const btn = document.getElementById(t+"Tab");
-  if(btn) btn.classList.toggle("active", t===tab);
+  if(btn) btn.classList.toggle("active", t!==tab);
  });
  if(tab==="plot")renderPlot();
  if(tab==="agent")renderAgentHistory();
