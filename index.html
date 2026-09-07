@@ -993,21 +993,38 @@ function dayKey(date,userId){return date+"_"+userId}
 function getAgentIdentifiers(agent) {
  const ids = new Set();
  if(!agent) return ids;
+
+ const matchingUsers = users.filter(u => {
+  if(!u) return false;
+  if(agent.id && u.id === agent.id) return true;
+  if(agent.username && u.username && u.username.toLowerCase() === agent.username.toLowerCase()) return true;
+  if(agent.email && u.email && u.email.toLowerCase() === agent.email.toLowerCase()) return true;
+  if(agent.username && u.username && u.username.toLowerCase().replace("external-","").split("@")[0] === agent.username.toLowerCase().replace("external-","").split("@")[0]) return true;
+  return false;
+ });
+
+ matchingUsers.forEach(u => {
+  if(u.id) ids.add(String(u.id).toLowerCase());
+  if(u.username) {
+   const uClean = u.username.trim().toLowerCase();
+   ids.add(uClean);
+   ids.add(uClean.split("@")[0]);
+   ids.add(uClean.replace("external-", ""));
+   ids.add(uClean.replace("external-", "").split("@")[0]);
+  }
+  if(u.email) {
+   const eClean = u.email.trim().toLowerCase();
+   ids.add(eClean);
+   ids.add(eClean.split("@")[0]);
+   ids.add(eClean.replace("external-", ""));
+   ids.add(eClean.replace("external-", "").split("@")[0]);
+  }
+ });
+
  if(agent.id) ids.add(String(agent.id).toLowerCase());
- if(agent.username) {
-  const uClean = agent.username.trim().toLowerCase();
-  ids.add(uClean);
-  ids.add(uClean.split("@")[0]);
-  ids.add(uClean.replace("external-", ""));
-  ids.add(uClean.replace("external-", "").split("@")[0]);
- }
- if(agent.email) {
-  const eClean = agent.email.trim().toLowerCase();
-  ids.add(eClean);
-  ids.add(eClean.split("@")[0]);
-  ids.add(eClean.replace("external-", ""));
-  ids.add(eClean.replace("external-", "").split("@")[0]);
- }
+ if(agent.username) ids.add(agent.username.trim().toLowerCase());
+ if(agent.email) ids.add(agent.email.trim().toLowerCase());
+
  return ids;
 }
 
@@ -1131,7 +1148,7 @@ function renderPlot(){
  }
 }
 
-/* RENDERS MULTI-DATE TIMELINE VIEW FOR WFM ADMIN & TEAM LEADS */
+/* RENDERS MULTI-DATE TIMELINE VIEW FOR WFM ADMIN & TEAM LEADS WITH EXACT DATE STR PASS-THROUGH FOR COPY & PASTE */
 function renderMultiDateTimelineView(agents, dateList){
  const labelsCol=document.getElementById("agentRowsContainer");
  const tracksCol=document.getElementById("timelineTracksContainer");
@@ -1141,7 +1158,7 @@ function renderMultiDateTimelineView(agents, dateList){
   agents.forEach(agent => {
    const lbl=document.createElement("div");
    lbl.className="agent-row-label";
-   lbl.innerHTML=`<div class="agent-info"><div class="agent-name">📅 ${dateStr} • ${esc(agent.name)}</div> <div class="agent-meta">${esc(agent.agency)} • ${esc(agent.queue)}</div></div> ${isWriteAdmin()?` <div style="display:flex;gap:4px"> <button class="secondary" style="padding:4px 8px;font-size:10px;font-weight:bold" onclick="copySchedule('${agent.id}')">Copy</button> <button class="primary" style="padding:4px 8px;font-size:10px;font-weight:bold" onclick="pasteSchedule('${agent.id}')">Paste</button> <button class="danger" style="padding:4px 8px;font-size:10px;font-weight:bold;background:#dc2626" onclick="clearAgentDaySchedule('${agent.id}', '${dateStr}')">Clear</button> </div>`:""}`;
+   lbl.innerHTML=`<div class="agent-info"><div class="agent-name">📅 ${dateStr} • ${esc(agent.name)}</div> <div class="agent-meta">${esc(agent.agency)} • ${esc(agent.queue)}</div></div> ${isWriteAdmin()?` <div style="display:flex;gap:4px"> <button class="secondary" style="padding:4px 8px;font-size:10px;font-weight:bold" onclick="copySchedule('${agent.id}', '${dateStr}')">Copy</button> <button class="primary" style="padding:4px 8px;font-size:10px;font-weight:bold" onclick="pasteSchedule('${agent.id}', '${dateStr}')">Paste</button> <button class="danger" style="padding:4px 8px;font-size:10px;font-weight:bold;background:#dc2626" onclick="clearAgentDaySchedule('${agent.id}', '${dateStr}')">Clear</button> </div>`:""}`;
    labelsCol.appendChild(lbl);
 
    const track=document.createElement("div");
@@ -1200,7 +1217,7 @@ function renderMultiDateTimelineView(agents, dateList){
  });
 }
 
-/* RENDERS MULTI-DATE 15-MINUTE GRID VIEW FOR WFM ADMIN & TEAM LEADS */
+/* RENDERS MULTI-DATE 15-MINUTE GRID VIEW FOR WFM ADMIN & TEAM LEADS WITH DATE STR SUPPORT */
 function renderMultiDate15mGridView(agents, dateList){
  const container=document.getElementById("grid15mContainer");
  container.innerHTML="";
@@ -1210,7 +1227,7 @@ function renderMultiDate15mGridView(agents, dateList){
  dateList.forEach(dateStr => {
   agents.forEach(agent=>{
    const ac=document.createElement("div");ac.className="agent-row-label";
-   ac.innerHTML=`<div class="agent-info"><div class="agent-name">📅 ${dateStr} • ${esc(agent.name)}</div> <div class="agent-meta">${esc(agent.agency)} • ${esc(agent.queue)}</div></div> ${isWriteAdmin()?` <div style="display:flex;gap:4px"> <button class="secondary" style="padding:4px 8px;font-size:10px;font-weight:bold" onclick="copySchedule('${agent.id}')">Copy</button> <button class="primary" style="padding:4px 8px;font-size:10px;font-weight:bold" onclick="pasteSchedule('${agent.id}')">Paste</button> </div>`:""}`;
+   ac.innerHTML=`<div class="agent-info"><div class="agent-name">📅 ${dateStr} • ${esc(agent.name)}</div> <div class="agent-meta">${esc(agent.agency)} • ${esc(agent.queue)}</div></div> ${isWriteAdmin()?` <div style="display:flex;gap:4px"> <button class="secondary" style="padding:4px 8px;font-size:10px;font-weight:bold" onclick="copySchedule('${agent.id}', '${dateStr}')">Copy</button> <button class="primary" style="padding:4px 8px;font-size:10px;font-weight:bold" onclick="pasteSchedule('${agent.id}', '${dateStr}')">Paste</button> </div>`:""}`;
    container.appendChild(ac);
    const day=get15mGridSchedule(agent.id, dateStr);
    for(let i=0;i<96;i++){
@@ -1336,22 +1353,25 @@ function deleteAuxBlock(event, agentId, date, blockIdx){
 
 function timeLabel(min){ const h=Math.floor(min/60), m=min%60; return String(h).padStart(2,"0")+":"+String(m).padStart(2,"0");}
 
-function copySchedule(agentId){
- const date=selectedDate;
- if(activePlotMode==="timeline"){ copiedScheduleBuffer={mode:"timeline", data:[...getAgentBlocks(agentId, date)]}; }
- else { copiedScheduleBuffer={mode:"grid15m", data:[...get15mGridSchedule(agentId, date)]}; }
- document.getElementById("copiedNotice").textContent=`Copied (${users.find(u=>u.id===agentId)?.name})`;
- alert(`Copied schedule from ${users.find(u=>u.id===agentId)?.name}`);
+/* ENHANCED COPY & PASTE FUNCTIONS SUPPORTING EXACT DATE STRINGS */
+function copySchedule(agentId, dateStr){
+ const date = dateStr || selectedDate;
+ if(activePlotMode==="timeline"){ copiedScheduleBuffer={mode:"timeline", date: date, data:[...getAgentBlocks(agentId, date)]}; }
+ else { copiedScheduleBuffer={mode:"grid15m", date: date, data:[...get15mGridSchedule(agentId, date)]}; }
+ const agentObj = users.find(u=>u.id===agentId || u.username===agentId);
+ document.getElementById("copiedNotice").textContent=`Copied (${agentObj?.name || 'Agent'})`;
+ alert(`Copied schedule for ${agentObj?.name || 'Agent'} on ${date}`);
 }
 
-function pasteSchedule(targetAgentId){
+function pasteSchedule(targetAgentId, dateStr){
  if(!copiedScheduleBuffer){ return alert("No schedule copied! Click 'Copy' on an agent row first."); }
- const date=selectedDate;
+ const date = dateStr || selectedDate;
  if(activePlotMode==="timeline"){ continuousSchedules[dayKey(date, targetAgentId)]=JSON.parse(JSON.stringify(copiedScheduleBuffer.data)); }
  else { grid15mSchedules[dayKey(date, targetAgentId)]=[...copiedScheduleBuffer.data]; }
  saveAll();
  renderPlot();
- alert(`Pasted schedule to ${users.find(u=>u.id===targetAgentId)?.name}`);
+ const agentObj = users.find(u=>u.id===targetAgentId || u.username===targetAgentId);
+ alert(`Pasted schedule to ${agentObj?.name || 'Agent'} on ${date}`);
 }
 
 function clearWholeDaySchedule(){
@@ -1613,7 +1633,10 @@ function processImportedMatrix(rows, fileName){
     dayKey(normStartDate, agent.id),
     dayKey(normStartDate, agent.username.trim().toLowerCase()),
     dayKey(normStartDate, agent.username.trim().toLowerCase().split("@")[0]),
-    dayKey(normStartDate, agent.username.trim().toLowerCase().replace("external-","").split("@")[0])
+    dayKey(normStartDate, agent.username.trim().toLowerCase().replace("external-","").split("@")[0]),
+    dayKey(normStartDate, username.trim().toLowerCase()),
+    dayKey(normStartDate, username.trim().toLowerCase().split("@")[0]),
+    dayKey(normStartDate, username.trim().toLowerCase().replace("external-","").split("@")[0])
    ];
 
    targetKeys.forEach(kSame => {
