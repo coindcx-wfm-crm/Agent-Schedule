@@ -1742,7 +1742,29 @@ function renderAgentHistory(){
  document.getElementById("agentUsageTable").innerHTML=rows;
 }
 
-/* REAL-TIME DYNAMIC REPORTING DASHBOARD UPDATE (LOOKS UP ALL TRACKED USERS) */
+/* ROBUST LIVE STATUS MATCHER EVALUATING BOTH DIRECT AND BIDIRECTIONAL ALIASES */
+function matchLiveStatusObj(liveStatus, agent) {
+ if(!liveStatus || !agent) return null;
+ if(liveStatus[agent.id]) return liveStatus[agent.id];
+
+ const a_u = String(agent.username || "").toLowerCase().replace("external-", "").split("@")[0];
+ const a_e = String(agent.email || "").toLowerCase().replace("external-", "").split("@")[0];
+ const a_n = String(agent.name || "").toLowerCase();
+
+ return Object.values(liveStatus).find(ls => {
+  if(!ls) return false;
+  const ls_u = String(ls.username || "").toLowerCase().replace("external-", "").split("@")[0];
+  const ls_e = String(ls.email || "").toLowerCase().replace("external-", "").split("@")[0];
+  const ls_n = String(ls.name || "").toLowerCase();
+
+  if(ls_u && a_u && (ls_u === a_u || ls_u.includes(a_u) || a_u.includes(ls_u))) return true;
+  if(ls_e && a_e && (ls_e === a_e || ls_e.includes(a_e) || a_e.includes(ls_e))) return true;
+  if(ls_n && a_n && (ls_n === a_n || ls_n.includes(a_n) || a_n.includes(ls_n))) return true;
+  return false;
+ }) || null;
+}
+
+/* REAL-TIME DYNAMIC REPORTING DASHBOARD UPDATE */
 function renderDashboard(){
  if(!currentUser||!isManagerOrAdmin())return;
  const date=document.getElementById("reportDate").value||today();
@@ -1761,7 +1783,7 @@ function renderDashboard(){
   });
 
   let agentLiveAuxKey = "unavailable";
-  let liveObj = liveStatus[a.id] || Object.values(liveStatus).find(ls => ls && (ls.username === a.username || ls.email === a.email || (ls.username && a.username && ls.username.toLowerCase().includes(a.username.toLowerCase()))));
+  let liveObj = matchLiveStatusObj(liveStatus, a);
 
   if(a.id === currentUser.id || (currentUser.username && a.username && a.username.toLowerCase() === currentUser.username.toLowerCase())){
    agentLiveAuxKey = currentActiveAux;
@@ -1831,7 +1853,7 @@ function renderAttendance(){
    let firstAvailableLog = logs.find(l => l.auxKey === "available");
    let firstAvailTime = firstAvailableLog ? firstAvailableLog.startTime : "N/A";
 
-   let liveObj = liveStatus[a.id] || Object.values(liveStatus).find(ls => ls && (ls.username === a.username || ls.email === a.email || (ls.username && a.username && ls.username.toLowerCase().includes(a.username.toLowerCase()))));
+   let liveObj = matchLiveStatusObj(liveStatus, a);
    
    let agentLiveAux = "unavailable";
    let agentLiveTime = null;
@@ -1843,8 +1865,9 @@ function renderAttendance(){
     agentLiveTime = liveObj.startTime;
    }
 
-   if(firstAvailTime === "N/A" && date === today() && agentLiveAux === "available" && agentLiveTime) {
-    firstAvailTime = new Date(agentLiveTime).toLocaleTimeString("en-IN", {hour12:false});
+   if(firstAvailTime === "N/A" && date === today() && (agentLiveAux === "available" || liveObj?.firstAvailableTime)) {
+    const tVal = liveObj?.firstAvailableTime || agentLiveTime;
+    if(tVal) firstAvailTime = new Date(tVal).toLocaleTimeString("en-IN", {hour12:false});
    }
 
    let offlineLogs = logs.filter(l => l.auxKey === "offline" || l.auxKey === "unavailable");
@@ -1886,7 +1909,7 @@ function exportAttendanceCSV(){
    let firstAvailableLog = logs.find(l => l.auxKey === "available");
    let firstAvailTime = firstAvailableLog ? firstAvailableLog.startTime : "N/A";
 
-   let liveObj = liveStatus[a.id] || Object.values(liveStatus).find(ls => ls && (ls.username === a.username || ls.email === a.email || (ls.username && a.username && ls.username.toLowerCase().includes(a.username.toLowerCase()))));
+   let liveObj = matchLiveStatusObj(liveStatus, a);
 
    let agentLiveAux = "unavailable";
    let agentLiveTime = null;
@@ -1898,8 +1921,9 @@ function exportAttendanceCSV(){
     agentLiveTime = liveObj.startTime;
    }
 
-   if(firstAvailTime === "N/A" && date === today() && agentLiveAux === "available" && agentLiveTime) {
-    firstAvailTime = new Date(agentLiveTime).toLocaleTimeString("en-IN", {hour12:false});
+   if(firstAvailTime === "N/A" && date === today() && (agentLiveAux === "available" || liveObj?.firstAvailableTime)) {
+    const tVal = liveObj?.firstAvailableTime || agentLiveTime;
+    if(tVal) firstAvailTime = new Date(tVal).toLocaleTimeString("en-IN", {hour12:false});
    }
 
    let offlineLogs = logs.filter(l => l.auxKey === "offline" || l.auxKey === "unavailable");
