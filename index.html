@@ -211,7 +211,6 @@ function login(){
   }
 
   currentUser = found; 
-  // Bind system session directly to the normalized user username/ID
   safeStorage.setItem("wfm_current_user_id", currentUser.username.toLowerCase()); 
   safeSession.setItem("wfm_current_user", currentUser.username.toLowerCase());
 
@@ -475,7 +474,6 @@ function resetHistoryToToday(){ document.getElementById("historyDate").value=tod
 
 function dayKey(date,userId){ return date+"_"+String(userId).toLowerCase();}
 
-/* UNIFIED USER IDENTIFIER Scanner MATCHING SCHEDULE KEYS ACROSS ALL LOGINS */
 function getAgentIdentifiers(agent) { 
   const ids = new Set(); 
   if(!agent) return ids;
@@ -1014,6 +1012,7 @@ function matchAuxCode(rawVal) {
   return ALL_AUX.find(a=>a.key==="available");
 }
 
+/* IMPORT MATRIX WITH OVERLAP DEDUPLICATION & TIME COLLISION PREVENTER */
 function processImportedMatrix(rows, fileName){ 
   if(!rows || rows.length < 2) { alert("The uploaded file contains no data rows."); return; } 
   let count = 0;  
@@ -1048,6 +1047,9 @@ function processImportedMatrix(rows, fileName){
   if(idxAux === -1) idxAux = 3; 
   if(idxStartTime === -1) idxStartTime = 4; 
   if(idxEndTime === -1) idxEndTime = 5;
+
+  // Track cleared agent-dates to reset schedules once per imported date/agent pair
+  const clearedKeys = new Set();
 
   for(let i = 1; i < rows.length; i++){  
     let cols = rows[i];  
@@ -1122,21 +1124,36 @@ function processImportedMatrix(rows, fileName){
     const realEndMin = (endMin === 0 && startMin > 0) ? 1440 : endMin;
 
     if(aux){   
-      const targetKeys = [    
-        dayKey(normStartDate, agent.id),    
-        dayKey(normStartDate, agent.username.trim().toLowerCase()),    
-        dayKey(normStartDate, agent.username.trim().toLowerCase().split("@")[0]),    
-        dayKey(normStartDate, agent.username.trim().toLowerCase().replace("external-","").split("@")[0]),    
-        dayKey(normStartDate, username.trim().toLowerCase()),    
-        dayKey(normStartDate, username.trim().toLowerCase().split("@")[0]),    
-        dayKey(normStartDate, username.trim().toLowerCase().replace("external-","").split("@")[0])   
-      ];
+      // Unified storage key tied directly to normalized user ID
+      const mainKey = dayKey(normStartDate, agent.id);
 
-      targetKeys.forEach(kSame => {    
-        if(!continuousSchedules[kSame]) continuousSchedules[kSame] = [];    
-        continuousSchedules[kSame].push({auxKey: aux.key, startMin: startMin, endMin: realEndMin});   
-      });   
-      count++;  
+      // Clear existing schedule arrays for this agent & date on first encounter
+      if (!clearedKeys.has(mainKey)) {
+        continuousSchedules[mainKey] = [];
+        grid15mSchedules[mainKey] = Array(96).fill("");
+        clearedKeys.add(mainKey);
+      }
+
+      const existingBlocks = continuousSchedules[mainKey];
+
+      // Time collision check to avoid overlapping schedule blocks
+      const hasCollision = existingBlocks.some(b => 
+        (startMin < b.endMin && realEndMin > b.startMin)
+      );
+
+      if (!hasCollision) {
+        existingBlocks.push({ auxKey: aux.key, startMin: startMin, endMin: realEndMin });
+
+        // Update 15-minute grid representation without collision conflicts
+        const grid15m = grid15mSchedules[mainKey];
+        const startSlot = Math.floor(startMin / 15);
+        const endSlot = Math.min(96, Math.ceil(realEndMin / 15));
+        for (let slot = startSlot; slot < endSlot; slot++) {
+          grid15m[slot] = aux.key;
+        }
+
+        count++;
+      }
     } 
   }
 
@@ -1144,7 +1161,7 @@ function processImportedMatrix(rows, fileName){
   populateFilters(); 
   renderAdmin(); 
   renderPlot(); 
-  alert(`Successfully imported ${count} schedule entries from ${fileName}! Schedules have been plotted across their target dates.`);
+  alert(`Successfully imported ${count} schedule entries from ${fileName}! Schedules have been plotted without overlaps.`);
 }
 
 function renderAgentHistory(){ 
