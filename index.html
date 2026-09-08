@@ -105,6 +105,7 @@ function saveAll(){
 
 function syncStorageData(){ 
   users = __safeParse(safeStorage.getItem("wfm_users"), users); 
+  if(!users || users.length === 0){ users = defaultUsers; }
   continuousSchedules = __safeParse(safeStorage.getItem("wfm_continuous_schedules"), continuousSchedules); 
   grid15mSchedules = __safeParse(safeStorage.getItem("wfm_grid15m_schedules"), grid15mSchedules); 
   auxLogs = __safeParse(safeStorage.getItem("wfm_aux_logs"), auxLogs); 
@@ -153,8 +154,8 @@ function normalizeDateStr(dateStr) {
 /* ACCOUNT & USERNAME SPECIFIC LOGIN VERIFICATION */
 function login(){ 
   syncStorageData(); 
-  const uInput = document.getElementById("loginUser").value.trim(); 
-  const pInput = document.getElementById("loginPass").value.trim(); 
+  const uInput = (document.getElementById("loginUser")?.value || "").trim(); 
+  const pInput = (document.getElementById("loginPass")?.value || "").trim(); 
   const u = uInput.toLowerCase(); 
   if(!uInput || !pInput){ document.getElementById("loginError").textContent = "Please enter both email/username and password."; return; } 
   document.getElementById("loginError").textContent = "";
@@ -1640,7 +1641,7 @@ function applyPermissions(){
   document.getElementById("attendanceTab").classList.toggle("hidden", !viewAll);
 }
 
-showTab(tab){ 
+function showTab(tab){ 
   ["plot","agent","dashboard","attendance","admin","settings"].forEach(t=>{  
     const el = document.getElementById(t+"Section");  
     if(el) el.classList.toggle("hidden", t!==tab);  
