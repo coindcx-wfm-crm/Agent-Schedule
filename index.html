@@ -25,7 +25,7 @@
  <div class="aux-dropdown-container">  <div class="aux-status-pill" onclick="toggleAuxDropdown()">   <span id="pillDot" class="status-dot" style="background:#ef4444"></span>   <span id="pillText">Unavailable</span>   <span id="pillTimer" style="margin-left:4px">00:00:00</span>  </div>  <div id="auxDropdownMenu" class="aux-dropdown-menu hidden">   <input id="auxSearchInput" class="aux-search-input" placeholder="🔍 Search AUX status..." oninput="filterAuxDropdown()">   <div id="auxOptionList" class="aux-option-list"></div>  </div> </div> <button class="secondary" style="margin-left:8px" onclick="logout()">Logout</button></header>
 <main class="container"> <div class="tabs">  <button id="plotTab" class="tab active" onclick="showTab('plot')">Schedule Plotter</button>  <button id="agentTab" class="tab" onclick="showTab('agent')">My Status & History</button>  <button id="dashboardTab" class="tab managerOnly" onclick="showTab('dashboard')">Reporting Dashboard</button>  <button id="attendanceTab" class="tab managerOnly" onclick="showTab('attendance')">Agent Attendance Logs</button>  <button id="adminTab" class="tab adminOnly" onclick="showTab('admin')">Admin</button>  <button id="settingsTab" class="tab adminOnly" onclick="showTab('settings')">Settings</button> </div>
  <!-- PLOTTER --> <section id="plotSection">  <div class="toolbar">   <label class="managerOnly" style="font-size:13px;font-weight:700">From Date:</label>   <input id="scheduleFromDate" class="managerOnly" type="date" onchange="renderPlot()" oninput="renderPlot()">   <label class="managerOnly" style="font-size:13px;font-weight:700">To Date:</label>   <input id="scheduleToDate" class="managerOnly" type="date" onchange="renderPlot()" oninput="renderPlot()">      <input id="scheduleDate" class="hidden" type="date" onchange="renderPlot()">      <input id="searchAgent" class="managerOnly" placeholder="Search agent..." oninput="renderPlot()">   <select id="agencyFilter" class="managerOnly" onchange="renderPlot()"><option value="">All Agencies</option></select>   <select id="queueFilter" class="managerOnly" onchange="renderPlot()"><option value="">All Queues</option></select>   <select id="plotModeSelect" class="managerOnly" onchange="switchPlotMode()" style="font-weight:700;border:1px solid #2563eb;color:#2563eb">    <option value="timeline">24-Hour Continuous Timeline View</option>    <option value="grid15m">15-Minute Grid Interval Plotter View</option>   </select>   <input type="file" id="excelFileInput" accept=".xlsx, .xls, .csv" class="hidden" onchange="handleExcelImport(event)">   <button class="secondary managerOnly" onclick="downloadSampleTemplate()">📥 Download Sample Template (.csv)</button>   <button class="secondary adminOnly" onclick="document.getElementById('excelFileInput').click()">📤 Import Excel/CSV</button>   <button class="primary adminOnly" onclick="addAgent()">+ Add Agent</button>   <button class="danger adminOnly" onclick="clearWholeDaySchedule()" style="background:#dc2626">🗑️ Clear Active Date (All Agents)</button>   <button class="secondary adminOnly" onclick="clearSelectedAgent()">Clear Particular Agent Schedule</button>   <button class="danger adminOnly" onclick="clearEntireDatabaseSchedules()" style="background:#991b1b">⚠️ Clear ALL System Schedules (All Dates)</button>   <button class="secondary adminOnly" onclick="saveSchedules()">Save Schedule</button>   <button class="secondary managerOnly" onclick="exportCSV()">Export AUX CSV</button>  </div>
-  <div class="card managerOnly">   <b>Schedule Plotter Tools:</b>   <div id="modeInstructionText" style="font-size:12px;color:#667085;margin-top:4px">    • <b>Drag from Legend:</b> Drag any AUX code onto the 24-hour timeline to create a block.<br>    • <b>Drag Plotted Blocks:</b> Drag an existing block horizontally to reposition it. Movement snaps to 15 minutes.<br>    • <b>Double-click:</b> Choose exact AUX/start/end time.<br>    • <b>15-minute view:</b> Click/drag across cells to paint an AUX code; right-click to clear.<br>    • <b>Excel:</b> Upload multiple agents/dates/AUX rows using the sample template. Overnight shifts (e.g. 23:00 to 08:00) automatically split across calendar dates.   </div>   <div style="font-size:12px;font-weight:700;margin-top:10px">Work & Leave AUX Codes (Drag or click to plot):</div>   <div class="legend" id="legend" style="margin-top:6px"></div>  </div>
+  <div class="card managerOnly">   <b>Schedule Plotter Tools:</b>   <div id="modeInstructionText" style="font-size:12px;color:#667085;margin-top:4px">    • <b>Drag from Legend:</b> Drag any AUX code onto the 24-hour timeline to create a block.<br>    • <b>Drag Plotted Blocks:</b> Drag an existing block horizontally to reposition it. Movement snaps to 15 minutes.<br>    • <b>Double-click:</b> Choose exact AUX/start/end time.<br>    • <b>15-minute view:</b> Click/drag across cells to paint an AUX code; right-click to clear.<br>    • <b>Excel:</b> Upload multiple agents/dates/AUX rows using the sample template. Overnight shifts (e.g. 23:00 to 08:00) automatically split across calendar dates cleanly.   </div>   <div style="font-size:12px;font-weight:700;margin-top:10px">Work & Leave AUX Codes (Drag or click to plot):</div>   <div class="legend" id="legend" style="margin-top:6px"></div>  </div>
   <div id="timelinePlotWrap" class="plot-wrap">   <div class="plot-grid">    <div>     <div class="agent-head-cell">      <span id="agentHeadLabel">Agent Info / All Uploaded Schedule Dates</span>      <small id="copiedNotice" style="color:#2563eb;font-weight:bold"></small>     </div>     <div id="agentRowsContainer"></div>    </div>    <div>     <div class="timeline-header" id="timelineHeader"></div>     <div id="timelineTracksContainer"></div>    </div>   </div>  </div>
   <div id="grid15mPlotWrap" class="plot-wrap hidden">   <div id="grid15mContainer" class="plot-grid-15m"></div>  </div> </section>
  <!-- MY STATUS & HISTORICAL CALENDAR --> <section id="agentSection" class="hidden">  <div class="toolbar">   <label style="font-size:13px;font-weight:700">Historical Date Filter:</label>   <input id="historyDate" type="date" onchange="renderAgentHistory()">   <button class="secondary" onclick="resetHistoryToToday()">Today</button>  </div>  <div class="agent-panel">   <div class="card">    <h2 style="margin-top:0">Live AUX Running Status</h2>    <div class="current-status">     <div><div style="color:#667085;font-size:12px">Current AUX</div><div id="currentAux" class="status-code">-</div></div>     <div style="text-align:right"><div style="color:#667085;font-size:12px">Running Duration</div><div id="currentTimer" class="status-timer">00:00:00</div></div>    </div>    <p style="font-size:12px;color:#667085">Changes made in the top-right status dropdown automatically calculate and record live session durations.</p>   </div>   <div class="card">    <h3 style="margin-top:0">Total Summary (<span id="historyDateLabel"></span>)</h3>    <div id="todaySummary"></div>   </div>  </div>  <div class="card">   <h3>Historical AUX Logs (<span id="historyLogLabel"></span>)</h3>   <div id="agentUsageTable"></div>  </div> </section>
@@ -975,7 +975,7 @@ function matchAuxCode(rawVal) {
   return ALL_AUX.find(a=>a.key==="available");
 }
 
-/* IMPORT MATRIX WITH OVERNIGHT MULTI-DATE SPLITTING (23:00 - 08:00) & OVERLAP PREVENTION */
+/* IMPORT MATRIX WITH PRE-CLEARING BATCH PASS AND EXACT MULTI-DATE OVERNIGHT SPLITTING */
 function processImportedMatrix(rows, fileName){ 
   if(!rows || rows.length < 2) { alert("The uploaded file contains no data rows."); return; } 
   let count = 0;  
@@ -1009,8 +1009,35 @@ function processImportedMatrix(rows, fileName){
   if(idxStartTime === -1) idxStartTime = 5; 
   if(idxEndTime === -1) idxEndTime = 6;
 
-  const clearedKeys = new Set();
+  // PASS 1: Pre-clear all target agent schedule dates involved in this CSV file upfront
+  for(let i = 1; i < rows.length; i++){
+    let cols = rows[i];
+    if(!cols || cols.length === 0) continue;
+    let startDate = String(cols[idxStartDate] || '').trim();
+    let endDate = String(cols[idxEndDate] || '').trim();
+    let username = String(cols[idxUsername] || '').trim();
+    if(!username || username.toLowerCase().includes('username')) continue;
+    if(!startDate) continue;
 
+    const normStartDate = normalizeDateStr(startDate);
+    const normEndDate = endDate ? normalizeDateStr(endDate) : normStartDate;
+
+    let agent = users.find(u =>    
+      u.username.trim().toLowerCase() === username.toLowerCase() ||    
+      (u.email && u.email.trim().toLowerCase() === username.toLowerCase())
+    );
+
+    let targetAgentId = agent ? agent.id : ("u_temp_" + username.toLowerCase());
+
+    continuousSchedules[dayKey(normStartDate, targetAgentId)] = [];
+    grid15mSchedules[dayKey(normStartDate, targetAgentId)] = Array(96).fill("");
+    if(normEndDate && normEndDate !== normStartDate) {
+      continuousSchedules[dayKey(normEndDate, targetAgentId)] = [];
+      grid15mSchedules[dayKey(normEndDate, targetAgentId)] = Array(96).fill("");
+    }
+  }
+
+  // PASS 2: Populate blocks with multi-date overnight spillover
   for(let i = 1; i < rows.length; i++){  
     let cols = rows[i];  
     if(!cols || cols.length === 0) continue;
@@ -1023,7 +1050,7 @@ function processImportedMatrix(rows, fileName){
     let startTime = String(cols[idxStartTime] || '').trim();  
     let endTime = String(cols[idxEndTime] || '').trim();
 
-    if(!username || username.toLowerCase().includes('username') || username.toLowerCase().includes('user')) continue;  
+    if(!username || username.toLowerCase().includes('username')) continue;  
     if(!startDate) continue;
 
     const normStartDate = normalizeDateStr(startDate);  
@@ -1031,9 +1058,7 @@ function processImportedMatrix(rows, fileName){
 
     let agent = users.find(u =>    
       u.username.trim().toLowerCase() === username.toLowerCase() ||    
-      (u.email && u.email.trim().toLowerCase() === username.toLowerCase()) ||   
-      u.username.trim().toLowerCase().split("@")[0] === username.toLowerCase().split("@")[0] ||   
-      u.username.trim().toLowerCase().replace("external-","").split("@")[0] === username.toLowerCase().replace("external-","").split("@")[0]  
+      (u.email && u.email.trim().toLowerCase() === username.toLowerCase())
     );    
 
     if(!agent){   
@@ -1093,18 +1118,7 @@ function processImportedMatrix(rows, fileName){
     let endMin = parseT(endTime, true);  
 
     if(aux){   
-      // Helper function to insert continuous schedule block without overlap
       const addBlockToDate = (targetDate, sMin, eMin) => {
-        const idsToClear = getAgentIdentifiers(agent);
-        idsToClear.forEach(idVal => {
-          const aliasKey = dayKey(targetDate, idVal);
-          if (!clearedKeys.has(aliasKey)) {
-            continuousSchedules[aliasKey] = [];
-            grid15mSchedules[aliasKey] = Array(96).fill("");
-            clearedKeys.add(aliasKey);
-          }
-        });
-
         const mainKey = dayKey(targetDate, agent.id);
         const existingBlocks = continuousSchedules[mainKey] || [];
 
@@ -1126,16 +1140,16 @@ function processImportedMatrix(rows, fileName){
         }
       };
 
-      // Check if overnight shift crosses midnight boundary (e.g., 23:00 to 08:00)
+      // Overnight shift detection (e.g., 23:00 to 08:00)
       if (endMin <= startMin && endMin > 0 && endMin !== 1440) {
-        // Block 1 on Start Date: Start time up to 24:00 (1440 min)
+        // Block 1: Evening portion on Start Date (23:00 to 24:00)
         addBlockToDate(normStartDate, startMin, 1440);
 
-        // Block 2 on Next Date: 00:00 (0 min) up to End time (e.g. 08:00 -> 480 min)
+        // Block 2: Morning spillover portion on Next Date (00:00 to 08:00)
         const nextDayDate = (normEndDate && normEndDate !== normStartDate) ? normEndDate : calculateNextDate(normStartDate);
         addBlockToDate(nextDayDate, 0, endMin);
       } else {
-        // Standard same-day shift (e.g., 07:00 to 16:00 or 15:00 to 00:00)
+        // Standard daytime shift
         addBlockToDate(normStartDate, startMin, endMin);
       }
 
@@ -1147,7 +1161,7 @@ function processImportedMatrix(rows, fileName){
   populateFilters(); 
   renderAdmin(); 
   renderPlot(); 
-  alert(`Successfully imported ${count} schedule entries from ${fileName}! Overnight shifts (e.g., 23:00–08:00) are fully plotted across dates.`);
+  alert(`Successfully imported ${count} schedule entries from ${fileName}! Overnight shifts (23:00–08:00) are fully captured across dates.`);
 }
 
 function renderAgentHistory(){ 
@@ -1626,7 +1640,7 @@ function applyPermissions(){
   document.getElementById("attendanceTab").classList.toggle("hidden", !viewAll);
 }
 
-function showTab(tab){ 
+showTab(tab){ 
   ["plot","agent","dashboard","attendance","admin","settings"].forEach(t=>{  
     const el = document.getElementById(t+"Section");  
     if(el) el.classList.toggle("hidden", t!==tab);  
