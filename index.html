@@ -478,34 +478,6 @@ function getAgentIdentifiers(agent) {
   const ids = new Set(); 
   if(!agent) return ids;
 
-  const matchingUsers = users.filter(u => {  
-    if(!u) return false;  
-    if(agent.id && u.id === agent.id) return true;  
-    if(agent.username && u.username && u.username.toLowerCase() === agent.username.toLowerCase()) return true;  
-    if(agent.email && u.email && u.email.toLowerCase() === agent.email.toLowerCase()) return true;  
-    if(agent.username && u.username && u.username.toLowerCase().replace("external-","").split("@")[0] === u.username.toLowerCase().replace("external-","").split("@")[0]) return true;  
-    if(agent.name && u.name && u.name.toLowerCase() === agent.name.toLowerCase()) return true;  
-    return false; 
-  });
-
-  matchingUsers.forEach(u => {  
-    if(u.id) ids.add(String(u.id).toLowerCase());  
-    if(u.username) {   
-      const uClean = u.username.trim().toLowerCase();   
-      ids.add(uClean);   
-      ids.add(uClean.split("@")[0]);   
-      ids.add(uClean.replace("external-", ""));   
-      ids.add(uClean.replace("external-", "").split("@")[0]);  
-    }  
-    if(u.email) {   
-      const eClean = u.email.trim().toLowerCase();   
-      ids.add(eClean);   
-      ids.add(eClean.split("@")[0]);   
-      ids.add(eClean.replace("external-", ""));   
-      ids.add(eClean.replace("external-", "").split("@")[0]);  
-    } 
-  });
-
   if(agent.id) ids.add(String(agent.id).toLowerCase()); 
   if(agent.username) ids.add(agent.username.trim().toLowerCase()); 
   if(agent.email) ids.add(agent.email.trim().toLowerCase());
@@ -517,7 +489,6 @@ function getAgentBlocks(agentId, date){
   syncStorageData(); 
   const agent = users.find(u => u.id === agentId || u.username === agentId || u.email === agentId) || currentUser; 
   const ids = getAgentIdentifiers(agent || {id: agentId}); 
-  ids.add(String(agentId).toLowerCase());
 
   let combinedBlocks = []; 
   const seen = new Set();
@@ -527,7 +498,7 @@ function getAgentBlocks(agentId, date){
     const keyUserId = key.substring(date.length + 1).toLowerCase();  
     for(let idVal of ids) {   
       if(!idVal) continue;   
-      if(keyUserId === idVal || keyUserId.includes(idVal) || idVal.includes(keyUserId)) {    
+      if(keyUserId === idVal) {    
         const blocks = continuousSchedules[key];    
         if(blocks && blocks.length > 0) {     
           blocks.forEach(b => {      
@@ -550,14 +521,13 @@ function get15mGridSchedule(agentId, date){
   syncStorageData(); 
   const agent = users.find(u => u.id === agentId || u.username === agentId || u.email === agentId) || currentUser; 
   const ids = getAgentIdentifiers(agent || {id: agentId}); 
-  ids.add(String(agentId).toLowerCase());
 
   for(let key of Object.keys(grid15mSchedules)) {  
     if(!key.startsWith(date + "_")) continue;  
     const keyUserId = key.substring(date.length + 1).toLowerCase();  
     for(let idVal of ids) {   
       if(!idVal) continue;   
-      if(keyUserId === idVal || keyUserId.includes(idVal) || idVal.includes(keyUserId)) {    
+      if(keyUserId === idVal) {    
         if(grid15mSchedules[key] && grid15mSchedules[key].some(x => x !== "")){     
           return grid15mSchedules[key];    
         }   
@@ -565,7 +535,7 @@ function get15mGridSchedule(agentId, date){
     } 
   }
 
-  const defaultKey = dayKey(date, agentId); 
+  const defaultKey = dayKey(date, agent ? agent.id : agentId); 
   if(!grid15mSchedules[defaultKey]) grid15mSchedules[defaultKey] = Array(96).fill(""); 
   return grid15mSchedules[defaultKey];
 }
@@ -576,7 +546,6 @@ function getAgentScheduleDates(agentId){
   syncStorageData(); 
   const agent = users.find(u => u.id === agentId || u.username === agentId || u.email === agentId) || currentUser; 
   const ids = getAgentIdentifiers(agent || {id: agentId}); 
-  ids.add(String(agentId).toLowerCase());
 
   const datesSet = new Set(); 
   const allKeys = Object.keys(continuousSchedules).concat(Object.keys(grid15mSchedules));
@@ -589,7 +558,7 @@ function getAgentScheduleDates(agentId){
 
     for(let idVal of ids) {   
       if(!idVal) continue;   
-      if(keyUserId === idVal || keyUserId.includes(idVal) || idVal.includes(keyUserId)) {    
+      if(keyUserId === idVal) {    
         datesSet.add(datePart);    
         break;   
       }  
@@ -609,8 +578,7 @@ function renderPlot(){
     let targetAgent = agents.find(u =>    
       u.id === currentUser.id ||    
       u.username.toLowerCase() === currentUser.username.toLowerCase() ||    
-      (u.email && currentUser.email && u.email.toLowerCase() === currentUser.email.toLowerCase()) ||   
-      u.username.toLowerCase().replace("external-","").split("@")[0] === currentUser.username.toLowerCase().replace("external-","").split("@")[0]  
+      (u.email && currentUser.email && u.email.toLowerCase() === currentUser.email.toLowerCase())  
     );  
     if(!targetAgent) targetAgent = currentUser;    
     const agentDates = getAgentScheduleDates(targetAgent.id);  
@@ -899,16 +867,13 @@ function clearSelectedAgent(){
 function clearAgentDaySchedule(agentId, dateStr){ 
   if(!isWriteAdmin())return; 
   const agent = users.find(u=>u.id===agentId || u.username===agentId || u.email===agentId); 
-  continuousSchedules[dayKey(dateStr, agentId)] = []; 
-  grid15mSchedules[dayKey(dateStr, agentId)] = Array(96).fill(""); 
   if(agent){  
     continuousSchedules[dayKey(dateStr, agent.id)] = [];  
     grid15mSchedules[dayKey(dateStr, agent.id)] = Array(96).fill("");  
-    if(agent.username){   
-      continuousSchedules[dayKey(dateStr, agent.username)] = [];   
-      grid15mSchedules[dayKey(dateStr, agent.username)] = Array(96).fill("");  
-    } 
-  } 
+  } else {
+    continuousSchedules[dayKey(dateStr, agentId)] = []; 
+    grid15mSchedules[dayKey(dateStr, agentId)] = Array(96).fill(""); 
+  }
   saveAll(); 
   renderPlot(); 
   alert(`Cleared schedule for ${agent?.name || 'Agent'} on ${dateStr}.`);
@@ -929,13 +894,11 @@ function saveSchedules(){saveAll();alert("Schedules saved successfully.");}
 
 function downloadSampleTemplate(){ 
   const sampleLines = [  
-    "Start_Date,End Date,Username,AUX_Code,Start_Time,End_Time",  
-    "2026-09-01,2026-09-01,external-syed.pasha@coindcx.com,Available,07:00,16:00",  
-    "2026-09-01,2026-09-01,external-pritam.kumar@coindcx.com,Available,15:00,00:00",  
-    "2026-09-01,2026-09-02,external-mohan.k@coindcx.com,Available,23:00,08:00",  
-    "2026-09-01,2026-09-01,external-bibekananda.bariki@coindcx.com,Week Off,07:00,16:00",  
-    "2026-09-01,2026-09-01,external-nawaz.p@coindcx.com,Planned Leave,15:00,00:00",  
-    "2026-09-01,2026-09-02,external-mohammed.roshan@coindcx.com,Comp Off,23:00,08:00" 
+    "Start_Date,End Date,Username,Queue,AUX_Code,Start_Time,End_Time",  
+    "9/7/26,9/7/26,external-syed.pasha@coindcx.com,Onboarding Ops,Available,7:00,16:00",  
+    "9/7/26,9/7/26,external-kumara.krishna@coindcx.com,Onboarding Ops,Week Off,7:00,16:00",  
+    "9/7/26,9/8/26,external-kuna.kandi@coindcx.com,Onboarding Ops,Available,23:00,8:00",  
+    "9/7/26,9/7/26,external-pritam.kumar@coindcx.com,Onboarding Ops,Available,15:00,0:00" 
   ]; 
   const sampleContent = sampleLines.join("\n"); 
   const blob = new Blob([sampleContent], {type: "text/csv;charset=utf-8"}); 
@@ -1012,12 +975,12 @@ function matchAuxCode(rawVal) {
   return ALL_AUX.find(a=>a.key==="available");
 }
 
-/* IMPORT MATRIX WITH OVERLAP DEDUPLICATION & TIME COLLISION PREVENTER */
+/* IMPORT MATRIX WITH OVERLAP DEDUPLICATION, MIDNIGHT WRAP HANDLING & TIME COLLISION PREVENTER */
 function processImportedMatrix(rows, fileName){ 
   if(!rows || rows.length < 2) { alert("The uploaded file contains no data rows."); return; } 
   let count = 0;  
   let header = rows[0].map(c => String(c || '').trim().toLowerCase().replace(/_/g, ' '));  
-  let idxStartDate = -1, idxEndDate = -1, idxUsername = -1, idxAux = -1, idxStartTime = -1, idxEndTime = -1;
+  let idxStartDate = -1, idxEndDate = -1, idxUsername = -1, idxAux = -1, idxStartTime = -1, idxEndTime = -1, idxQueue = -1;
 
   for(let j = 0; j < header.length; j++){  
     let h = header[j];  
@@ -1033,22 +996,19 @@ function processImportedMatrix(rows, fileName){
       idxStartTime = j;  
     } else if(h === 'end time' || h === 'endtime' || h === 'etime' || h === 'end'){   
       idxEndTime = j;  
-    } 
+    } else if(h.includes('queue')){
+      idxQueue = j;
+    }
   }
-
-  if(idxStartDate === -1) idxStartDate = header.findIndex(h => h.includes('start date') || h.includes('sdate')); 
-  if(idxEndDate === -1) idxEndDate = header.findIndex(h => h.includes('end date') || h.includes('edate')); 
-  if(idxStartTime === -1) idxStartTime = header.findIndex(h => h.includes('start time') || h.includes('stime')); 
-  if(idxEndTime === -1) idxEndTime = header.findIndex(h => h.includes('end time') || h.includes('etime'));
 
   if(idxStartDate === -1) idxStartDate = 0; 
   if(idxEndDate === -1) idxEndDate = 1; 
   if(idxUsername === -1) idxUsername = 2; 
-  if(idxAux === -1) idxAux = 3; 
-  if(idxStartTime === -1) idxStartTime = 4; 
-  if(idxEndTime === -1) idxEndTime = 5;
+  if(idxQueue === -1) idxQueue = 3;
+  if(idxAux === -1) idxAux = 4; 
+  if(idxStartTime === -1) idxStartTime = 5; 
+  if(idxEndTime === -1) idxEndTime = 6;
 
-  // Track cleared agent-dates to reset schedules once per imported date/agent pair
   const clearedKeys = new Set();
 
   for(let i = 1; i < rows.length; i++){  
@@ -1058,6 +1018,7 @@ function processImportedMatrix(rows, fileName){
     let startDate = String(cols[idxStartDate] || '').trim();  
     let endDate = String(cols[idxEndDate] || '').trim();  
     let username = String(cols[idxUsername] || '').trim();  
+    let queueVal = idxQueue >= 0 ? String(cols[idxQueue] || '').trim() : '';
     let auxLabel = String(cols[idxAux] || '').trim();  
     let startTime = String(cols[idxStartTime] || '').trim();  
     let endTime = String(cols[idxEndTime] || '').trim();
@@ -1066,7 +1027,6 @@ function processImportedMatrix(rows, fileName){
     if(!startDate) continue;
 
     const normStartDate = normalizeDateStr(startDate);  
-    const normEndDate = endDate ? normalizeDateStr(endDate) : normStartDate;
 
     let agent = users.find(u =>    
       u.username.trim().toLowerCase() === username.toLowerCase() ||    
@@ -1087,21 +1047,26 @@ function processImportedMatrix(rows, fileName){
         agency: "External",    
         unit: "Support",    
         department: "CS Delivery",    
-        queue: "Livechat",    
+        queue: queueVal || "Livechat",    
         shift: (startTime && endTime) ? `${startTime}-${endTime}` : "09:00-18:00",    
         requirePasswordReset: false   
       };   
       users.push(agent);  
+    } else if(queueVal) {
+      agent.queue = queueVal;
     }
 
     const aux = matchAuxCode(auxLabel);
 
-    let parseT = function(tStr) {   
-      if(!tStr && tStr !== 0) return 0;   
+    let parseT = function(tStr, isEndTime = false, startMinutes = 0) {   
+      if(!tStr && tStr !== 0) return isEndTime ? 1440 : 0;   
       let raw = String(tStr).trim().toUpperCase();   
-      if(raw === "0" || raw === "0:00" || raw === "00:00") return 0;   
+      if(raw === "0" || raw === "0:00" || raw === "00:00" || raw === "24:00") {
+        return isEndTime ? 1440 : 0;
+      }   
       if(!isNaN(raw) && parseFloat(raw) < 1) {    
-        return Math.round(parseFloat(raw) * 1440);   
+        let mins = Math.round(parseFloat(raw) * 1440);
+        return (isEndTime && mins === 0) ? 1440 : mins;
       }   
       let match = raw.match(/(\d{1,2}):(\d{2})/);   
       if (match) {    
@@ -1109,48 +1074,58 @@ function processImportedMatrix(rows, fileName){
         let m = parseInt(match[2], 10);    
         if (raw.includes("PM") && h < 12) h += 12;    
         if (raw.includes("AM") && h === 12) h = 0;    
-        return h * 60 + m;   
+        let mins = h * 60 + m;
+        return (isEndTime && mins === 0) ? 1440 : mins;
       }   
       let hOnly = raw.replace(/[^\d]/g, "");   
       if (hOnly.length >= 1 && hOnly.length <= 4) {    
         let num = parseInt(hOnly, 10);    
-        if (num <= 24) return num * 60;   
+        if (num <= 24) {
+          let mins = num * 60;
+          return (isEndTime && mins === 0) ? 1440 : mins;
+        }
       }   
-      return 0;  
+      return isEndTime ? 1440 : 0;  
     };
 
-    const startMin = parseT(startTime);  
-    let endMin = parseT(endTime);  
-    const realEndMin = (endMin === 0 && startMin > 0) ? 1440 : endMin;
+    const startMin = parseT(startTime, false);  
+    let endMin = parseT(endTime, true, startMin);  
+    
+    // Handle overnight shifts spanning into next day (e.g. 23:00 to 08:00)
+    if(endMin <= startMin && endMin > 0 && endMin !== 1440) {
+      endMin = 1440; // cap active day's shift at midnight 24:00 (1440 mins)
+    }
 
     if(aux){   
-      // Unified storage key tied directly to normalized user ID
+      // Clear legacy duplicate entries across all aliases to avoid key ghosting
+      const idsToClear = getAgentIdentifiers(agent);
+      idsToClear.forEach(idVal => {
+        const aliasKey = dayKey(normStartDate, idVal);
+        if (!clearedKeys.has(aliasKey)) {
+          continuousSchedules[aliasKey] = [];
+          grid15mSchedules[aliasKey] = Array(96).fill("");
+          clearedKeys.add(aliasKey);
+        }
+      });
+
       const mainKey = dayKey(normStartDate, agent.id);
+      const existingBlocks = continuousSchedules[mainKey] || [];
 
-      // Clear existing schedule arrays for this agent & date on first encounter
-      if (!clearedKeys.has(mainKey)) {
-        continuousSchedules[mainKey] = [];
-        grid15mSchedules[mainKey] = Array(96).fill("");
-        clearedKeys.add(mainKey);
-      }
-
-      const existingBlocks = continuousSchedules[mainKey];
-
-      // Time collision check to avoid overlapping schedule blocks
       const hasCollision = existingBlocks.some(b => 
-        (startMin < b.endMin && realEndMin > b.startMin)
+        (startMin < b.endMin && endMin > b.startMin)
       );
 
       if (!hasCollision) {
-        existingBlocks.push({ auxKey: aux.key, startMin: startMin, endMin: realEndMin });
+        existingBlocks.push({ auxKey: aux.key, startMin: startMin, endMin: endMin });
+        continuousSchedules[mainKey] = existingBlocks;
 
-        // Update 15-minute grid representation without collision conflicts
-        const grid15m = grid15mSchedules[mainKey];
+        const grid15m = grid15mSchedules[mainKey] || Array(96).fill("");
         const startSlot = Math.floor(startMin / 15);
-        const endSlot = Math.min(96, Math.ceil(realEndMin / 15));
+        const endSlot = Math.min(96, Math.ceil(endMin / 15));
         for (let slot = startSlot; slot < endSlot; slot++) {
           grid15m[slot] = aux.key;
         }
+        grid15mSchedules[mainKey] = grid15m;
 
         count++;
       }
@@ -1161,7 +1136,7 @@ function processImportedMatrix(rows, fileName){
   populateFilters(); 
   renderAdmin(); 
   renderPlot(); 
-  alert(`Successfully imported ${count} schedule entries from ${fileName}! Schedules have been plotted without overlaps.`);
+  alert(`Successfully imported ${count} schedule entries from ${fileName}! Overlaps and duplicate keys have been resolved.`);
 }
 
 function renderAgentHistory(){ 
