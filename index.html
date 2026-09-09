@@ -104,7 +104,7 @@
   <div id="grid15mPlotWrap" class="plot-wrap hidden">   <div id="grid15mContainer" class="plot-grid-15m"></div>  </div> </section>
  <!-- MY STATUS & HISTORICAL CALENDAR --> <section id="agentSection" class="hidden">  <div class="toolbar">   <label style="font-size:13px;font-weight:700">Historical Date Filter:</label>   <input id="historyDate" type="date" onchange="renderAgentHistory()">   <button class="secondary" onclick="resetHistoryToToday()">Today</button>  </div>  <div class="agent-panel">   <div class="card">    <h2 style="margin-top:0">Live AUX Running Status</h2>    <div class="current-status">     <div><div style="color:#667085;font-size:12px">Current AUX</div><div id="currentAux" class="status-code">-</div></div>     <div style="text-align:right"><div style="color:#667085;font-size:12px">Running Duration</div><div id="currentTimer" class="status-timer">00:00:00</div></div>    </div>    <p style="font-size:12px;color:#667085">Changes made in the top-right status dropdown automatically calculate and record live session durations.</p>   </div>   <div class="card">    <h3 style="margin-top:0">Total Summary (<span id="historyDateLabel"></span>)</h3>    <div id="todaySummary"></div>   </div>  </div>  <div class="card">   <h3>Historical AUX Logs (<span id="historyLogLabel"></span>)</h3>   <div id="agentUsageTable"></div>  </div> </section>
  <!-- DASHBOARD WITH EXPANDED REAL-TIME AUX TRACKING COLUMNS --> <section id="dashboardSection" class="hidden">  <div class="toolbar">   <input id="reportDate" type="date" onchange="renderDashboard()">   <button class="secondary managerOnly" onclick="exportCSV()">Export Detailed AUX Report</button>  </div>  <div id="dashboardKpis" class="kpis"></div>  <div class="card">   <h3>Agent Status Summary</h3>   <div class="table-scroll"><table class="data-table"><thead><tr>    <th>Agent</th><th>Agency</th><th>Queue</th><th>Shift</th><th>Current AUX</th>    <th>Available</th><th>Break</th><th>Lunch</th><th>Bio Break</th><th>Team Meeting</th>    <th>TL Feedback</th><th>QA Feedback</th><th>NHT Training</th><th>PKT Training</th>    <th>Training</th><th>Coaching</th><th>Unavailable</th><th>Offline</th>   </tr></thead><tbody id="dashboardBody"></tbody></table></div>  </div> </section>
- <!-- AGENT ATTENDANCE SUB-DASHBOARD --> <section id="attendanceSection" class="hidden">  <div class="card">   <div class="toolbar" style="margin-bottom:14px; gap:12px;">    <label style="font-size:13px;font-weight:700">From Date:</label>    <input id="attendanceFromDate" type="date" onchange="renderAttendance()" oninput="renderAttendance()">    <label style="font-size:13px;font-weight:700">To Date:</label>    <input id="attendanceToDate" type="date" onchange="renderAttendance()" oninput="renderAttendance()">    <input id="searchAttendanceAgent" placeholder="Search agent name/username..." oninput="renderAttendance()">    <button class="secondary managerOnly" onclick="exportAttendanceCSV()">Export Attendance CSV</button>   </div>   <h3 style="margin-top:0">Agent Daily First Login & Last Logout Logs</h3>   <div class="table-scroll"><table class="data-table"><thead><tr>    <th>Agent Name</th><th>Username / Email</th><th>Start Date</th><th>End Date</th><th>Assigned Shift</th>    <th>First Available AUX Timestamp</th><th>Last Offline AUX Timestamp</th>   </tr></thead><tbody id="attendanceBody"></tbody></table></div>  </div> </section>
+ <!-- AGENT ATTENDANCE SUB-DASHBOARD WITH ASSIGNED SHIFT AUX CODE --> <section id="attendanceSection" class="hidden">  <div class="card">   <div class="toolbar" style="margin-bottom:14px; gap:12px;">    <label style="font-size:13px;font-weight:700">From Date:</label>    <input id="attendanceFromDate" type="date" onchange="renderAttendance()" oninput="renderAttendance()">    <label style="font-size:13px;font-weight:700">To Date:</label>    <input id="attendanceToDate" type="date" onchange="renderAttendance()" oninput="renderAttendance()">    <input id="searchAttendanceAgent" placeholder="Search agent name/username..." oninput="renderAttendance()">    <button class="secondary managerOnly" onclick="exportAttendanceCSV()">Export Attendance CSV</button>   </div>   <h3 style="margin-top:0">Agent Daily First Login & Last Logout Logs</h3>   <div class="table-scroll"><table class="data-table"><thead><tr>    <th>Agent Name</th><th>Username / Email</th><th>Start Date</th><th>End Date</th><th>Assigned Shift</th><th>Assigned Shift AUX Code</th>    <th>First Available AUX Timestamp</th><th>Last Offline AUX Timestamp</th>   </tr></thead><tbody id="attendanceBody"></tbody></table></div>  </div> </section>
  <!-- ADMIN --> <section id="adminSection" class="hidden">  <div class="card">   <h3>Agent & Credential Management</h3>   <div class="table-scroll"><table class="data-table"><thead><tr>    <th>Name</th><th>Username</th><th>Email</th><th>Agency</th><th>Department</th><th>Queue</th><th>Shift</th><th>Role</th><th>Action</th>   </tr></thead><tbody id="adminBody"></tbody></table></div>  </div> </section>
  <!-- SETTINGS TAB (ROLE MANAGEMENT & PERMISSIONS CONFIGURATION) --> <section id="settingsSection" class="hidden">  <div class="card">   <h2 style="margin-top:0;margin-bottom:6px">System Role & Access Settings</h2>   <p style="color:var(--muted);font-size:13px;margin-top:0;margin-bottom:18px">    Configure end-to-end Read/Write permissions for WFM Admin, Team Leaders, Agents, and Custom System Roles.   </p>   <div style="display:grid;grid-template-columns:1fr 2fr;gap:18px">    <div style="background:#f8fafc;padding:16px;border-radius:12px;border:1px solid var(--border)">     <h3 style="margin-top:0;font-size:15px">Create New System Role</h3>     <div class="field">      <label>Role Key / ID</label>      <input id="newRoleKey" placeholder="e.g. team_leader">     </div>     <div class="field">      <label>Role Display Label</label>      <input id="newRoleLabel" placeholder="e.g. Team Leader">     </div>     <div class="field">      <label>Access Matrix Mode</label>      <select id="newRoleAccessMode">       <option value="write">Full Read & Write Access (WFM Admin)</option>       <option value="read">View & Download All Agents Access (Team Leader)</option>       <option value="agent">Self Only Access (Agent)</option>      </select>     </div>     <button class="primary" style="width:100%;margin-top:8px" onclick="createCustomRole()">+ Create & Save Role</button>    </div>    <div>     <h3 style="margin-top:0;font-size:15px">Configured Role Permissions Matrix</h3>     <div class="table-scroll">      <table class="data-table">       <thead>        <tr>         <th>Role Name</th>         <th>Role ID</th>         <th>Schedule Plotter</th>         <th>Reporting & Attendance</th>         <th>CSV / Excel Downloads</th>         <th>System Settings</th>        </tr>       </thead>       <tbody id="rolesTableBody"></tbody>      </table>     </div>    </div>   </div>  </div> </section></main></section>
 <script>
@@ -649,7 +649,6 @@ function renderPlot(){
   let agents=users.filter(u=>u.role==="agent" || u.role==="team_leader");
 
   if(currentUser && !isManagerOrAdmin()){  
-    // Filter agents list strictly to currentUser account to enforce Agent schedule isolation
     let targetAgent = agents.find(u =>    
       u.id === currentUser.id ||    
       u.username.toLowerCase() === currentUser.username.toLowerCase() ||    
@@ -1493,6 +1492,7 @@ function getDateRangeArray(startDateStr, endDateStr) {
   return dates;
 }
 
+/* RENDER ATTENDANCE LOGS WITH ASSIGNED SHIFT AUX CODE DISPLAY */
 function renderAttendance(){ 
   if(!currentUser||!isManagerOrAdmin())return; 
   syncStorageData(); 
@@ -1548,11 +1548,23 @@ function renderAttendance(){
       const dynamicShifts = getAgentDynamicShifts(a, date);   
       const assignedShiftStr = (dynamicShifts && dynamicShifts.length > 0) ? dynamicShifts[0] : (a.shift || "09:00-18:00");
 
-      rows += `<tr> <td><b>${esc(a.name)}</b></td> <td>${esc(a.username || a.email)}</td> <td>${date}</td> <td>${date}</td> <td><b>${esc(assignedShiftStr)}</b></td> <td><span style="color:#15803d;font-weight:bold">${firstAvailTime}</span></td> <td><span style="color:#b91c1c;font-weight:bold">${lastOfflineTime}</span></td> </tr>`;  
+      // Extract assigned shift AUX code for agent on this specific date
+      const agentBlocks = getAgentBlocks(a.id, date);
+      let assignedAuxLabel = "Available";
+      let assignedAuxColor = "#22c55e";
+      if (agentBlocks && agentBlocks.length > 0) {
+        const auxObj = auxByKey(agentBlocks[0].auxKey);
+        if (auxObj) {
+          assignedAuxLabel = auxObj.label;
+          assignedAuxColor = auxObj.color;
+        }
+      }
+
+      rows += `<tr> <td><b>${esc(a.name)}</b></td> <td>${esc(a.username || a.email)}</td> <td>${date}</td> <td>${date}</td> <td><b>${esc(assignedShiftStr)}</b></td> <td><span class="status-dot" style="background:${assignedAuxColor}"></span> <b>${esc(assignedAuxLabel)}</b></td> <td><span style="color:#15803d;font-weight:bold">${firstAvailTime}</span></td> <td><span style="color:#b91c1c;font-weight:bold">${lastOfflineTime}</span></td> </tr>`;  
     }); 
   });
 
-  if(!rows){ rows = `<tr><td colspan="7" style="text-align:center;color:#667085">No attendance logs found for selected date range (${fromVal} to ${toVal}).</td></tr>`; } 
+  if(!rows){ rows = `<tr><td colspan="8" style="text-align:center;color:#667085">No attendance logs found for selected date range (${fromVal} to ${toVal}).</td></tr>`; } 
   document.getElementById("attendanceBody").innerHTML = rows;
 }
 
@@ -1561,7 +1573,7 @@ function exportAttendanceCSV(){
   const toInput = document.getElementById("attendanceToDate")?.value || fromInput; 
   const dateList = getDateRangeArray(fromInput, toInput);
 
-  const lines = [["Agent Name","Username/Email","Start Date","End Date","Assigned Shift","First Available Timestamp","Last Offline Timestamp"].join(",")]; 
+  const lines = [["Agent Name","Username/Email","Start Date","End Date","Assigned Shift","Assigned Shift AUX Code","First Available Timestamp","Last Offline Timestamp"].join(",")]; 
   const agents = users.filter(u => u.role !== "admin" || u.id === currentUser.id); 
   let liveStatus = JSON.parse(safeStorage.getItem("wfm_live_agent_status") || "{}");
 
@@ -1595,7 +1607,14 @@ function exportAttendanceCSV(){
       const dynamicShifts = getAgentDynamicShifts(a, date);   
       const assignedShiftStr = (dynamicShifts && dynamicShifts.length > 0) ? dynamicShifts[0] : (a.shift || "09:00-18:00");
 
-      lines.push([a.name, a.username || a.email, date, date, assignedShiftStr, firstAvailTime, lastOfflineTime].map(csv).join(","));  
+      const agentBlocks = getAgentBlocks(a.id, date);
+      let assignedAuxLabel = "Available";
+      if (agentBlocks && agentBlocks.length > 0) {
+        const auxObj = auxByKey(agentBlocks[0].auxKey);
+        if (auxObj) assignedAuxLabel = auxObj.label;
+      }
+
+      lines.push([a.name, a.username || a.email, date, date, assignedShiftStr, assignedAuxLabel, firstAvailTime, lastOfflineTime].map(csv).join(","));  
     }); 
   });
 
