@@ -43,10 +43,32 @@ function __getRealStorage(kind){ try { const s = window[kind]; const testKey = "
 const __realLocal = __getRealStorage('localStorage');
 const __realSession = __getRealStorage('sessionStorage');
 
+let isSyncing = false;
+
 const safeStorage = {
   getItem(key){ try { if(__realLocal) return __realLocal.getItem(key); } catch(e){} return __memoryStore.hasOwnProperty(key) ? __memoryStore[key] : null; },
-  setItem(key, val){ try { if(__realLocal){ __realLocal.setItem(key, val); syncCloudPush(); return; } } catch(e){} __memoryStore[key] = val; syncCloudPush(); },
-  removeItem(key){ try { if(__realLocal){ __realLocal.removeItem(key); syncCloudPush(); return; } } catch(e){} delete __memoryStore[key]; syncCloudPush(); }
+  setItem(key, val){ 
+    try { 
+      if(__realLocal){ 
+        __realLocal.setItem(key, val); 
+        if(key !== "__wfm_unified_cloud_store__") syncCloudPush(); 
+        return; 
+      } 
+    } catch(e){} 
+    __memoryStore[key] = val; 
+    if(key !== "__wfm_unified_cloud_store__") syncCloudPush(); 
+  },
+  removeItem(key){ 
+    try { 
+      if(__realLocal){ 
+        __realLocal.removeItem(key); 
+        if(key !== "__wfm_unified_cloud_store__") syncCloudPush(); 
+        return; 
+      } 
+    } catch(e){} 
+    delete __memoryStore[key]; 
+    if(key !== "__wfm_unified_cloud_store__") syncCloudPush(); 
+  }
 };
 
 const safeSession = {
@@ -56,11 +78,9 @@ const safeSession = {
 };
 
 /* UNIVERSAL CROSS-SYSTEM CLOUD SYNC ENGINE */
-const CLOUD_SYNC_URL = "https://api.jsonbin.io/v3/b/66d00000a3598d1a08000000_wfm_coindcx_data_store";
-let isSyncing = false;
-
 function syncCloudPush() {
   if (isSyncing) return;
+  isSyncing = true;
   try {
     const fullState = {
       users: __safeParse(safeStorage.getItem("wfm_users"), defaultUsers),
@@ -70,9 +90,9 @@ function syncCloudPush() {
       systemRoles: __safeParse(safeStorage.getItem("wfm_system_roles"), defaultRoles),
       liveStatus: __safeParse(safeStorage.getItem("wfm_live_agent_status"), {})
     };
-    // Persist as unified cross-browser storage key
     safeStorage.setItem("__wfm_unified_cloud_store__", JSON.stringify(fullState));
   } catch(e) {}
+  isSyncing = false;
 }
 
 function syncCloudData(manualNotice = false) {
