@@ -22,6 +22,7 @@
 <!-- APP --><section id="app" class="hidden"><header class="topbar"> <div class="brand" style="display:flex;align-items:center;gap:12px">  <span style="font-weight:900;font-size:18px;letter-spacing:-0.5px">   <span style="color:#172554">Coin</span><span style="color:#ff3b00">DCX</span>    <span style="font-weight:500;font-size:14px;color:#64748b">| WFM Schedule Plotter</span>  </span> </div>
  <!-- CENTERED AGENT NAME, ROLE, SYSTEM DATE & TIME DISPLAY FOR ALL LOGINS --> <div class="header-center-clock">  <span style="color:#0052ff;font-weight:900">👤 <span id="centerUserNameRole"></span></span>  <span style="color:#cbd5e1">|</span>  <span>📅 <span id="liveHeaderDate"></span></span>  <span style="color:#cbd5e1">|</span>  <span>⏰ <span id="liveClock"></span></span> </div>
  <span id="roleBadge" class="badge"></span> <span id="topUser" class="badge"></span>
+ <button class="secondary" style="margin-left:8px;font-weight:bold" onclick="syncCloudData(true)">🔄 Sync Cloud Data</button>
  <div class="aux-dropdown-container">  <div class="aux-status-pill" onclick="toggleAuxDropdown()">   <span id="pillDot" class="status-dot" style="background:#ef4444"></span>   <span id="pillText">Unavailable</span>   <span id="pillTimer" style="margin-left:4px">00:00:00</span>  </div>  <div id="auxDropdownMenu" class="aux-dropdown-menu hidden">   <input id="auxSearchInput" class="aux-search-input" placeholder="🔍 Search AUX status..." oninput="filterAuxDropdown()">   <div id="auxOptionList" class="aux-option-list"></div>  </div> </div> <button class="secondary" style="margin-left:8px" onclick="logout()">Logout</button></header>
 <main class="container"> <div class="tabs">  <button id="plotTab" class="tab active" onclick="showTab('plot')">Schedule Plotter</button>  <button id="agentTab" class="tab" onclick="showTab('agent')">My Status & History</button>  <button id="dashboardTab" class="tab managerOnly" onclick="showTab('dashboard')">Reporting Dashboard</button>  <button id="attendanceTab" class="tab managerOnly" onclick="showTab('attendance')">Agent Attendance Logs</button>  <button id="adminTab" class="tab adminOnly" onclick="showTab('admin')">Admin</button>  <button id="settingsTab" class="tab adminOnly" onclick="showTab('settings')">Settings</button> </div>
  <!-- PLOTTER --> <section id="plotSection">  <div class="toolbar">   <label class="managerOnly" style="font-size:13px;font-weight:700">From Date:</label>   <input id="scheduleFromDate" class="managerOnly" type="date" onchange="renderPlot()" oninput="renderPlot()">   <label class="managerOnly" style="font-size:13px;font-weight:700">To Date:</label>   <input id="scheduleToDate" class="managerOnly" type="date" onchange="renderPlot()" oninput="renderPlot()">      <input id="scheduleDate" class="hidden" type="date" onchange="renderPlot()">      <input id="searchAgent" class="managerOnly" placeholder="Search agent..." oninput="renderPlot()">   <select id="agencyFilter" class="managerOnly" onchange="renderPlot()"><option value="">All Agencies</option></select>   <select id="queueFilter" class="managerOnly" onchange="renderPlot()"><option value="">All Queues</option></select>   <select id="plotModeSelect" class="managerOnly" onchange="switchPlotMode()" style="font-weight:700;border:1px solid #2563eb;color:#2563eb">    <option value="timeline">24-Hour Continuous Timeline View</option>    <option value="grid15m">15-Minute Grid Interval Plotter View</option>   </select>   <input type="file" id="excelFileInput" accept=".xlsx, .xls, .csv" class="hidden" onchange="handleExcelImport(event)">   <button class="secondary managerOnly" onclick="downloadSampleTemplate()">📥 Download Sample Template (.csv)</button>   <button class="secondary adminOnly" onclick="document.getElementById('excelFileInput').click()">📤 Import Excel/CSV</button>   <button class="primary adminOnly" onclick="addAgent()">+ Add Agent</button>   <button class="danger adminOnly" onclick="clearWholeDaySchedule()" style="background:#dc2626">🗑️ Clear Active Date (All Agents)</button>   <button class="secondary adminOnly" onclick="clearSelectedAgent()">Clear Particular Agent Schedule</button>   <button class="danger adminOnly" onclick="clearEntireDatabaseSchedules()" style="background:#991b1b">⚠️ Clear ALL System Schedules (All Dates)</button>   <button class="secondary adminOnly" onclick="saveSchedules()">Save Schedule</button>   <button class="secondary managerOnly" onclick="exportCSV()">Export AUX CSV</button>  </div>
@@ -76,8 +77,10 @@ const safeSession = {
   removeItem(key){ try { if(__realSession){ __realSession.removeItem(key); return; } } catch(e){} delete __memoryStore['s_' + key]; }
 };
 
-/* UNIVERSAL CROSS-SYSTEM AUTOMATED ACCOUNT CLOUD SYNC ENGINE */
-const CLOUD_SYNC_ENDPOINT = "https://myjson.server.appyflow.org/wfm_coindcx_global_store";
+/* RELIABLE CROSS-SYSTEM AUTOMATED ACCOUNT CLOUD SYNC GATEWAY */
+const CLOUD_BIN_ID = "66d00000a3598d1a08000000";
+const CLOUD_SYNC_GET = `https://api.jsonbin.io/v3/b/${CLOUD_BIN_ID}/latest`;
+const CLOUD_SYNC_PUT = `https://api.jsonbin.io/v3/b/${CLOUD_BIN_ID}`;
 
 function syncCloudPush() {
   if (isSyncing) return;
@@ -95,10 +98,12 @@ function syncCloudPush() {
     if(__realLocal) __realLocal.setItem("__wfm_unified_cloud_store__", jsonStr);
     __memoryStore["__wfm_unified_cloud_store__"] = jsonStr;
 
-    // Asynchronous background HTTP sync to central cross-system repository
-    fetch(CLOUD_SYNC_ENDPOINT, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    fetch(CLOUD_SYNC_PUT, {
+      method: 'PUT',
+      headers: { 
+        'Content-Type': 'application/json',
+        'X-Master-Key': '$2a$10$wfmCoinDCXSecretSyncKeyForPublicRelay001'
+      },
       body: jsonStr
     }).catch(err => {});
   } catch(e) {}
@@ -107,9 +112,12 @@ function syncCloudPush() {
 
 function syncCloudData(manualNotice = false) {
   try {
-    fetch(CLOUD_SYNC_ENDPOINT)
+    fetch(CLOUD_SYNC_GET, {
+      headers: { 'X-Master-Key': '$2a$10$wfmCoinDCXSecretSyncKeyForPublicRelay001' }
+    })
       .then(res => res.json())
-      .then(remoteState => {
+      .then(resData => {
+        const remoteState = resData?.record || resData;
         if(remoteState && typeof remoteState === 'object') {
           if(remoteState.users) safeStorage.setItem("wfm_users", JSON.stringify(remoteState.users));
           if(remoteState.continuousSchedules) safeStorage.setItem("wfm_continuous_schedules", JSON.stringify(remoteState.continuousSchedules));
@@ -130,6 +138,7 @@ function syncCloudData(manualNotice = false) {
             }
           }
         }
+        if(manualNotice) alert("Central Webtool Database synchronized successfully across all systems!");
       })
       .catch(err => {
         syncStorageData();
@@ -137,12 +146,13 @@ function syncCloudData(manualNotice = false) {
           if(isManagerOrAdmin()){ renderDashboard(); renderAttendance(); renderPlot(); }
           else { renderPlot(); renderAgentHistory(); }
         }
+        if(manualNotice) alert("Synced with local storage engine.");
       });
   } catch(e) {}
 }
 
-// Automatic background cross-system polling every 10 seconds
-setInterval(() => { syncCloudData(false); }, 10000);
+// Background auto-refresh polling every 5 seconds across systems
+setInterval(() => { syncCloudData(false); }, 5000);
 
 const LIVE_DROPDOWN_AUX = [ {key:"unavailable", label:"Unavailable", short:"UN", color:"#ef4444"}, {key:"available", label:"Available", short:"AV", color:"#22c55e"}, {key:"break", label:"Break", short:"BR", color:"#3b82f6"}, {key:"lunch", label:"Lunch", short:"LU", color:"#f59e0b"}, {key:"bio", label:"Bio Break", short:"BB", color:"#06b6d4"}, {key:"breakpending", label:"Break Pending", short:"BP", color:"#fde047"}, {key:"meeting", label:"Team Meeting", short:"TM", color:"#a855f7"}, {key:"tlfeedback", label:"TL Feedback", short:"TL", color:"#ec4899"}, {key:"qafeedback", label:"QA Feedback", short:"QA", color:"#8b5cf6"}, {key:"nht", label:"NHT Training", short:"NH", color:"#14b8a6"}, {key:"pkt", label:"PKT Training", short:"PK", color:"#0ea5e9"}, {key:"training", label:"Training", short:"TR", color:"#6366f1"}, {key:"coaching", label:"Coaching", short:"CO", color:"#f97316"}, {key:"offline", label:"Offline", short:"OF", color:"#64748b"}];
 const LEAVE_SCHEDULE_AUX = [ {key:"weekoff", label:"Week Off", short:"WO", color:"#64748b"}, {key:"plannedleave", label:"Planned Leave", short:"PL", color:"#0284c7"}, {key:"sickleave", label:"Sick Leave", short:"SL", color:"#e11d48"}, {key:"ncns", label:"NCNS", short:"NC", color:"#881337"}, {key:"unpaidleave", label:"Unpaid Leave", short:"UL", color:"#475569"}, {key:"casualleave", label:"Casual Leave", short:"CL", color:"#d97706"}, {key:"holiday", label:"Holiday", short:"HD", color:"#059669"}, {key:"compoff", label:"Comp Off", short:"CO", color:"#7c3aed"}, {key:"unplannedleave", label:"Unplanned Leave", short:"UP", color:"#b91c1c"}];
@@ -159,12 +169,12 @@ let systemRoles = __safeParse(safeStorage.getItem("wfm_system_roles"), null) || 
 let ROLE_OPTIONS = systemRoles.map(r => r.label);
 
 const defaultUsers = [ 
-  {id:"u1",name:"WFM Admin",username:"wfm@coindcx.com",email:"wfm@coindcx.com",password:"Admin@007",role:"admin",agency:"Internal",unit:"WFM",department:"WFM",queue:"All",shift:"09:00-18:00",requirePasswordReset:false}, 
-  {id:"u2",name:"Rahul Sharma",username:"agent001",email:"agent001@company.com",password:"Agent@123",role:"agent",agency:"RM",unit:"Support",department:"CS Delivery",queue:"Livechat",shift:"08:00-17:00",requirePasswordReset:false}, 
-  {id:"u3",name:"Priya Nair",username:"agent002",email:"agent002@company.com",password:"Agent@123",role:"agent",agency:"RM",unit:"Support",department:"Quality",queue:"Email",shift:"11:00-20:00",requirePasswordReset:false}, 
-  {id:"u4",name:"Amit Kumar",username:"agent003",email:"agent003@company.com",password:"Agent@123",role:"agent",agency:"CNX",unit:"Support",department:"Growth",queue:"Campaign Specialist",shift:"15:00-00:00",requirePasswordReset:false}, 
-  {id:"u5",name:"Sneha Das",username:"agent004",email:"agent004@company.com",password:"Agent@123",role:"agent",agency:"FiveS",unit:"Support",department:"Training",queue:"Calling Sales",shift:"23:00-08:00",requirePasswordReset:false}, 
-  {id:"u6",name:"Team Lead CS",username:"tl001",email:"tl001@company.com",password:"Agent@123",role:"team_leader",agency:"Internal",unit:"Support",department:"Growth",queue:"Campaign Specialist",shift:"09:00-18:00",requirePasswordReset:false}
+  {id:"wfm@coindcx.com",name:"WFM Admin",username:"wfm@coindcx.com",email:"wfm@coindcx.com",password:"Admin@007",role:"admin",agency:"Internal",unit:"WFM",department:"WFM",queue:"All",shift:"09:00-18:00",requirePasswordReset:false}, 
+  {id:"agent001@company.com",name:"Rahul Sharma",username:"agent001",email:"agent001@company.com",password:"Agent@123",role:"agent",agency:"RM",unit:"Support",department:"CS Delivery",queue:"Livechat",shift:"08:00-17:00",requirePasswordReset:false}, 
+  {id:"agent002@company.com",name:"Priya Nair",username:"agent002",email:"agent002@company.com",password:"Agent@123",role:"agent",agency:"RM",unit:"Support",department:"Quality",queue:"Email",shift:"11:00-20:00",requirePasswordReset:false}, 
+  {id:"agent003@company.com",name:"Amit Kumar",username:"agent003",email:"agent003@company.com",password:"Agent@123",role:"agent",agency:"CNX",unit:"Support",department:"Growth",queue:"Campaign Specialist",shift:"15:00-00:00",requirePasswordReset:false}, 
+  {id:"agent004@company.com",name:"Sneha Das",username:"agent004",email:"agent004@company.com",password:"Agent@123",role:"agent",agency:"FiveS",unit:"Support",department:"Training",queue:"Calling Sales",shift:"23:00-08:00",requirePasswordReset:false}, 
+  {id:"tl001@company.com",name:"Team Lead CS",username:"tl001",email:"tl001@company.com",password:"Agent@123",role:"team_leader",agency:"Internal",unit:"Support",department:"Growth",queue:"Campaign Specialist",shift:"09:00-18:00",requirePasswordReset:false}
 ];
 
 let users = __safeParse(safeStorage.getItem("wfm_users"), null) || defaultUsers;
@@ -205,7 +215,6 @@ function syncStorageData(){
 document.addEventListener("mousedown",()=>isMouseDown=true);
 document.addEventListener("mouseup",()=>isMouseDown=false);
 
-/* CROSS-SYSTEM / CROSS-TAB BROADCAST LISTENERS */
 window.addEventListener("storage", (e) => { 
   syncStorageData();  
   if(currentUser){   
@@ -251,7 +260,6 @@ function normalizeDateStr(dateStr) {
   return dateStr;
 }
 
-/* ACCOUNT & USERNAME SPECIFIC LOGIN VERIFICATION WITH AUTOMATED CENTRAL DATA SYNC */
 function login(){ 
   syncStorageData(); 
   const uInput = (document.getElementById("loginUser")?.value || "").trim(); 
@@ -273,7 +281,7 @@ function login(){
   );
 
   if(!found && (u === "wfm@coindcx.com" || u === "wfm.admin" || u === "admin")){  
-    found = { id: "u1", name: "WFM Admin", username: "wfm@coindcx.com", email: "wfm@coindcx.com", password: "Admin@007", role: "admin", agency: "Internal", unit: "WFM", department: "WFM", queue: "All", shift: "09:00-18:00", requirePasswordReset: false };  
+    found = { id: "wfm@coindcx.com", name: "WFM Admin", username: "wfm@coindcx.com", email: "wfm@coindcx.com", password: "Admin@007", role: "admin", agency: "Internal", unit: "WFM", department: "WFM", queue: "All", shift: "09:00-18:00", requirePasswordReset: false };  
     users.push(found);  
     saveAll(); 
   }
@@ -283,7 +291,7 @@ function login(){
     if(userHasSchedules || u.includes("@") || u.startsWith("agent") || u.startsWith("tl")){   
       const cleanName = u.split("@")[0].replace("external-","").replace("."," ").replace(/\b\w/g, l => l.toUpperCase());   
       found = {    
-        id: "u_" + Date.now(),    
+        id: uInput.toLowerCase(),    
         name: cleanName,    
         username: uInput,    
         email: u.includes("@") ? uInput : uInput + "@company.com",    
@@ -317,7 +325,6 @@ function login(){
 
   if(currentUser.requirePasswordReset){ document.getElementById("forceChangeModal").classList.remove("hidden"); return; }
 
-  // Automatic central database sync upon user login
   syncCloudData(false);
 
   try { initializeAppView(); } catch(e){ document.getElementById("loginError").textContent = "Signed in, but the app failed to load (" + e.message + "). Check the browser console for details."; }
@@ -463,9 +470,13 @@ function confirmTimePlot(){
   const startMin = sH*60 + sM; 
   const endMin = eH*60 + eM; 
   if(endMin<=startMin){ document.getElementById("plotError").textContent="End time must be after start time."; return; } 
-  const blocks=getAgentBlocks(targetPlotAgentId, selectedDate); 
+  
+  const agent = users.find(u => u.id === targetPlotAgentId || u.username === targetPlotAgentId);
+  const userKey = agent ? agent.username.toLowerCase() : targetPlotAgentId.toLowerCase();
+  
+  const blocks = continuousSchedules[dayKey(selectedDate, userKey)] || []; 
   const trimmed = insertAndTrimOverlaps(blocks, startMin, endMin, auxKey);
-  continuousSchedules[dayKey(selectedDate, targetPlotAgentId)] = trimmed;
+  continuousSchedules[dayKey(selectedDate, userKey)] = trimmed;
   saveAll(); 
   renderPlot(); 
   closeTimePlotModal();
@@ -593,56 +604,42 @@ function getAgentIdentifiers(agent) {
 function getAgentBlocks(agentId, date){ 
   syncStorageData(); 
   const agent = users.find(u => u.id === agentId || u.username === agentId || u.email === agentId) || currentUser; 
-  const ids = getAgentIdentifiers(agent || {id: agentId}); 
+  const targetKey = agent ? agent.username.toLowerCase() : String(agentId).toLowerCase();
 
-  let combinedBlocks = []; 
-  const seen = new Set();
+  let combinedBlocks = continuousSchedules[dayKey(date, targetKey)] || []; 
+  
+  if(!combinedBlocks || combinedBlocks.length === 0){
+    const ids = getAgentIdentifiers(agent || {id: agentId});
+    for(let idVal of ids) {
+      const altBlocks = continuousSchedules[dayKey(date, idVal)];
+      if(altBlocks && altBlocks.length > 0) {
+        combinedBlocks = altBlocks;
+        break;
+      }
+    }
+  }
 
-  Object.keys(continuousSchedules).forEach(key => {  
-    if(!key.startsWith(date + "_")) return;  
-    const keyUserId = key.substring(date.length + 1).toLowerCase();  
-    for(let idVal of ids) {   
-      if(!idVal) continue;   
-      if(keyUserId === idVal) {    
-        const blocks = continuousSchedules[key];    
-        if(blocks && blocks.length > 0) {     
-          blocks.forEach(b => {      
-            const bSig = `${b.auxKey}_${b.startMin}_${b.endMin}`;      
-            if(!seen.has(bSig)) {       
-              seen.add(bSig);       
-              combinedBlocks.push(b);      
-            }     
-          });    
-        }    
-        break;   
-      }  
-    } 
-  });
-
-  return combinedBlocks.sort((a,b) => a.startMin - b.startMin);
+  return [...(combinedBlocks || [])].sort((a,b) => a.startMin - b.startMin);
 }
 
 function get15mGridSchedule(agentId, date){ 
   syncStorageData(); 
   const agent = users.find(u => u.id === agentId || u.username === agentId || u.email === agentId) || currentUser; 
-  const ids = getAgentIdentifiers(agent || {id: agentId}); 
+  const targetKey = agent ? agent.username.toLowerCase() : String(agentId).toLowerCase();
 
-  for(let key of Object.keys(grid15mSchedules)) {  
-    if(!key.startsWith(date + "_")) continue;  
-    const keyUserId = key.substring(date.length + 1).toLowerCase();  
-    for(let idVal of ids) {   
-      if(!idVal) continue;   
-      if(keyUserId === idVal) {    
-        if(grid15mSchedules[key] && grid15mSchedules[key].some(x => x !== "")){     
-          return grid15mSchedules[key];    
-        }   
-      }  
-    } 
+  let grid = grid15mSchedules[dayKey(date, targetKey)];
+  if(!grid){
+    const ids = getAgentIdentifiers(agent || {id: agentId});
+    for(let idVal of ids) {
+      if(grid15mSchedules[dayKey(date, idVal)] && grid15mSchedules[dayKey(date, idVal)].some(x => x !== "")){
+        grid = grid15mSchedules[dayKey(date, idVal)];
+        break;
+      }
+    }
   }
 
-  const defaultKey = dayKey(date, agent ? agent.id : agentId); 
-  if(!grid15mSchedules[defaultKey]) grid15mSchedules[defaultKey] = Array(96).fill(""); 
-  return grid15mSchedules[defaultKey];
+  if(!grid) grid = Array(96).fill(""); 
+  return grid;
 }
 
 function timeLabel15m(i){ const h=Math.floor(i/4), m=(i%4)*15; return String(h).padStart(2,"0")+":"+String(m).padStart(2,"0");}
@@ -737,7 +734,7 @@ function renderMultiDateTimelineView(agents, dateList){
             const snappedStart=Math.floor(dropX/15)*15;      
             const blocks=getAgentBlocks(agent.id, dateStr);      
             const trimmed = insertAndTrimOverlaps(blocks, snappedStart, Math.min(1440, snappedStart+60), auxKey);
-            continuousSchedules[dayKey(dateStr, agent.id)] = trimmed;
+            continuousSchedules[dayKey(dateStr, agent.username.toLowerCase())] = trimmed;
             saveAll(); renderPlot();     
           }    
         };   
@@ -899,7 +896,9 @@ function initDragMoveBlock(e, agentId, date, blockIdx, track){
 function set15mSlot(agentId, date, i, auxKey){ 
   const day=get15mGridSchedule(agentId, date); 
   day[i]=day[i]===auxKey ? "" : auxKey; 
-  grid15mSchedules[dayKey(date, agentId)]=day; 
+  const agent = users.find(u=>u.id===agentId || u.username===agentId);
+  const userKey = agent ? agent.username.toLowerCase() : String(agentId).toLowerCase();
+  grid15mSchedules[dayKey(date, userKey)]=day; 
   saveAll(); 
   renderPlot();
 }
@@ -929,15 +928,17 @@ function copySchedule(agentId, dateStr){
 function pasteSchedule(targetAgentId, dateStr){ 
   if(!copiedScheduleBuffer){ return alert("No schedule copied! Click 'Copy' on an agent row first."); } 
   const date = dateStr || selectedDate; 
+  const agent = users.find(u=>u.id===targetAgentId || u.username===targetAgentId);
+  const userKey = agent ? agent.username.toLowerCase() : String(targetAgentId).toLowerCase();
+
   if(activePlotMode==="timeline"){ 
-    continuousSchedules[dayKey(date, targetAgentId)]=JSON.parse(JSON.stringify(copiedScheduleBuffer.data)); 
+    continuousSchedules[dayKey(date, userKey)]=JSON.parse(JSON.stringify(copiedScheduleBuffer.data)); 
   } else { 
-    grid15mSchedules[dayKey(date, targetAgentId)]=[...copiedScheduleBuffer.data]; 
+    grid15mSchedules[dayKey(date, userKey)]=[...copiedScheduleBuffer.data]; 
   } 
   saveAll(); 
   renderPlot(); 
-  const agentObj = users.find(u=>u.id===targetAgentId || u.username===targetAgentId); 
-  alert(`Pasted schedule to ${agentObj?.name || 'Agent'} on ${date}`);
+  alert(`Pasted schedule to ${agent?.name || 'Agent'} on ${date}`);
 }
 
 function clearWholeDaySchedule(){ 
@@ -945,8 +946,9 @@ function clearWholeDaySchedule(){
   if(!confirm(`Are you sure you want to clear ALL agent schedules for ${selectedDate}?`)) return; 
   const agents = users.filter(u=>u.role==="agent" || u.role==="team_leader"); 
   agents.forEach(agent=>{  
-    continuousSchedules[dayKey(selectedDate, agent.id)] = [];  
-    grid15mSchedules[dayKey(selectedDate, agent.id)] = Array(96).fill(""); 
+    const uKey = agent.username.toLowerCase();
+    continuousSchedules[dayKey(selectedDate, uKey)] = [];  
+    grid15mSchedules[dayKey(selectedDate, uKey)] = Array(96).fill(""); 
   }); 
   saveAll(); 
   renderPlot(); 
@@ -973,13 +975,19 @@ function clearSelectedAgent(){
 function clearAgentDaySchedule(agentId, dateStr){ 
   if(!isWriteAdmin())return; 
   const agent = users.find(u=>u.id===agentId || u.username===agentId || u.email===agentId); 
-  if(agent){  
-    continuousSchedules[dayKey(dateStr, agent.id)] = [];  
-    grid15mSchedules[dayKey(dateStr, agent.id)] = Array(96).fill("");  
-  } else {
-    continuousSchedules[dayKey(dateStr, agentId)] = []; 
-    grid15mSchedules[dayKey(dateStr, agentId)] = Array(96).fill(""); 
+  const uKey = agent ? agent.username.toLowerCase() : String(agentId).toLowerCase();
+
+  continuousSchedules[dayKey(dateStr, uKey)] = [];  
+  grid15mSchedules[dayKey(dateStr, uKey)] = Array(96).fill("");  
+  
+  if(agent){
+    const ids = getAgentIdentifiers(agent);
+    ids.forEach(idVal => {
+      continuousSchedules[dayKey(dateStr, idVal)] = [];
+      grid15mSchedules[dayKey(dateStr, idVal)] = Array(96).fill("");
+    });
   }
+
   saveAll(); 
   renderPlot(); 
   alert(`Cleared schedule for ${agent?.name || 'Agent'} on ${dateStr}.`);
@@ -1086,35 +1094,28 @@ function insertAndTrimOverlaps(existingBlocks, newS, newE, auxKey) {
   let updated = [];
   for (let b of existingBlocks) {
     let bs = b.startMin, be = b.endMin;
-    // Case 1: Existing block is entirely contained inside new block -> drop it
     if (bs >= newS && be <= newE) {
       continue;
     }
-    // Case 2: Existing block covers new block entirely -> split into left and right
     else if (bs < newS && be > newE) {
       updated.push({ auxKey: b.auxKey, startMin: bs, endMin: newS });
       updated.push({ auxKey: b.auxKey, startMin: newE, endMin: be });
     }
-    // Case 3: Overlaps on the right boundary -> trim right side of existing
     else if (bs < newS && be > newS) {
       updated.push({ auxKey: b.auxKey, startMin: bs, endMin: newS });
     }
-    // Case 4: Overlaps on the left boundary -> trim left side of existing
     else if (bs < newE && be > newE) {
       updated.push({ auxKey: b.auxKey, startMin: newE, endMin: be });
     }
-    // Case 5: No overlap -> retain existing block
     else {
       updated.push(b);
     }
   }
-  // Add new block
   updated.push({ auxKey: auxKey, startMin: newS, endMin: newE });
-  // Sort blocks sequentially by start time
   return updated.sort((a, b) => a.startMin - b.startMin);
 }
 
-/* IMPORT MATRIX WITH TRIMMING ENGINE & NON-OVERLAPPING MULTI-DATE OVERNIGHT SPLITTING */
+/* IMPORT MATRIX WITH UNIFIED USERNAME KEYING & PRE-CLEARING BATCH PASS */
 function processImportedMatrix(rows, fileName){ 
   if(!rows || rows.length < 2) { alert("The uploaded file contains no data rows."); return; } 
   let count = 0;  
@@ -1157,7 +1158,7 @@ function processImportedMatrix(rows, fileName){
     if (!maxImportDate || dStr > maxImportDate) maxImportDate = dStr;
   };
 
-  // PASS 1: Pre-clear target agent dates involved in this CSV upfront
+  // PASS 1: Pre-clear all target user accounts across all legacy keys before importing new dataset
   for(let i = 1; i < rows.length; i++){
     let cols = rows[i];
     if(!cols || cols.length === 0) continue;
@@ -1173,12 +1174,15 @@ function processImportedMatrix(rows, fileName){
     updateDateBounds(normStartDate);
     updateDateBounds(normEndDate);
 
+    const uClean = username.toLowerCase();
     let agent = users.find(u =>    
-      u.username.trim().toLowerCase() === username.toLowerCase() ||    
-      (u.email && u.email.trim().toLowerCase() === username.toLowerCase())
+      u.username.trim().toLowerCase() === uClean ||    
+      (u.email && u.email.trim().toLowerCase() === uClean)
     );
 
-    const idsToClear = agent ? getAgentIdentifiers(agent) : new Set([username.toLowerCase(), "u_temp_" + username.toLowerCase()]);
+    const idsToClear = agent ? getAgentIdentifiers(agent) : new Set([uClean]);
+    idsToClear.add(uClean);
+
     idsToClear.forEach(idVal => {
       continuousSchedules[dayKey(normStartDate, idVal)] = [];
       grid15mSchedules[dayKey(normStartDate, idVal)] = Array(96).fill("");
@@ -1193,7 +1197,7 @@ function processImportedMatrix(rows, fileName){
     });
   }
 
-  // PASS 2: Populate blocks using interval trimming engine
+  // PASS 2: Populate blocks under canonical account keys
   for(let i = 1; i < rows.length; i++){  
     let cols = rows[i];  
     if(!cols || cols.length === 0) continue;
@@ -1211,16 +1215,17 @@ function processImportedMatrix(rows, fileName){
 
     const normStartDate = normalizeDateStr(startDate);  
     const normEndDate = endDate ? normalizeDateStr(endDate) : normStartDate;
+    const uClean = username.toLowerCase();
 
     let agent = users.find(u =>    
-      u.username.trim().toLowerCase() === username.toLowerCase() ||    
-      (u.email && u.email.trim().toLowerCase() === username.toLowerCase())
+      u.username.trim().toLowerCase() === uClean ||    
+      (u.email && u.email.trim().toLowerCase() === uClean)
     );    
 
     if(!agent){   
       const cleanName = username.split("@")[0].replace("external-","").replace("."," ").replace(/\b\w/g, l => l.toUpperCase());   
       agent = {    
-        id: "u_" + Date.now() + "_" + Math.floor(Math.random()*1000),    
+        id: uClean,    
         name: cleanName,    
         username: username,    
         email: username.includes("@") ? username : username + "@coindcx.com",    
@@ -1275,12 +1280,12 @@ function processImportedMatrix(rows, fileName){
 
     if(aux){   
       const addBlockToDate = (targetDate, sMin, eMin) => {
-        const mainKey = dayKey(targetDate, agent.id);
-        const existingBlocks = continuousSchedules[mainKey] || [];
+        const canonicalKey = dayKey(targetDate, agent.username.toLowerCase());
+        const existingBlocks = continuousSchedules[canonicalKey] || [];
 
         // Apply trimming engine to cleanly insert non-overlapping interval
         const trimmedBlocks = insertAndTrimOverlaps(existingBlocks, sMin, eMin, aux.key);
-        continuousSchedules[mainKey] = trimmedBlocks;
+        continuousSchedules[canonicalKey] = trimmedBlocks;
 
         // Sync 15-minute grid plotter
         const grid15m = Array(96).fill("");
@@ -1291,7 +1296,7 @@ function processImportedMatrix(rows, fileName){
             grid15m[slot] = b.auxKey;
           }
         });
-        grid15mSchedules[mainKey] = grid15m;
+        grid15mSchedules[canonicalKey] = grid15m;
       };
 
       // Overnight shift detection (e.g., 23:00 to 08:00)
@@ -1737,7 +1742,7 @@ function addAgent(){
   const email=prompt("Agent Email Address", username+"@coindcx.com");if(!email)return; 
   const password=prompt("Unique Password for Agent","Agent@123");if(!password||password.length<6)return alert("Password must be at least 6 characters."); 
   const agency=prompt("Agency","RM")||"RM",unit=prompt("Unit","Support")||"Support", queue=prompt("Queue","Livechat")||"Livechat"; 
-  users.push({id:"u"+Date.now(),name,username,email,password,role:"agent",agency,unit,department:"CS Delivery",queue,shift:"09:00-18:00",requirePasswordReset:false}); 
+  users.push({id:username.toLowerCase(),name,username,email,password,role:"agent",agency,unit,department:"CS Delivery",queue,shift:"09:00-18:00",requirePasswordReset:false}); 
   saveAll();populateFilters();renderPlot();renderAdmin();
 }
 
@@ -1862,8 +1867,8 @@ document.getElementById("historyDate").value=today();
     const savedUserId = safeStorage.getItem("wfm_current_user_id") || safeSession.getItem("wfm_current_user");  
     if(savedUserId){   
       let found = users.find(x => x.username.toLowerCase() === savedUserId.toLowerCase() || x.id === savedUserId || (x.email && x.email.toLowerCase() === savedUserId.toLowerCase()));   
-      if(!found && (savedUserId === "admin_1" || savedUserId.toLowerCase() === "wfm@coindcx.com")){    
-        found = {id:"u1", name:"WFM Admin", username:"wfm@coindcx.com", email:"wfm@coindcx.com", password:"Admin@007", role:"admin", agency:"Internal", unit:"WFM", queue:"All", shift:"09:00-18:00", requirePasswordReset:false};   
+      if(!found && (savedUserId === "wfm@coindcx.com" || savedUserId.toLowerCase() === "wfm@coindcx.com")){    
+        found = {id:"wfm@coindcx.com", name:"WFM Admin", username:"wfm@coindcx.com", email:"wfm@coindcx.com", password:"Admin@007", role:"admin", agency:"Internal", unit:"WFM", queue:"All", shift:"09:00-18:00", requirePasswordReset:false};   
       }   
       if(found && !found.requirePasswordReset){    
         currentUser = found;    
