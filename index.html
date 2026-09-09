@@ -130,7 +130,17 @@ window.addEventListener("storage", (e) => {
   }
 });
 
-function calculateNextDate(dateStr) { const d = new Date(dateStr); d.setDate(d.getDate() + 1); return d.toISOString().slice(0, 10);}
+function calculateNextDate(dateStr) { 
+  let parts = dateStr.split("-");
+  let y = parseInt(parts[0], 10);
+  let m = parseInt(parts[1], 10) - 1;
+  let d = parseInt(parts[2], 10);
+  let dt = new Date(y, m, d + 1);
+  let resY = dt.getFullYear();
+  let resM = String(dt.getMonth() + 1).padStart(2, "0");
+  let resD = String(dt.getDate()).padStart(2, "0");
+  return `${resY}-${resM}-${resD}`;
+}
 
 function normalizeDateStr(dateStr) { 
   if (!dateStr) return today(); 
@@ -976,7 +986,7 @@ function matchAuxCode(rawVal) {
   return ALL_AUX.find(a=>a.key==="available");
 }
 
-/* IMPORT MATRIX WITH PRE-CLEARING BATCH PASS AND EXACT MULTI-DATE OVERNIGHT SPLITTING */
+/* IMPORT MATRIX WITH PRE-CLEARING BATCH PASS, AUTO DATE FILTER EXPANSION AND EXACT MULTI-DATE OVERNIGHT SPLITTING */
 function processImportedMatrix(rows, fileName){ 
   if(!rows || rows.length < 2) { alert("The uploaded file contains no data rows."); return; } 
   let count = 0;  
@@ -1010,7 +1020,16 @@ function processImportedMatrix(rows, fileName){
   if(idxStartTime === -1) idxStartTime = 5; 
   if(idxEndTime === -1) idxEndTime = 6;
 
-  // PASS 1: Pre-clear all target agent schedule dates involved in this CSV file upfront
+  let minImportDate = null;
+  let maxImportDate = null;
+
+  const updateDateBounds = (dStr) => {
+    if (!dStr) return;
+    if (!minImportDate || dStr < minImportDate) minImportDate = dStr;
+    if (!maxImportDate || dStr > maxImportDate) maxImportDate = dStr;
+  };
+
+  // PASS 1: Pre-clear all target agent schedule dates involved in this CSV file upfront across all user aliases
   for(let i = 1; i < rows.length; i++){
     let cols = rows[i];
     if(!cols || cols.length === 0) continue;
@@ -1023,19 +1042,27 @@ function processImportedMatrix(rows, fileName){
     const normStartDate = normalizeDateStr(startDate);
     const normEndDate = endDate ? normalizeDateStr(endDate) : normStartDate;
 
+    updateDateBounds(normStartDate);
+    updateDateBounds(normEndDate);
+
     let agent = users.find(u =>    
       u.username.trim().toLowerCase() === username.toLowerCase() ||    
       (u.email && u.email.trim().toLowerCase() === username.toLowerCase())
     );
 
-    let targetAgentId = agent ? agent.id : ("u_temp_" + username.toLowerCase());
-
-    continuousSchedules[dayKey(normStartDate, targetAgentId)] = [];
-    grid15mSchedules[dayKey(normStartDate, targetAgentId)] = Array(96).fill("");
-    if(normEndDate && normEndDate !== normStartDate) {
-      continuousSchedules[dayKey(normEndDate, targetAgentId)] = [];
-      grid15mSchedules[dayKey(normEndDate, targetAgentId)] = Array(96).fill("");
-    }
+    const idsToClear = agent ? getAgentIdentifiers(agent) : new Set([username.toLowerCase(), "u_temp_" + username.toLowerCase()]);
+    idsToClear.forEach(idVal => {
+      continuousSchedules[dayKey(normStartDate, idVal)] = [];
+      grid15mSchedules[dayKey(normStartDate, idVal)] = Array(96).fill("");
+      if(normEndDate && normEndDate !== normStartDate) {
+        continuousSchedules[dayKey(normEndDate, idVal)] = [];
+        grid15mSchedules[dayKey(normEndDate, idVal)] = Array(96).fill("");
+      }
+      const nextDay = calculateNextDate(normStartDate);
+      continuousSchedules[dayKey(nextDay, idVal)] = [];
+      grid15mSchedules[dayKey(nextDay, idVal)] = Array(96).fill("");
+      updateDateBounds(nextDay);
+    });
   }
 
   // PASS 2: Populate blocks with multi-date overnight spillover
@@ -1158,11 +1185,19 @@ function processImportedMatrix(rows, fileName){
     } 
   }
 
+  // Update Schedule Plotter date pickers to cover all imported date ranges
+  if(minImportDate && maxImportDate){
+    const fromEl = document.getElementById("scheduleFromDate");
+    const toEl = document.getElementById("scheduleToDate");
+    if(fromEl) fromEl.value = minImportDate;
+    if(toEl) toEl.value = maxImportDate;
+  }
+
   saveAll(); 
   populateFilters(); 
   renderAdmin(); 
   renderPlot(); 
-  alert(`Successfully imported ${count} schedule entries from ${fileName}! Overnight shifts (23:00–08:00) are fully captured across dates.`);
+  alert(`Successfully imported ${count} schedule entries from ${fileName}! Date range set to ${minImportDate} to ${maxImportDate}.`);
 }
 
 function renderAgentHistory(){ 
@@ -1319,12 +1354,19 @@ function renderDashboard(){
 
 function getDateRangeArray(startDateStr, endDateStr) { 
   const dates = []; 
-  let curr = new Date(startDateStr); 
-  const last = new Date(endDateStr); 
+  let parts = startDateStr.split("-");
+  let curr = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+  let endParts = endDateStr.split("-");
+  let last = new Date(parseInt(endParts[0], 10), parseInt(endParts[1], 10) - 1, parseInt(endParts[2], 10));
+
   if (isNaN(curr.getTime()) || isNaN(last.getTime())) return [today()]; 
   if (curr > last) { const temp = curr; curr = last; last = temp; } 
+
   while (curr <= last) {  
-    dates.push(curr.toISOString().slice(0, 10));  
+    let y = curr.getFullYear();
+    let m = String(curr.getMonth() + 1).padStart(2, "0");
+    let d = String(curr.getDate()).padStart(2, "0");
+    dates.push(`${y}-${m}-${d}`);  
     curr.setDate(curr.getDate() + 1); 
   } 
   return dates;
