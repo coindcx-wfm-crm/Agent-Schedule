@@ -22,7 +22,6 @@
 <!-- APP --><section id="app" class="hidden"><header class="topbar"> <div class="brand" style="display:flex;align-items:center;gap:12px">  <span style="font-weight:900;font-size:18px;letter-spacing:-0.5px">   <span style="color:#172554">Coin</span><span style="color:#ff3b00">DCX</span>    <span style="font-weight:500;font-size:14px;color:#64748b">| WFM Schedule Plotter</span>  </span> </div>
  <!-- CENTERED AGENT NAME, ROLE, SYSTEM DATE & TIME DISPLAY FOR ALL LOGINS --> <div class="header-center-clock">  <span style="color:#0052ff;font-weight:900">👤 <span id="centerUserNameRole"></span></span>  <span style="color:#cbd5e1">|</span>  <span>📅 <span id="liveHeaderDate"></span></span>  <span style="color:#cbd5e1">|</span>  <span>⏰ <span id="liveClock"></span></span> </div>
  <span id="roleBadge" class="badge"></span> <span id="topUser" class="badge"></span>
- <button class="secondary" style="margin-left:8px;font-weight:bold" onclick="syncCloudData(true)">🔄 Sync Cloud Data</button>
  <div class="aux-dropdown-container">  <div class="aux-status-pill" onclick="toggleAuxDropdown()">   <span id="pillDot" class="status-dot" style="background:#ef4444"></span>   <span id="pillText">Unavailable</span>   <span id="pillTimer" style="margin-left:4px">00:00:00</span>  </div>  <div id="auxDropdownMenu" class="aux-dropdown-menu hidden">   <input id="auxSearchInput" class="aux-search-input" placeholder="🔍 Search AUX status..." oninput="filterAuxDropdown()">   <div id="auxOptionList" class="aux-option-list"></div>  </div> </div> <button class="secondary" style="margin-left:8px" onclick="logout()">Logout</button></header>
 <main class="container"> <div class="tabs">  <button id="plotTab" class="tab active" onclick="showTab('plot')">Schedule Plotter</button>  <button id="agentTab" class="tab" onclick="showTab('agent')">My Status & History</button>  <button id="dashboardTab" class="tab managerOnly" onclick="showTab('dashboard')">Reporting Dashboard</button>  <button id="attendanceTab" class="tab managerOnly" onclick="showTab('attendance')">Agent Attendance Logs</button>  <button id="adminTab" class="tab adminOnly" onclick="showTab('admin')">Admin</button>  <button id="settingsTab" class="tab adminOnly" onclick="showTab('settings')">Settings</button> </div>
  <!-- PLOTTER --> <section id="plotSection">  <div class="toolbar">   <label class="managerOnly" style="font-size:13px;font-weight:700">From Date:</label>   <input id="scheduleFromDate" class="managerOnly" type="date" onchange="renderPlot()" oninput="renderPlot()">   <label class="managerOnly" style="font-size:13px;font-weight:700">To Date:</label>   <input id="scheduleToDate" class="managerOnly" type="date" onchange="renderPlot()" oninput="renderPlot()">      <input id="scheduleDate" class="hidden" type="date" onchange="renderPlot()">      <input id="searchAgent" class="managerOnly" placeholder="Search agent..." oninput="renderPlot()">   <select id="agencyFilter" class="managerOnly" onchange="renderPlot()"><option value="">All Agencies</option></select>   <select id="queueFilter" class="managerOnly" onchange="renderPlot()"><option value="">All Queues</option></select>   <select id="plotModeSelect" class="managerOnly" onchange="switchPlotMode()" style="font-weight:700;border:1px solid #2563eb;color:#2563eb">    <option value="timeline">24-Hour Continuous Timeline View</option>    <option value="grid15m">15-Minute Grid Interval Plotter View</option>   </select>   <input type="file" id="excelFileInput" accept=".xlsx, .xls, .csv" class="hidden" onchange="handleExcelImport(event)">   <button class="secondary managerOnly" onclick="downloadSampleTemplate()">📥 Download Sample Template (.csv)</button>   <button class="secondary adminOnly" onclick="document.getElementById('excelFileInput').click()">📤 Import Excel/CSV</button>   <button class="primary adminOnly" onclick="addAgent()">+ Add Agent</button>   <button class="danger adminOnly" onclick="clearWholeDaySchedule()" style="background:#dc2626">🗑️ Clear Active Date (All Agents)</button>   <button class="secondary adminOnly" onclick="clearSelectedAgent()">Clear Particular Agent Schedule</button>   <button class="danger adminOnly" onclick="clearEntireDatabaseSchedules()" style="background:#991b1b">⚠️ Clear ALL System Schedules (All Dates)</button>   <button class="secondary adminOnly" onclick="saveSchedules()">Save Schedule</button>   <button class="secondary managerOnly" onclick="exportCSV()">Export AUX CSV</button>  </div>
@@ -77,7 +76,9 @@ const safeSession = {
   removeItem(key){ try { if(__realSession){ __realSession.removeItem(key); return; } } catch(e){} delete __memoryStore['s_' + key]; }
 };
 
-/* UNIVERSAL CROSS-SYSTEM CLOUD SYNC ENGINE */
+/* UNIVERSAL CROSS-SYSTEM AUTOMATED ACCOUNT CLOUD SYNC ENGINE */
+const CLOUD_SYNC_ENDPOINT = "https://myjson.server.appyflow.org/wfm_coindcx_global_store";
+
 function syncCloudPush() {
   if (isSyncing) return;
   isSyncing = true;
@@ -90,30 +91,58 @@ function syncCloudPush() {
       systemRoles: __safeParse(safeStorage.getItem("wfm_system_roles"), defaultRoles),
       liveStatus: __safeParse(safeStorage.getItem("wfm_live_agent_status"), {})
     };
-    safeStorage.setItem("__wfm_unified_cloud_store__", JSON.stringify(fullState));
+    const jsonStr = JSON.stringify(fullState);
+    if(__realLocal) __realLocal.setItem("__wfm_unified_cloud_store__", jsonStr);
+    __memoryStore["__wfm_unified_cloud_store__"] = jsonStr;
+
+    // Asynchronous background HTTP sync to central cross-system repository
+    fetch(CLOUD_SYNC_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: jsonStr
+    }).catch(err => {});
   } catch(e) {}
   isSyncing = false;
 }
 
 function syncCloudData(manualNotice = false) {
   try {
-    syncStorageData();
-    if(currentUser){
-      if(isManagerOrAdmin()){
-        renderDashboard();
-        renderAttendance();
-        renderPlot();
-      } else {
-        renderPlot();
-        renderAgentHistory();
-      }
-    }
-    if(manualNotice) alert("Central Webtool Database synchronized successfully across all systems!");
+    fetch(CLOUD_SYNC_ENDPOINT)
+      .then(res => res.json())
+      .then(remoteState => {
+        if(remoteState && typeof remoteState === 'object') {
+          if(remoteState.users) safeStorage.setItem("wfm_users", JSON.stringify(remoteState.users));
+          if(remoteState.continuousSchedules) safeStorage.setItem("wfm_continuous_schedules", JSON.stringify(remoteState.continuousSchedules));
+          if(remoteState.grid15mSchedules) safeStorage.setItem("wfm_grid15m_schedules", JSON.stringify(remoteState.grid15mSchedules));
+          if(remoteState.auxLogs) safeStorage.setItem("wfm_aux_logs", JSON.stringify(remoteState.auxLogs));
+          if(remoteState.systemRoles) safeStorage.setItem("wfm_system_roles", JSON.stringify(remoteState.systemRoles));
+          if(remoteState.liveStatus) safeStorage.setItem("wfm_live_agent_status", JSON.stringify(remoteState.liveStatus));
+          
+          syncStorageData();
+          if(currentUser){
+            if(isManagerOrAdmin()){
+              renderDashboard();
+              renderAttendance();
+              renderPlot();
+            } else {
+              renderPlot();
+              renderAgentHistory();
+            }
+          }
+        }
+      })
+      .catch(err => {
+        syncStorageData();
+        if(currentUser){
+          if(isManagerOrAdmin()){ renderDashboard(); renderAttendance(); renderPlot(); }
+          else { renderPlot(); renderAgentHistory(); }
+        }
+      });
   } catch(e) {}
 }
 
-// Background auto-refresh polling across systems
-setInterval(() => { syncCloudData(false); }, 15000);
+// Automatic background cross-system polling every 10 seconds
+setInterval(() => { syncCloudData(false); }, 10000);
 
 const LIVE_DROPDOWN_AUX = [ {key:"unavailable", label:"Unavailable", short:"UN", color:"#ef4444"}, {key:"available", label:"Available", short:"AV", color:"#22c55e"}, {key:"break", label:"Break", short:"BR", color:"#3b82f6"}, {key:"lunch", label:"Lunch", short:"LU", color:"#f59e0b"}, {key:"bio", label:"Bio Break", short:"BB", color:"#06b6d4"}, {key:"breakpending", label:"Break Pending", short:"BP", color:"#fde047"}, {key:"meeting", label:"Team Meeting", short:"TM", color:"#a855f7"}, {key:"tlfeedback", label:"TL Feedback", short:"TL", color:"#ec4899"}, {key:"qafeedback", label:"QA Feedback", short:"QA", color:"#8b5cf6"}, {key:"nht", label:"NHT Training", short:"NH", color:"#14b8a6"}, {key:"pkt", label:"PKT Training", short:"PK", color:"#0ea5e9"}, {key:"training", label:"Training", short:"TR", color:"#6366f1"}, {key:"coaching", label:"Coaching", short:"CO", color:"#f97316"}, {key:"offline", label:"Offline", short:"OF", color:"#64748b"}];
 const LEAVE_SCHEDULE_AUX = [ {key:"weekoff", label:"Week Off", short:"WO", color:"#64748b"}, {key:"plannedleave", label:"Planned Leave", short:"PL", color:"#0284c7"}, {key:"sickleave", label:"Sick Leave", short:"SL", color:"#e11d48"}, {key:"ncns", label:"NCNS", short:"NC", color:"#881337"}, {key:"unpaidleave", label:"Unpaid Leave", short:"UL", color:"#475569"}, {key:"casualleave", label:"Casual Leave", short:"CL", color:"#d97706"}, {key:"holiday", label:"Holiday", short:"HD", color:"#059669"}, {key:"compoff", label:"Comp Off", short:"CO", color:"#7c3aed"}, {key:"unplannedleave", label:"Unplanned Leave", short:"UP", color:"#b91c1c"}];
@@ -222,7 +251,7 @@ function normalizeDateStr(dateStr) {
   return dateStr;
 }
 
-/* ACCOUNT & USERNAME SPECIFIC LOGIN VERIFICATION */
+/* ACCOUNT & USERNAME SPECIFIC LOGIN VERIFICATION WITH AUTOMATED CENTRAL DATA SYNC */
 function login(){ 
   syncStorageData(); 
   const uInput = (document.getElementById("loginUser")?.value || "").trim(); 
@@ -287,6 +316,9 @@ function login(){
   safeSession.setItem("wfm_current_user", currentUser.username.toLowerCase());
 
   if(currentUser.requirePasswordReset){ document.getElementById("forceChangeModal").classList.remove("hidden"); return; }
+
+  // Automatic central database sync upon user login
+  syncCloudData(false);
 
   try { initializeAppView(); } catch(e){ document.getElementById("loginError").textContent = "Signed in, but the app failed to load (" + e.message + "). Check the browser console for details."; }
 }
