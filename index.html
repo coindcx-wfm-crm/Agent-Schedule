@@ -13,7 +13,69 @@
 /* AUX Colors */.unavailable{background:#ef4444;color:#fff}.available{background:#22c55e;color:#063b19}.break{background:#3b82f6;color:#fff}.lunch{background:#f59e0b;color:#421f00}.bio{background:#06b6d4;color:#00323b}.breakpending{background:#fde047;color:#3f3000}.meeting{background:#a855f7;color:#fff}.tlfeedback{background:#ec4899;color:#fff}.qafeedback{background:#8b5cf6;color:#fff}.nht{background:#14b8a6;color:#fff}.pkt{background:#0ea5e9;color:#fff}.training{background:#6366f1;color:#fff}.coaching{background:#f97316;color:#fff}.offline{background:#64748b;color:#fff}
 /* Leave / Off-time Schedule-only AUX Colors */.weekoff{background:#64748b;color:#fff}.plannedleave{background:#0284c7;color:#fff}.sickleave{background:#e11d48;color:#fff}.ncns{background:#881337;color:#fff}.unpaidleave{background:#475569;color:#fff}.casualleave{background:#d97706;color:#fff}.holiday{background:#059669;color:#fff}.compoff{background:#7c3aed;color:#fff}.unplannedleave{background:#b91c1c;color:#fff}.empty{background:#fff}
 /* Agent timer */.agent-panel{display:grid;grid-template-columns:2fr 1fr;gap:14px}.current-status{display:flex;align-items:center;justify-content:space-between;padding:18px;border-radius:12px;background:#f8fafc}.status-code{font-size:28px;font-weight:900}.status-timer{font-size:30px;font-weight:900;font-variant-numeric:tabular-nums}.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.kpi{padding:14px;border:1px solid var(--border);border-radius:10px}.kpi b{display:block;font-size:20px}.kpi small{color:var(--muted)}.summary-table{width:100%;border-collapse:collapse}.summary-table th,.summary-table td{padding:9px;border-bottom:1px solid var(--border);text-align:left;font-size:13px}
-/* Admin & Tables */.table-scroll{overflow:auto}.data-table{width:100%;border-collapse:collapse;min-width:800px}.data-table th,.data-table td{padding:9px;border-bottom:1px solid var(--border);font-size:13px;text-align:left}@media(max-width:900px){.agent-panel{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,1fr)}.header-center-clock{position:static;transform:none}.login-brand-watermark{display:none}}</style><script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script></head><body>
+/* Admin & Tables */.table-scroll{overflow:auto}.data-table{width:100%;border-collapse:collapse;min-width:800px}.data-table th,.data-table td{padding:9px;border-bottom:1px solid var(--border);font-size:13px;text-align:left}@media(max-width:900px){.agent-panel{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,1fr)}.header-center-clock{position:static;transform:none}.login-brand-watermark{display:none}}</style><script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+<!-- FIREBASE CLOUD FIRESTORE AUTO-SYNC MODULE -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  // REPLACE THIS BLOCK WITH YOUR CONFIG FROM FIREBASE CONSOLE PROJECT SETTINGS
+  const firebaseConfig = {
+    apiKey: "AIzaSyD-PASTE_YOUR_ACTUAL_API_KEY_HERE",
+    authDomain: "coindcx-wfm-crm.firebaseapp.com",
+    projectId: "coindcx-wfm-crm",
+    storageBucket: "coindcx-wfm-crm.appspot.com",
+    messagingSenderId: "123456789012",
+    appId: "1:123456789012:web:abcdef123456"
+  };
+
+  // Initialize Firebase & Cloud Firestore
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const globalDocRef = doc(db, "wfm_store", "central_state");
+
+  // Real-time Cloud Data Listener (Broadcasts edits across all logged-in devices instantly)
+  onSnapshot(globalDocRef, (docSnap) => {
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      if (data.users) users = data.users;
+      if (data.continuousSchedules) continuousSchedules = data.continuousSchedules;
+      if (data.grid15mSchedules) grid15mSchedules = data.grid15mSchedules;
+      if (data.auxLogs) auxLogs = data.auxLogs;
+      if (data.systemRoles) systemRoles = data.systemRoles;
+
+      if (typeof currentUser !== 'undefined' && currentUser) {
+        if (typeof isManagerOrAdmin === 'function' && isManagerOrAdmin()) {
+          renderDashboard();
+          renderAttendance();
+          renderPlot();
+        } else {
+          renderPlot();
+          renderAgentHistory();
+        }
+      }
+    }
+  });
+
+  // Global Central Cloud Save Hook
+  window.saveAll = async function() {
+    const appState = {
+      users: typeof users !== 'undefined' ? users : [],
+      continuousSchedules: typeof continuousSchedules !== 'undefined' ? continuousSchedules : {},
+      grid15mSchedules: typeof grid15mSchedules !== 'undefined' ? grid15mSchedules : {},
+      auxLogs: typeof auxLogs !== 'undefined' ? auxLogs : {},
+      systemRoles: typeof systemRoles !== 'undefined' ? systemRoles : []
+    };
+
+    try {
+      await setDoc(globalDocRef, appState);
+    } catch (e) {
+      console.error("Firestore Sync Error: ", e);
+    }
+  };
+</script>
+</head><body>
 <!-- LOGIN SCREEN WITH CENTERED CARD LAYOUT --><section id="loginScreen" class="login-screen"> <div class="login-brand-watermark">  <span class="coindcx-blue">Coin</span><span class="coindcx-red">DCX</span> <span class="sub-badge">WFM CRM</span> </div>
  <div class="login-card">  <!-- DUAL COLOR COINDCX LOGO BRANDING -->  <div class="coindcx-text-logo">   <span class="blue-text">Coin</span><span class="red-text">DCX</span>  </div>  <h1>WFM Schedule Plotter</h1>  <p>Sign in with your assigned account credentials.</p>  <div class="field"><label>Email / Username</label><input id="loginUser" placeholder="Enter your email or username"></div>  <div class="field">   <label>Password</label>   <input id="loginPass" type="password" placeholder="Enter password">   <span class="reset-link" onclick="openResetModal()">Reset Password?</span>  </div>  <button class="primary" style="width:100%" onclick="login()">Sign In</button>  <div id="loginError" class="login-error"></div> </div></section>
 <!-- DOUBLE-CLICK EXACT TIME PLOT MODAL --><div id="timePlotModal" class="modal-overlay hidden"> <div class="modal-card">  <h2 style="margin-top:0;margin-bottom:8px">Plot AUX Schedule Block</h2>  <p style="color:var(--muted);font-size:13px;margin-top:0;margin-bottom:18px">Select exact Start Time, End Time, and AUX Code for <b id="modalAgentName"></b>.</p>  <div class="field">   <label>AUX Code</label>   <select id="modalAuxSelect"></select>  </div>  <div class="field" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">   <div>    <label>Start Time (HH:MM)</label>    <input id="modalStartTime" type="time" value="09:00">   </div>   <div>    <label>End Time (HH:MM)</label>    <input id="modalEndTime" type="time" value="10:00">   </div>  </div>  <div id="plotError" class="login-error"></div>  <div style="display:flex;gap:10px;margin-top:16px">   <button class="primary" style="flex:1" onclick="confirmTimePlot()">Save Block</button>   <button class="secondary" style="flex:1" onclick="closeTimePlotModal()">Cancel</button>  </div> </div></div>
@@ -22,7 +84,6 @@
 <!-- APP --><section id="app" class="hidden"><header class="topbar"> <div class="brand" style="display:flex;align-items:center;gap:12px">  <span style="font-weight:900;font-size:18px;letter-spacing:-0.5px">   <span style="color:#172554">Coin</span><span style="color:#ff3b00">DCX</span>    <span style="font-weight:500;font-size:14px;color:#64748b">| WFM Schedule Plotter</span>  </span> </div>
  <!-- CENTERED AGENT NAME, ROLE, SYSTEM DATE & TIME DISPLAY FOR ALL LOGINS --> <div class="header-center-clock">  <span style="color:#0052ff;font-weight:900">👤 <span id="centerUserNameRole"></span></span>  <span style="color:#cbd5e1">|</span>  <span>📅 <span id="liveHeaderDate"></span></span>  <span style="color:#cbd5e1">|</span>  <span>⏰ <span id="liveClock"></span></span> </div>
  <span id="roleBadge" class="badge"></span> <span id="topUser" class="badge"></span>
- <button class="secondary" style="margin-left:8px;font-weight:bold" onclick="syncCloudData(true)">🔄 Sync Cloud Data</button>
  <div class="aux-dropdown-container">  <div class="aux-status-pill" onclick="toggleAuxDropdown()">   <span id="pillDot" class="status-dot" style="background:#ef4444"></span>   <span id="pillText">Unavailable</span>   <span id="pillTimer" style="margin-left:4px">00:00:00</span>  </div>  <div id="auxDropdownMenu" class="aux-dropdown-menu hidden">   <input id="auxSearchInput" class="aux-search-input" placeholder="🔍 Search AUX status..." oninput="filterAuxDropdown()">   <div id="auxOptionList" class="aux-option-list"></div>  </div> </div> <button class="secondary" style="margin-left:8px" onclick="logout()">Logout</button></header>
 <main class="container"> <div class="tabs">  <button id="plotTab" class="tab active" onclick="showTab('plot')">Schedule Plotter</button>  <button id="agentTab" class="tab" onclick="showTab('agent')">My Status & History</button>  <button id="dashboardTab" class="tab managerOnly" onclick="showTab('dashboard')">Reporting Dashboard</button>  <button id="attendanceTab" class="tab managerOnly" onclick="showTab('attendance')">Agent Attendance Logs</button>  <button id="adminTab" class="tab adminOnly" onclick="showTab('admin')">Admin</button>  <button id="settingsTab" class="tab adminOnly" onclick="showTab('settings')">Settings</button> </div>
  <!-- PLOTTER --> <section id="plotSection">  <div class="toolbar">   <label class="managerOnly" style="font-size:13px;font-weight:700">From Date:</label>   <input id="scheduleFromDate" class="managerOnly" type="date" onchange="renderPlot()" oninput="renderPlot()">   <label class="managerOnly" style="font-size:13px;font-weight:700">To Date:</label>   <input id="scheduleToDate" class="managerOnly" type="date" onchange="renderPlot()" oninput="renderPlot()">      <input id="scheduleDate" class="hidden" type="date" onchange="renderPlot()">      <input id="searchAgent" class="managerOnly" placeholder="Search agent..." oninput="renderPlot()">   <select id="agencyFilter" class="managerOnly" onchange="renderPlot()"><option value="">All Agencies</option></select>   <select id="queueFilter" class="managerOnly" onchange="renderPlot()"><option value="">All Queues</option></select>   <select id="plotModeSelect" class="managerOnly" onchange="switchPlotMode()" style="font-weight:700;border:1px solid #2563eb;color:#2563eb">    <option value="timeline">24-Hour Continuous Timeline View</option>    <option value="grid15m">15-Minute Grid Interval Plotter View</option>   </select>   <input type="file" id="excelFileInput" accept=".xlsx, .xls, .csv" class="hidden" onchange="handleExcelImport(event)">   <button class="secondary managerOnly" onclick="downloadSampleTemplate()">📥 Download Sample Template (.csv)</button>   <button class="secondary adminOnly" onclick="document.getElementById('excelFileInput').click()">📤 Import Excel/CSV</button>   <button class="primary adminOnly" onclick="addAgent()">+ Add Agent</button>   <button class="danger adminOnly" onclick="clearWholeDaySchedule()" style="background:#dc2626">🗑️ Clear Active Date (All Agents)</button>   <button class="secondary adminOnly" onclick="clearSelectedAgent()">Clear Particular Agent Schedule</button>   <button class="danger adminOnly" onclick="clearEntireDatabaseSchedules()" style="background:#991b1b">⚠️ Clear ALL System Schedules (All Dates)</button>   <button class="secondary adminOnly" onclick="saveSchedules()">Save Schedule</button>   <button class="secondary managerOnly" onclick="exportCSV()">Export AUX CSV</button>  </div>
@@ -37,37 +98,21 @@
    <div style="display:grid;grid-template-columns:1fr 2fr;gap:18px">    <div style="background:#f8fafc;padding:16px;border-radius:12px;border:1px solid var(--border)">     <h3 style="margin-top:0;font-size:15px">Create New System Role</h3>     <div class="field">      <label>Role Key / ID</label>      <input id="newRoleKey" placeholder="e.g. team_leader">     </div>     <div class="field">      <label>Role Display Label</label>      <input id="newRoleLabel" placeholder="e.g. Team Leader">     </div>     <div class="field">      <label>Access Matrix Mode</label>      <select id="newRoleAccessMode">       <option value="write">Full Read & Write Access (WFM Admin)</option>       <option value="read">View & Download All Agents Access (Team Leader)</option>       <option value="agent">Self Only Access (Agent)</option>      </select>     </div>     <button class="primary" style="width:100%;margin-top:8px" onclick="createCustomRole()">+ Create & Save Role</button>    </div>
     <div>     <h3 style="margin-top:0;font-size:15px">Configured Role Permissions Matrix</h3>     <div class="table-scroll">      <table class="data-table">       <thead>        <tr>         <th>Role Name</th>         <th>Role ID</th>         <th>Schedule Plotter</th>         <th>Reporting & Attendance</th>         <th>CSV / Excel Downloads</th>         <th>System Settings</th>        </tr>       </thead>       <tbody id="rolesTableBody"></tbody>      </table>     </div>    </div>   </div>  </div> </section></main></section>
 <script>
-/* SHARED CENTRAL STORAGE ENGINE FOR MULTI-USER & MULTI-SYSTEM CONSISTENCY */
+/* LOCAL FALLBACK STORAGE WRAPPER */
 const __memoryStore = {};
 function __getRealStorage(kind){ try { const s = window[kind]; const testKey = "__wfm_storage_test__"; s.setItem(testKey, "1"); s.removeItem(testKey); return s; } catch(e){ return null; }}
 const __realLocal = __getRealStorage('localStorage');
 const __realSession = __getRealStorage('sessionStorage');
 
-let isSyncing = false;
-
 const safeStorage = {
   getItem(key){ try { if(__realLocal) return __realLocal.getItem(key); } catch(e){} return __memoryStore.hasOwnProperty(key) ? __memoryStore[key] : null; },
   setItem(key, val){ 
-    try { 
-      if(__realLocal){ 
-        __realLocal.setItem(key, val); 
-        if(key !== "__wfm_unified_cloud_store__") syncCloudPush(); 
-        return; 
-      } 
-    } catch(e){} 
+    try { if(__realLocal){ __realLocal.setItem(key, val); } } catch(e){} 
     __memoryStore[key] = val; 
-    if(key !== "__wfm_unified_cloud_store__") syncCloudPush(); 
   },
   removeItem(key){ 
-    try { 
-      if(__realLocal){ 
-        __realLocal.removeItem(key); 
-        if(key !== "__wfm_unified_cloud_store__") syncCloudPush(); 
-        return; 
-      } 
-    } catch(e){} 
+    try { if(__realLocal){ __realLocal.removeItem(key); } } catch(e){} 
     delete __memoryStore[key]; 
-    if(key !== "__wfm_unified_cloud_store__") syncCloudPush(); 
   }
 };
 
@@ -76,83 +121,6 @@ const safeSession = {
   setItem(key, val){ try { if(__realSession){ __realSession.setItem(key, val); return; } } catch(e){} __memoryStore['s_' + key] = val; },
   removeItem(key){ try { if(__realSession){ __realSession.removeItem(key); return; } } catch(e){} delete __memoryStore['s_' + key]; }
 };
-
-/* RELIABLE CROSS-SYSTEM AUTOMATED ACCOUNT CLOUD SYNC GATEWAY */
-const CLOUD_BIN_ID = "66d00000a3598d1a08000000";
-const CLOUD_SYNC_GET = `https://api.jsonbin.io/v3/b/${CLOUD_BIN_ID}/latest`;
-const CLOUD_SYNC_PUT = `https://api.jsonbin.io/v3/b/${CLOUD_BIN_ID}`;
-
-function syncCloudPush() {
-  if (isSyncing) return;
-  isSyncing = true;
-  try {
-    const fullState = {
-      users: __safeParse(safeStorage.getItem("wfm_users"), defaultUsers),
-      continuousSchedules: __safeParse(safeStorage.getItem("wfm_continuous_schedules"), {}),
-      grid15mSchedules: __safeParse(safeStorage.getItem("wfm_grid15m_schedules"), {}),
-      auxLogs: __safeParse(safeStorage.getItem("wfm_aux_logs"), {}),
-      systemRoles: __safeParse(safeStorage.getItem("wfm_system_roles"), defaultRoles),
-      liveStatus: __safeParse(safeStorage.getItem("wfm_live_agent_status"), {})
-    };
-    const jsonStr = JSON.stringify(fullState);
-    if(__realLocal) __realLocal.setItem("__wfm_unified_cloud_store__", jsonStr);
-    __memoryStore["__wfm_unified_cloud_store__"] = jsonStr;
-
-    fetch(CLOUD_SYNC_PUT, {
-      method: 'PUT',
-      headers: { 
-        'Content-Type': 'application/json',
-        'X-Master-Key': '$2a$10$wfmCoinDCXSecretSyncKeyForPublicRelay001'
-      },
-      body: jsonStr
-    }).catch(err => {});
-  } catch(e) {}
-  isSyncing = false;
-}
-
-function syncCloudData(manualNotice = false) {
-  try {
-    fetch(CLOUD_SYNC_GET, {
-      headers: { 'X-Master-Key': '$2a$10$wfmCoinDCXSecretSyncKeyForPublicRelay001' }
-    })
-      .then(res => res.json())
-      .then(resData => {
-        const remoteState = resData?.record || resData;
-        if(remoteState && typeof remoteState === 'object') {
-          if(remoteState.users) safeStorage.setItem("wfm_users", JSON.stringify(remoteState.users));
-          if(remoteState.continuousSchedules) safeStorage.setItem("wfm_continuous_schedules", JSON.stringify(remoteState.continuousSchedules));
-          if(remoteState.grid15mSchedules) safeStorage.setItem("wfm_grid15m_schedules", JSON.stringify(remoteState.grid15mSchedules));
-          if(remoteState.auxLogs) safeStorage.setItem("wfm_aux_logs", JSON.stringify(remoteState.auxLogs));
-          if(remoteState.systemRoles) safeStorage.setItem("wfm_system_roles", JSON.stringify(remoteState.systemRoles));
-          if(remoteState.liveStatus) safeStorage.setItem("wfm_live_agent_status", JSON.stringify(remoteState.liveStatus));
-          
-          syncStorageData();
-          if(currentUser){
-            if(isManagerOrAdmin()){
-              renderDashboard();
-              renderAttendance();
-              renderPlot();
-            } else {
-              renderPlot();
-              renderAgentHistory();
-            }
-          }
-        }
-        if(manualNotice) alert("Central Webtool Database synchronized successfully across all systems!");
-      })
-      .catch(err => {
-        syncStorageData();
-        if(currentUser){
-          if(isManagerOrAdmin()){ renderDashboard(); renderAttendance(); renderPlot(); }
-          else { renderPlot(); renderAgentHistory(); }
-        }
-        if(manualNotice) alert("Synced with local storage engine.");
-      });
-  } catch(e) {}
-}
-
-// Background auto-refresh polling every 5 seconds across systems
-setInterval(() => { syncCloudData(false); }, 5000);
 
 const LIVE_DROPDOWN_AUX = [ {key:"unavailable", label:"Unavailable", short:"UN", color:"#ef4444"}, {key:"available", label:"Available", short:"AV", color:"#22c55e"}, {key:"break", label:"Break", short:"BR", color:"#3b82f6"}, {key:"lunch", label:"Lunch", short:"LU", color:"#f59e0b"}, {key:"bio", label:"Bio Break", short:"BB", color:"#06b6d4"}, {key:"breakpending", label:"Break Pending", short:"BP", color:"#fde047"}, {key:"meeting", label:"Team Meeting", short:"TM", color:"#a855f7"}, {key:"tlfeedback", label:"TL Feedback", short:"TL", color:"#ec4899"}, {key:"qafeedback", label:"QA Feedback", short:"QA", color:"#8b5cf6"}, {key:"nht", label:"NHT Training", short:"NH", color:"#14b8a6"}, {key:"pkt", label:"PKT Training", short:"PK", color:"#0ea5e9"}, {key:"training", label:"Training", short:"TR", color:"#6366f1"}, {key:"coaching", label:"Coaching", short:"CO", color:"#f97316"}, {key:"offline", label:"Offline", short:"OF", color:"#64748b"}];
 const LEAVE_SCHEDULE_AUX = [ {key:"weekoff", label:"Week Off", short:"WO", color:"#64748b"}, {key:"plannedleave", label:"Planned Leave", short:"PL", color:"#0284c7"}, {key:"sickleave", label:"Sick Leave", short:"SL", color:"#e11d48"}, {key:"ncns", label:"NCNS", short:"NC", color:"#881337"}, {key:"unpaidleave", label:"Unpaid Leave", short:"UL", color:"#475569"}, {key:"casualleave", label:"Casual Leave", short:"CL", color:"#d97706"}, {key:"holiday", label:"Holiday", short:"HD", color:"#059669"}, {key:"compoff", label:"Comp Off", short:"CO", color:"#7c3aed"}, {key:"unplannedleave", label:"Unplanned Leave", short:"UP", color:"#b91c1c"}];
@@ -195,14 +163,6 @@ let targetPlotAgentId = null;
 
 function today(){ const d=new Date(); return d.toISOString().slice(0,10);}
 
-function saveAll(){  
-  safeStorage.setItem("wfm_users",JSON.stringify(users));  
-  safeStorage.setItem("wfm_continuous_schedules",JSON.stringify(continuousSchedules));  
-  safeStorage.setItem("wfm_grid15m_schedules",JSON.stringify(grid15mSchedules));  
-  safeStorage.setItem("wfm_aux_logs",JSON.stringify(auxLogs)); 
-  safeStorage.setItem("wfm_system_roles",JSON.stringify(systemRoles));
-}
-
 function syncStorageData(){ 
   users = __safeParse(safeStorage.getItem("wfm_users"), users); 
   if(!users || users.length === 0){ users = defaultUsers; }
@@ -214,20 +174,6 @@ function syncStorageData(){
 
 document.addEventListener("mousedown",()=>isMouseDown=true);
 document.addEventListener("mouseup",()=>isMouseDown=false);
-
-window.addEventListener("storage", (e) => { 
-  syncStorageData();  
-  if(currentUser){   
-    if(isManagerOrAdmin()){
-      renderDashboard();   
-      renderAttendance();  
-      renderPlot();
-    } else {
-      renderPlot();
-      renderAgentHistory();
-    }
-  }
-});
 
 function calculateNextDate(dateStr) { 
   let parts = dateStr.split("-");
@@ -324,8 +270,6 @@ function login(){
   safeSession.setItem("wfm_current_user", currentUser.username.toLowerCase());
 
   if(currentUser.requirePasswordReset){ document.getElementById("forceChangeModal").classList.remove("hidden"); return; }
-
-  syncCloudData(false);
 
   try { initializeAppView(); } catch(e){ document.getElementById("loginError").textContent = "Signed in, but the app failed to load (" + e.message + "). Check the browser console for details."; }
 }
