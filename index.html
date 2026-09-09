@@ -22,12 +22,12 @@
 
   // REPLACE THIS BLOCK WITH YOUR CONFIG FROM FIREBASE CONSOLE PROJECT SETTINGS
   const firebaseConfig = {
-    apiKey: "AIzaSyCNeXrdwnxQYgB3O9UNZY7-6oiLojhs9MU",
+    apiKey: "AIzaSyD-PASTE_YOUR_ACTUAL_API_KEY_HERE",
     authDomain: "coindcx-wfm-crm.firebaseapp.com",
     projectId: "coindcx-wfm-crm",
-    storageBucket: "coindcx-wfm-crm.firebasestorage.app",
-    messagingSenderId: "78751965396",
-    appId: "1:78751965396:web:442b6c60d305e780c79b41"
+    storageBucket: "coindcx-wfm-crm.appspot.com",
+    messagingSenderId: "123456789012",
+    appId: "1:123456789012:web:abcdef123456"
   };
 
   // Initialize Firebase & Cloud Firestore
@@ -35,20 +35,25 @@
   const db = getFirestore(app);
   const globalDocRef = doc(db, "wfm_store", "central_state");
 
-  // Real-time Cloud Data Listener (Broadcasts edits & AUX changes across all logged-in devices instantly)
+  // Real-time Cloud Data Listener (Broadcasts edits & live AUX changes across all devices)
   onSnapshot(globalDocRef, (docSnap) => {
     if (docSnap.exists()) {
       const data = docSnap.data();
-      if (data.users) users = data.users;
-      if (data.continuousSchedules) continuousSchedules = data.continuousSchedules;
-      if (data.grid15mSchedules) grid15mSchedules = data.grid15mSchedules;
-      if (data.auxLogs) auxLogs = data.auxLogs;
-      if (data.systemRoles) systemRoles = data.systemRoles;
-      if (data.liveStatus) {
-        safeStorage.setItem("wfm_live_agent_status", JSON.stringify(data.liveStatus));
-      }
+      if (data.users) { users = data.users; safeStorage.setItem("wfm_users", JSON.stringify(users)); }
+      if (data.continuousSchedules) { continuousSchedules = data.continuousSchedules; safeStorage.setItem("wfm_continuous_schedules", JSON.stringify(continuousSchedules)); }
+      if (data.grid15mSchedules) { grid15mSchedules = data.grid15mSchedules; safeStorage.setItem("wfm_grid15m_schedules", JSON.stringify(grid15mSchedules)); }
+      if (data.auxLogs) { auxLogs = data.auxLogs; safeStorage.setItem("wfm_aux_logs", JSON.stringify(auxLogs)); }
+      if (data.systemRoles) { systemRoles = data.systemRoles; safeStorage.setItem("wfm_system_roles", JSON.stringify(systemRoles)); }
+      if (data.liveStatus) { safeStorage.setItem("wfm_live_agent_status", JSON.stringify(data.liveStatus)); }
 
-      if (typeof currentUser !== 'undefined' && currentUser) {
+      // Restore active session if user was logged in prior to page load/refresh
+      if (!currentUser) {
+        const savedUname = safeStorage.getItem("wfm_current_user_id");
+        if (savedUname) {
+          const found = users.find(x => x.username.toLowerCase() === savedUname.toLowerCase() || x.id === savedUname);
+          if (found) { currentUser = found; initializeAppView(); }
+        }
+      } else {
         if (typeof isManagerOrAdmin === 'function' && isManagerOrAdmin()) {
           renderDashboard();
           renderAttendance();
@@ -100,7 +105,7 @@
  <!-- ADMIN --> <section id="adminSection" class="hidden">  <div class="card">   <h3>Agent & Credential Management</h3>   <div class="table-scroll"><table class="data-table"><thead><tr>    <th>Name</th><th>Username</th><th>Email</th><th>Agency</th><th>Department</th><th>Queue</th><th>Shift</th><th>Role</th><th>Action</th>   </tr></thead><tbody id="adminBody"></tbody></table></div>  </div> </section>
  <!-- SETTINGS TAB (ROLE MANAGEMENT & PERMISSIONS CONFIGURATION) --> <section id="settingsSection" class="hidden">  <div class="card">   <h2 style="margin-top:0;margin-bottom:6px">System Role & Access Settings</h2>   <p style="color:var(--muted);font-size:13px;margin-top:0;margin-bottom:18px">    Configure end-to-end Read/Write permissions for WFM Admin, Team Leaders, Agents, and Custom System Roles.   </p>
    <div style="display:grid;grid-template-columns:1fr 2fr;gap:18px">    <div style="background:#f8fafc;padding:16px;border-radius:12px;border:1px solid var(--border)">     <h3 style="margin-top:0;font-size:15px">Create New System Role</h3>     <div class="field">      <label>Role Key / ID</label>      <input id="newRoleKey" placeholder="e.g. team_leader">     </div>     <div class="field">      <label>Role Display Label</label>      <input id="newRoleLabel" placeholder="e.g. Team Leader">     </div>     <div class="field">      <label>Access Matrix Mode</label>      <select id="newRoleAccessMode">       <option value="write">Full Read & Write Access (WFM Admin)</option>       <option value="read">View & Download All Agents Access (Team Leader)</option>       <option value="agent">Self Only Access (Agent)</option>      </select>     </div>     <button class="primary" style="width:100%;margin-top:8px" onclick="createCustomRole()">+ Create & Save Role</button>    </div>
-    <div>     <h3 style="margin-top:0;font-size:15px">Configured Role Permissions Matrix</h3>     <div class="table-scroll">      <table class="data-table">       <thead>        <tr>         <th>Role Name</th>         <th>Role ID</th>         <th>Schedule Plotter</th>         <th>Reporting & Attendance</th>         <th>CSV / Excel Downloads</th>         <th>System Settings</th>        </tr>       </thead>       <tbody id="rolesTableBody"></tbody>      </table>     </div>    </div>   </div>  </div> </section></main></section>
+    <div>     <h3 style="margin-top:0;font-size:15px">Configured Role Permissions Matrix</h3>     <div class="table-scroll">      <table class="data-table">       <thead>        <tr>         <th>Role Name</th>         <th>Role ID</th>         <th>Schedule Plotter</th>         <th>Reporting & Attendance</th>         <th>CSV / Excel Downloads</th>         <th>System Settings</th>        </tr>       </thead>       <tbody id="rolesTableBody"></tbody>      </table>     </div>    </div>   </div>  </div> console</section></main></section>
 <script>
 /* LOCAL FALLBACK STORAGE WRAPPER */
 const __memoryStore = {};
@@ -405,8 +410,6 @@ function openTimePlotModal(agentId, clickedMin){
   document.getElementById("plotError").textContent=""; 
   document.getElementById("timePlotModal").classList.remove("hidden");
 }
-
-function closeTimePlotModal(){ document.getElementById("timePlotModal").classList.add("hidden");}
 
 function confirmTimePlot(){ 
   const auxKey=document.getElementById("modalAuxSelect").value; 
@@ -1376,6 +1379,7 @@ function formatTimeDisplay(rawVal) {
   return str || "N/A";
 }
 
+/* REAL-TIME ACCUMULATION ENGINE FOR REPORTING DASHBOARD AUX TOTALS */
 function renderDashboard(){ 
   if(!currentUser||!isManagerOrAdmin())return; 
   syncStorageData(); 
@@ -1384,14 +1388,18 @@ function renderDashboard(){
   let liveStatus = JSON.parse(safeStorage.getItem("wfm_live_agent_status") || "{}"); 
   let online=0,availableSec=0,breakSec=0; 
   let rows=""; 
+
   agents.forEach(a=>{  
-    const logs = auxLogs[date+"_"+a.username.toLowerCase()] || auxLogs[date+"_"+a.id] || [];  
+    const uKey = a.username.toLowerCase();
+    const logs = auxLogs[date+"_"+uKey] || auxLogs[date+"_"+a.id] || [];  
     let avail=0,brk=0,lnch=0,oth=0;  
+
+    // 1. Calculate sum of completed historical AUX sessions for target date
     logs.forEach(l=>{   
-      if(l.auxKey==="available") avail+=l.durationSec;   
-      else if(l.auxKey==="break") brk+=l.durationSec;   
-      else if(l.auxKey==="lunch") lnch+=l.durationSec;   
-      else oth+=l.durationSec;  
+      if(l.auxKey==="available") avail += l.durationSec;   
+      else if(l.auxKey==="break") brk += l.durationSec;   
+      else if(l.auxKey==="lunch") lnch += l.durationSec;   
+      else oth += l.durationSec;  
     });
 
     let agentLiveAuxKey = "unavailable";  
@@ -1401,25 +1409,23 @@ function renderDashboard(){
     if(a.username.toLowerCase() === currentUser.username.toLowerCase()){   
       agentLiveAuxKey = currentActiveAux;   
       liveStartTimeMs = auxStartTime;   
-      if(date === today()){    
-        const currentElapsed = Math.floor((Date.now() - auxStartTime) / 1000);    
-        if(currentActiveAux === "available") avail += currentElapsed;    
-        else if(currentActiveAux === "break") brk += currentElapsed;    
-        else if(currentActiveAux === "lunch") lnch += currentElapsed;    
-        else oth += currentElapsed;   
-      }  
     } else if(liveObj){   
       agentLiveAuxKey = liveObj.auxKey || "unavailable";   
       liveStartTimeMs = liveObj.startTime;   
-      if(date === today() && liveObj.startTime){    
-        const currentElapsed = Math.floor((Date.now() - liveObj.startTime) / 1000);    
-        if(agentLiveAuxKey === "available") avail += currentElapsed;    
-        else if(agentLiveAuxKey === "break") brk += currentElapsed;    
-        else if(agentLiveAuxKey === "lunch") lnch += currentElapsed;    
-        else oth += currentElapsed;   
-      }  
+    }
+
+    // 2. Dynamically add active ongoing session duration into dashboard totals
+    if(date === today() && agentLiveAuxKey !== "unavailable" && liveStartTimeMs){  
+      const currentElapsed = Math.max(0, Math.floor((Date.now() - liveStartTimeMs) / 1000));  
+      if(agentLiveAuxKey === "available") avail += currentElapsed;  
+      else if(agentLiveAuxKey === "break") brk += currentElapsed;  
+      else if(agentLiveAuxKey === "lunch") lnch += currentElapsed;  
+      else oth += currentElapsed;  
     }  
-    availableSec+=avail; breakSec+=brk;  
+
+    availableSec += avail; 
+    breakSec += brk;  
+
     if(logs.length>0 || (date === today() && agentLiveAuxKey !== "unavailable")) online++;
 
     const currentAuxObj = auxByKey(agentLiveAuxKey);  
