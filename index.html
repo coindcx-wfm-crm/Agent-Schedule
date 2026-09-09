@@ -35,7 +35,7 @@
   const db = getFirestore(app);
   const globalDocRef = doc(db, "wfm_store", "central_state");
 
-  // Real-time Cloud Data Listener (Broadcasts edits across all logged-in devices instantly)
+  // Real-time Cloud Data Listener (Broadcasts edits & AUX changes across all logged-in devices instantly)
   onSnapshot(globalDocRef, (docSnap) => {
     if (docSnap.exists()) {
       const data = docSnap.data();
@@ -44,6 +44,9 @@
       if (data.grid15mSchedules) grid15mSchedules = data.grid15mSchedules;
       if (data.auxLogs) auxLogs = data.auxLogs;
       if (data.systemRoles) systemRoles = data.systemRoles;
+      if (data.liveStatus) {
+        safeStorage.setItem("wfm_live_agent_status", JSON.stringify(data.liveStatus));
+      }
 
       if (typeof currentUser !== 'undefined' && currentUser) {
         if (typeof isManagerOrAdmin === 'function' && isManagerOrAdmin()) {
@@ -65,7 +68,8 @@
       continuousSchedules: typeof continuousSchedules !== 'undefined' ? continuousSchedules : {},
       grid15mSchedules: typeof grid15mSchedules !== 'undefined' ? grid15mSchedules : {},
       auxLogs: typeof auxLogs !== 'undefined' ? auxLogs : {},
-      systemRoles: typeof systemRoles !== 'undefined' ? systemRoles : []
+      systemRoles: typeof systemRoles !== 'undefined' ? systemRoles : [],
+      liveStatus: __safeParse(safeStorage.getItem("wfm_live_agent_status"), {})
     };
 
     try {
@@ -487,6 +491,7 @@ function changeActiveAux(key, preservedStartTime){
   updateLiveTimer(); 
   renderAgentHistory(); 
   if(currentUser && isManagerOrAdmin()){ renderDashboard(); renderAttendance(); }
+  saveAll();
 }
 
 function logAuxSession(userId, date, auxKey, start, end, durationSec){ 
@@ -545,6 +550,7 @@ function getAgentIdentifiers(agent) {
   return ids;
 }
 
+/* UNIFIED CANONICAL ACCOUNT KEY LOOKUP ENGINE */
 function getAgentBlocks(agentId, date){ 
   syncStorageData(); 
   const agent = users.find(u => u.id === agentId || u.username === agentId || u.email === agentId) || currentUser; 
@@ -615,18 +621,21 @@ function getAgentScheduleDates(agentId){
   return arr.length > 0 ? arr : [today()];
 }
 
+/* RENDER PLOTTER WITH AGENT SCHEDULING ISOLATION & DYNAMIC FILTERING */
 function renderPlot(){ 
   syncStorageData(); 
   renderTimelineHeader(); 
   let agents=users.filter(u=>u.role==="agent" || u.role==="team_leader");
 
   if(currentUser && !isManagerOrAdmin()){  
+    // Filter agents list strictly to currentUser account to enforce Agent schedule isolation
     let targetAgent = agents.find(u =>    
       u.id === currentUser.id ||    
       u.username.toLowerCase() === currentUser.username.toLowerCase() ||    
       (u.email && currentUser.email && u.email.toLowerCase() === currentUser.email.toLowerCase())  
     );  
     if(!targetAgent) targetAgent = currentUser;    
+    agents = [targetAgent];
     const agentDates = getAgentScheduleDates(targetAgent.id);  
     if(activePlotMode==="timeline"){ renderAgentAllDaysTimelineView(targetAgent, agentDates); }  
     else { renderAgentAllDays15mGridView(targetAgent, agentDates); } 
