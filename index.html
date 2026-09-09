@@ -147,12 +147,7 @@ let systemRoles = __safeParse(safeStorage.getItem("wfm_system_roles"), null) || 
 let ROLE_OPTIONS = systemRoles.map(r => r.label);
 
 const defaultUsers = [ 
-  {id:"wfm@coindcx.com",name:"WFM Admin",username:"wfm@coindcx.com",email:"wfm@coindcx.com",password:"Admin@007",role:"admin",agency:"Internal",unit:"WFM",department:"WFM",queue:"All",shift:"09:00-18:00",requirePasswordReset:false}, 
-  {id:"agent001@company.com",name:"Rahul Sharma",username:"agent001",email:"agent001@company.com",password:"Agent@123",role:"agent",agency:"RM",unit:"Support",department:"CS Delivery",queue:"Livechat",shift:"08:00-17:00",requirePasswordReset:false}, 
-  {id:"agent002@company.com",name:"Priya Nair",username:"agent002",email:"agent002@company.com",password:"Agent@123",role:"agent",agency:"RM",unit:"Support",department:"Quality",queue:"Email",shift:"11:00-20:00",requirePasswordReset:false}, 
-  {id:"agent003@company.com",name:"Amit Kumar",username:"agent003",email:"agent003@company.com",password:"Agent@123",role:"agent",agency:"CNX",unit:"Support",department:"Growth",queue:"Campaign Specialist",shift:"15:00-00:00",requirePasswordReset:false}, 
-  {id:"agent004@company.com",name:"Sneha Das",username:"agent004",email:"agent004@company.com",password:"Agent@123",role:"agent",agency:"FiveS",unit:"Support",department:"Training",queue:"Calling Sales",shift:"23:00-08:00",requirePasswordReset:false}, 
-  {id:"tl001@company.com",name:"Team Lead CS",username:"tl001",email:"tl001@company.com",password:"Agent@123",role:"team_leader",agency:"Internal",unit:"Support",department:"Growth",queue:"Campaign Specialist",shift:"09:00-18:00",requirePasswordReset:false}
+  {id:"wfm@coindcx.com",name:"WFM Admin",username:"wfm@coindcx.com",email:"wfm@coindcx.com",password:"Admin@007",role:"admin",agency:"Internal",unit:"WFM",department:"WFM",queue:"All",shift:"09:00-18:00",requirePasswordReset:false},
 ];
 
 let users = __safeParse(safeStorage.getItem("wfm_users"), null) || defaultUsers;
