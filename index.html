@@ -13,7 +13,7 @@
 /* AUX Colors */.unavailable{background:#ef4444;color:#fff}.available{background:#22c55e;color:#063b19}.break{background:#3b82f6;color:#fff}.lunch{background:#f59e0b;color:#421f00}.bio{background:#06b6d4;color:#00323b}.breakpending{background:#fde047;color:#3f3000}.meeting{background:#a855f7;color:#fff}.tlfeedback{background:#ec4899;color:#fff}.qafeedback{background:#8b5cf6;color:#fff}.nht{background:#14b8a6;color:#fff}.pkt{background:#0ea5e9;color:#fff}.training{background:#6366f1;color:#fff}.coaching{background:#f97316;color:#fff}.offline{background:#64748b;color:#fff}
 /* Leave / Off-time Schedule-only AUX Colors */.weekoff{background:#64748b;color:#fff}.plannedleave{background:#0284c7;color:#fff}.sickleave{background:#e11d48;color:#fff}.ncns{background:#881337;color:#fff}.unpaidleave{background:#475569;color:#fff}.casualleave{background:#d97706;color:#fff}.holiday{background:#059669;color:#fff}.compoff{background:#7c3aed;color:#fff}.unplannedleave{background:#b91c1c;color:#fff}.empty{background:#fff}
 /* Agent timer */.agent-panel{display:grid;grid-template-columns:2fr 1fr;gap:14px}.current-status{display:flex;align-items:center;justify-content:space-between;padding:18px;border-radius:12px;background:#f8fafc}.status-code{font-size:28px;font-weight:900}.status-timer{font-size:30px;font-weight:900;font-variant-numeric:tabular-nums}.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.kpi{padding:14px;border:1px solid var(--border);border-radius:10px}.kpi b{display:block;font-size:20px}.kpi small{color:var(--muted)}.summary-table{width:100%;border-collapse:collapse}.summary-table th,.summary-table td{padding:9px;border-bottom:1px solid var(--border);text-align:left;font-size:13px}
-/* Admin & Tables */.table-scroll{overflow:auto}.data-table{width:100%;border-collapse:collapse;min-width:800px}.data-table th,.data-table td{padding:9px;border-bottom:1px solid var(--border);font-size:13px;text-align:left}@media(max-width:900px){.agent-panel{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,1fr)}.header-center-clock{position:static;transform:none}.login-brand-watermark{display:none}}</style><script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+/* Admin & Tables */.table-scroll{overflow:auto}.data-table{width:100%;border-collapse:collapse;min-width:1400px}.data-table th,.data-table td{padding:9px;border-bottom:1px solid var(--border);font-size:12px;text-align:left}@media(max-width:900px){.agent-panel{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,1fr)}.header-center-clock{position:static;transform:none}.login-brand-watermark{display:none}}</style><script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
 <!-- FIREBASE CLOUD FIRESTORE AUTO-SYNC MODULE -->
 <script type="module">
@@ -22,12 +22,12 @@
 
   // REPLACE THIS BLOCK WITH YOUR CONFIG FROM FIREBASE CONSOLE PROJECT SETTINGS
   const firebaseConfig = {
-    apiKey: "AIzaSyD-PASTE_YOUR_ACTUAL_API_KEY_HERE",
+    apiKey: "AIzaSyCNeXrdwnxQYgB3O9UNZY7-6oiLojhs9MU",
     authDomain: "coindcx-wfm-crm.firebaseapp.com",
     projectId: "coindcx-wfm-crm",
-    storageBucket: "coindcx-wfm-crm.appspot.com",
-    messagingSenderId: "123456789012",
-    appId: "1:123456789012:web:abcdef123456"
+    storageBucket: "coindcx-wfm-crm.firebasestorage.app",
+    messagingSenderId: "78751965396",
+    appId: "1:78751965396:web:442b6c60d305e780c79b41"
   };
 
   // Initialize Firebase & Cloud Firestore
@@ -35,7 +35,7 @@
   const db = getFirestore(app);
   const globalDocRef = doc(db, "wfm_store", "central_state");
 
-  // Real-time Cloud Data Listener (Broadcasts edits & live AUX changes across all devices)
+  // Real-time Cloud Data Listener (Broadcasts edits, live AUX & dashboard totals across all devices)
   onSnapshot(globalDocRef, (docSnap) => {
     if (docSnap.exists()) {
       const data = docSnap.data();
@@ -44,7 +44,10 @@
       if (data.grid15mSchedules) { grid15mSchedules = data.grid15mSchedules; safeStorage.setItem("wfm_grid15m_schedules", JSON.stringify(grid15mSchedules)); }
       if (data.auxLogs) { auxLogs = data.auxLogs; safeStorage.setItem("wfm_aux_logs", JSON.stringify(auxLogs)); }
       if (data.systemRoles) { systemRoles = data.systemRoles; safeStorage.setItem("wfm_system_roles", JSON.stringify(systemRoles)); }
-      if (data.liveStatus) { safeStorage.setItem("wfm_live_agent_status", JSON.stringify(data.liveStatus)); }
+      if (data.liveStatus) { 
+        safeStorage.setItem("wfm_live_agent_status", JSON.stringify(data.liveStatus));
+        syncLiveAuxTopPill(data.liveStatus);
+      }
 
       // Restore active session if user was logged in prior to page load/refresh
       if (!currentUser) {
@@ -100,12 +103,10 @@
   <div id="timelinePlotWrap" class="plot-wrap">   <div class="plot-grid">    <div>     <div class="agent-head-cell">      <span id="agentHeadLabel">Agent Info / All Uploaded Schedule Dates</span>      <small id="copiedNotice" style="color:#2563eb;font-weight:bold"></small>     </div>     <div id="agentRowsContainer"></div>    </div>    <div>     <div class="timeline-header" id="timelineHeader"></div>     <div id="timelineTracksContainer"></div>    </div>   </div>  </div>
   <div id="grid15mPlotWrap" class="plot-wrap hidden">   <div id="grid15mContainer" class="plot-grid-15m"></div>  </div> </section>
  <!-- MY STATUS & HISTORICAL CALENDAR --> <section id="agentSection" class="hidden">  <div class="toolbar">   <label style="font-size:13px;font-weight:700">Historical Date Filter:</label>   <input id="historyDate" type="date" onchange="renderAgentHistory()">   <button class="secondary" onclick="resetHistoryToToday()">Today</button>  </div>  <div class="agent-panel">   <div class="card">    <h2 style="margin-top:0">Live AUX Running Status</h2>    <div class="current-status">     <div><div style="color:#667085;font-size:12px">Current AUX</div><div id="currentAux" class="status-code">-</div></div>     <div style="text-align:right"><div style="color:#667085;font-size:12px">Running Duration</div><div id="currentTimer" class="status-timer">00:00:00</div></div>    </div>    <p style="font-size:12px;color:#667085">Changes made in the top-right status dropdown automatically calculate and record live session durations.</p>   </div>   <div class="card">    <h3 style="margin-top:0">Total Summary (<span id="historyDateLabel"></span>)</h3>    <div id="todaySummary"></div>   </div>  </div>  <div class="card">   <h3>Historical AUX Logs (<span id="historyLogLabel"></span>)</h3>   <div id="agentUsageTable"></div>  </div> </section>
- <!-- DASHBOARD --> <section id="dashboardSection" class="hidden">  <div class="toolbar">   <input id="reportDate" type="date" onchange="renderDashboard()">   <button class="secondary managerOnly" onclick="exportCSV()">Export Detailed AUX Report</button>  </div>  <div id="dashboardKpis" class="kpis"></div>  <div class="card">   <h3>Agent Status Summary</h3>   <div class="table-scroll"><table class="data-table"><thead><tr>    <th>Agent</th><th>Agency</th><th>Queue</th><th>Shift</th><th>Current AUX</th>    <th>Available</th><th>Break</th><th>Lunch</th><th>Other AUX</th>   </tr></thead><tbody id="dashboardBody"></tbody></table></div>  </div> </section>
+ <!-- DASHBOARD WITH EXPANDED REAL-TIME AUX TRACKING COLUMNS --> <section id="dashboardSection" class="hidden">  <div class="toolbar">   <input id="reportDate" type="date" onchange="renderDashboard()">   <button class="secondary managerOnly" onclick="exportCSV()">Export Detailed AUX Report</button>  </div>  <div id="dashboardKpis" class="kpis"></div>  <div class="card">   <h3>Agent Status Summary</h3>   <div class="table-scroll"><table class="data-table"><thead><tr>    <th>Agent</th><th>Agency</th><th>Queue</th><th>Shift</th><th>Current AUX</th>    <th>Available</th><th>Break</th><th>Lunch</th><th>Bio Break</th><th>Team Meeting</th>    <th>TL Feedback</th><th>QA Feedback</th><th>NHT Training</th><th>PKT Training</th>    <th>Training</th><th>Coaching</th><th>Unavailable</th><th>Offline</th>   </tr></thead><tbody id="dashboardBody"></tbody></table></div>  </div> </section>
  <!-- AGENT ATTENDANCE SUB-DASHBOARD --> <section id="attendanceSection" class="hidden">  <div class="card">   <div class="toolbar" style="margin-bottom:14px; gap:12px;">    <label style="font-size:13px;font-weight:700">From Date:</label>    <input id="attendanceFromDate" type="date" onchange="renderAttendance()" oninput="renderAttendance()">    <label style="font-size:13px;font-weight:700">To Date:</label>    <input id="attendanceToDate" type="date" onchange="renderAttendance()" oninput="renderAttendance()">    <input id="searchAttendanceAgent" placeholder="Search agent name/username..." oninput="renderAttendance()">    <button class="secondary managerOnly" onclick="exportAttendanceCSV()">Export Attendance CSV</button>   </div>   <h3 style="margin-top:0">Agent Daily First Login & Last Logout Logs</h3>   <div class="table-scroll"><table class="data-table"><thead><tr>    <th>Agent Name</th><th>Username / Email</th><th>Start Date</th><th>End Date</th><th>Assigned Shift</th>    <th>First Available AUX Timestamp</th><th>Last Offline AUX Timestamp</th>   </tr></thead><tbody id="attendanceBody"></tbody></table></div>  </div> </section>
  <!-- ADMIN --> <section id="adminSection" class="hidden">  <div class="card">   <h3>Agent & Credential Management</h3>   <div class="table-scroll"><table class="data-table"><thead><tr>    <th>Name</th><th>Username</th><th>Email</th><th>Agency</th><th>Department</th><th>Queue</th><th>Shift</th><th>Role</th><th>Action</th>   </tr></thead><tbody id="adminBody"></tbody></table></div>  </div> </section>
- <!-- SETTINGS TAB (ROLE MANAGEMENT & PERMISSIONS CONFIGURATION) --> <section id="settingsSection" class="hidden">  <div class="card">   <h2 style="margin-top:0;margin-bottom:6px">System Role & Access Settings</h2>   <p style="color:var(--muted);font-size:13px;margin-top:0;margin-bottom:18px">    Configure end-to-end Read/Write permissions for WFM Admin, Team Leaders, Agents, and Custom System Roles.   </p>
-   <div style="display:grid;grid-template-columns:1fr 2fr;gap:18px">    <div style="background:#f8fafc;padding:16px;border-radius:12px;border:1px solid var(--border)">     <h3 style="margin-top:0;font-size:15px">Create New System Role</h3>     <div class="field">      <label>Role Key / ID</label>      <input id="newRoleKey" placeholder="e.g. team_leader">     </div>     <div class="field">      <label>Role Display Label</label>      <input id="newRoleLabel" placeholder="e.g. Team Leader">     </div>     <div class="field">      <label>Access Matrix Mode</label>      <select id="newRoleAccessMode">       <option value="write">Full Read & Write Access (WFM Admin)</option>       <option value="read">View & Download All Agents Access (Team Leader)</option>       <option value="agent">Self Only Access (Agent)</option>      </select>     </div>     <button class="primary" style="width:100%;margin-top:8px" onclick="createCustomRole()">+ Create & Save Role</button>    </div>
-    <div>     <h3 style="margin-top:0;font-size:15px">Configured Role Permissions Matrix</h3>     <div class="table-scroll">      <table class="data-table">       <thead>        <tr>         <th>Role Name</th>         <th>Role ID</th>         <th>Schedule Plotter</th>         <th>Reporting & Attendance</th>         <th>CSV / Excel Downloads</th>         <th>System Settings</th>        </tr>       </thead>       <tbody id="rolesTableBody"></tbody>      </table>     </div>    </div>   </div>  </div> console</section></main></section>
+ <!-- SETTINGS TAB (ROLE MANAGEMENT & PERMISSIONS CONFIGURATION) --> <section id="settingsSection" class="hidden">  <div class="card">   <h2 style="margin-top:0;margin-bottom:6px">System Role & Access Settings</h2>   <p style="color:var(--muted);font-size:13px;margin-top:0;margin-bottom:18px">    Configure end-to-end Read/Write permissions for WFM Admin, Team Leaders, Agents, and Custom System Roles.   </p>   <div style="display:grid;grid-template-columns:1fr 2fr;gap:18px">    <div style="background:#f8fafc;padding:16px;border-radius:12px;border:1px solid var(--border)">     <h3 style="margin-top:0;font-size:15px">Create New System Role</h3>     <div class="field">      <label>Role Key / ID</label>      <input id="newRoleKey" placeholder="e.g. team_leader">     </div>     <div class="field">      <label>Role Display Label</label>      <input id="newRoleLabel" placeholder="e.g. Team Leader">     </div>     <div class="field">      <label>Access Matrix Mode</label>      <select id="newRoleAccessMode">       <option value="write">Full Read & Write Access (WFM Admin)</option>       <option value="read">View & Download All Agents Access (Team Leader)</option>       <option value="agent">Self Only Access (Agent)</option>      </select>     </div>     <button class="primary" style="width:100%;margin-top:8px" onclick="createCustomRole()">+ Create & Save Role</button>    </div>    <div>     <h3 style="margin-top:0;font-size:15px">Configured Role Permissions Matrix</h3>     <div class="table-scroll">      <table class="data-table">       <thead>        <tr>         <th>Role Name</th>         <th>Role ID</th>         <th>Schedule Plotter</th>         <th>Reporting & Attendance</th>         <th>CSV / Excel Downloads</th>         <th>System Settings</th>        </tr>       </thead>       <tbody id="rolesTableBody"></tbody>      </table>     </div>    </div>   </div>  </div> </section></main></section>
 <script>
 /* LOCAL FALLBACK STORAGE WRAPPER */
 const __memoryStore = {};
@@ -411,6 +412,8 @@ function openTimePlotModal(agentId, clickedMin){
   document.getElementById("timePlotModal").classList.remove("hidden");
 }
 
+function closeTimePlotModal(){ document.getElementById("timePlotModal").classList.add("hidden");}
+
 function confirmTimePlot(){ 
   const auxKey=document.getElementById("modalAuxSelect").value; 
   const startVal=document.getElementById("modalStartTime").value; 
@@ -458,6 +461,21 @@ function renderAuxDropdownList(items){
     item.onclick=()=>{ changeActiveAux(a.key); document.getElementById("auxDropdownMenu").classList.add("hidden"); };  
     list.appendChild(item); 
   });
+}
+
+function syncLiveAuxTopPill(liveStatus) {
+  if (!currentUser || !liveStatus) return;
+  const userKey = currentUser.username.toLowerCase();
+  const myStatus = liveStatus[userKey];
+  if (myStatus && myStatus.auxKey) {
+    currentActiveAux = myStatus.auxKey;
+    if (myStatus.startTime) auxStartTime = myStatus.startTime;
+    const a = auxByKey(currentActiveAux);
+    const pillDot = document.getElementById("pillDot");
+    const pillText = document.getElementById("pillText");
+    if (pillDot) pillDot.style.background = a?.color || "#ef4444";
+    if (pillText) pillText.textContent = a?.label || "Unavailable";
+  }
 }
 
 function changeActiveAux(key, preservedStartTime){ 
@@ -1379,7 +1397,7 @@ function formatTimeDisplay(rawVal) {
   return str || "N/A";
 }
 
-/* REAL-TIME ACCUMULATION ENGINE FOR REPORTING DASHBOARD AUX TOTALS */
+/* EXPANDED REAL-TIME REPORTING DASHBOARD WITH DYNAMIC AUX ACCUMULATION */
 function renderDashboard(){ 
   if(!currentUser||!isManagerOrAdmin())return; 
   syncStorageData(); 
@@ -1389,17 +1407,25 @@ function renderDashboard(){
   let online=0,availableSec=0,breakSec=0; 
   let rows=""; 
 
+  // Specific AUX keys tracked across columns
+  const trackedAuxList = [
+    "available", "break", "lunch", "bio", "meeting", 
+    "tlfeedback", "qafeedback", "nht", "pkt", "training", "coaching", "unavailable", "offline"
+  ];
+
   agents.forEach(a=>{  
     const uKey = a.username.toLowerCase();
     const logs = auxLogs[date+"_"+uKey] || auxLogs[date+"_"+a.id] || [];  
-    let avail=0,brk=0,lnch=0,oth=0;  
+    
+    // Map to hold cumulative durations for each specific AUX code
+    const auxTotals = {};
+    trackedAuxList.forEach(k => auxTotals[k] = 0);
 
-    // 1. Calculate sum of completed historical AUX sessions for target date
+    // 1. Calculate sum of completed historical AUX sessions
     logs.forEach(l=>{   
-      if(l.auxKey==="available") avail += l.durationSec;   
-      else if(l.auxKey==="break") brk += l.durationSec;   
-      else if(l.auxKey==="lunch") lnch += l.durationSec;   
-      else oth += l.durationSec;  
+      if(auxTotals[l.auxKey] !== undefined) {
+        auxTotals[l.auxKey] += l.durationSec;
+      }
     });
 
     let agentLiveAuxKey = "unavailable";  
@@ -1414,17 +1440,16 @@ function renderDashboard(){
       liveStartTimeMs = liveObj.startTime;   
     }
 
-    // 2. Dynamically add active ongoing session duration into dashboard totals
+    // 2. Dynamically add active ongoing session duration into specific AUX total
     if(date === today() && agentLiveAuxKey !== "unavailable" && liveStartTimeMs){  
       const currentElapsed = Math.max(0, Math.floor((Date.now() - liveStartTimeMs) / 1000));  
-      if(agentLiveAuxKey === "available") avail += currentElapsed;  
-      else if(agentLiveAuxKey === "break") brk += currentElapsed;  
-      else if(agentLiveAuxKey === "lunch") lnch += currentElapsed;  
-      else oth += currentElapsed;  
+      if(auxTotals[agentLiveAuxKey] !== undefined) {
+        auxTotals[agentLiveAuxKey] += currentElapsed;
+      }
     }  
 
-    availableSec += avail; 
-    breakSec += brk;  
+    availableSec += auxTotals["available"]; 
+    breakSec += auxTotals["break"];  
 
     if(logs.length>0 || (date === today() && agentLiveAuxKey !== "unavailable")) online++;
 
@@ -1435,7 +1460,13 @@ function renderDashboard(){
       liveTimerText = ` (${fmt(currentElapsed)})`;  
     }
 
-    rows+=`<tr><td>${esc(a.name)}</td><td>${esc(a.agency)}</td><td>${esc(a.queue)}</td><td>${esc(a.shift)}</td> <td><span class="status-dot" style="background:${currentAuxObj?.color||'#ef4444'}"></span> <b>${esc(currentAuxObj?.label||'Unavailable')}${liveTimerText}</b></td> <td>${fmt(avail)}</td><td>${fmt(brk)}</td> <td>${fmt(lnch)}</td><td>${fmt(oth)}</td></tr>`; 
+    // Construct table cells for each tracked AUX status
+    let auxCellsHtml = "";
+    trackedAuxList.forEach(k => {
+      auxCellsHtml += `<td>${fmt(auxTotals[k])}</td>`;
+    });
+
+    rows+=`<tr><td>${esc(a.name)}</td><td>${esc(a.agency)}</td><td>${esc(a.queue)}</td><td>${esc(a.shift)}</td> <td><span class="status-dot" style="background:${currentAuxObj?.color||'#ef4444'}"></span> <b>${esc(currentAuxObj?.label||'Unavailable')}${liveTimerText}</b></td> ${auxCellsHtml}</tr>`; 
   });
 
   document.getElementById("dashboardKpis").innerHTML=` <div class="kpi"><b>${agents.length}</b><small>Total Tracked Users</small></div> <div class="kpi"><b>${online}</b><small>Active Users Logged</small></div> <div class="kpi"><b>${fmt(availableSec)}</b><small>Total Available Time</small></div> <div class="kpi"><b>${fmt(breakSec)}</b><small>Total Break Time</small></div>`; 
