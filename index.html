@@ -1,3 +1,4 @@
+
 <!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>CoinDCX | WFM Schedule Plotter</title><style>:root{ --bg:#f5f7fb; --card:#fff; --text:#172033; --muted:#667085; --border:#dfe4ec; --primary:#0052ff; --primary-hover:#0038b8; --danger:#dc2626; --rowH:52px; --cellW:56px;}*{box-sizing:border-box}body{margin:0;font-family:Inter,Arial,sans-serif;background:var(--bg);color:var(--text);user-select:none}button,input,select{font:inherit}button{cursor:pointer;border:0}.hidden{display:none!important}
 /* ENTERPRISE COINDCX CRM LOGIN SCREEN */.login-screen{  min-height:100vh;  display:flex;  align-items:center;  justify-content:center;  padding:24px;  background: radial-gradient(circle at 50% 30%, #1e3a8a 0%, #0f172a 50%, #080d1a 100%);  position:relative;  overflow:hidden;}.login-screen::before {  content: "";  position: absolute;  top: 0; left: 0; right: 0; bottom: 0;  background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 0);  background-size: 28px 28px;  pointer-events: none;}.login-brand-watermark {  position: absolute;  right: 6vw;  top: 6vh;  font-size: 48px;  font-weight: 900;  letter-spacing: -1.5px;  color: #ffffff;  opacity: 0.95;  text-shadow: 0 10px 30px rgba(0,0,0,0.5);  display: flex;  align-items: center;  gap: 14px;}.login-brand-watermark .coindcx-blue { color: #ffffff; }.login-brand-watermark .coindcx-red { color: #f97316; }.login-brand-watermark span.sub-badge {  font-size: 16px;  font-weight: 600;  color: #60a5fa;  background: rgba(37, 99, 235, 0.2);  padding: 4px 12px;  border-radius: 999px;  border: 1px solid rgba(96, 165, 250, 0.3);  letter-spacing: 0;}
 .login-card{  width:420px;  background:#ffffff;  border-radius:20px;  padding:36px;  box-shadow:0 25px 60px rgba(0, 0, 0, 0.5);  position:relative;  z-index:10;  border:1px solid rgba(255,255,255,0.15);}
@@ -7,7 +8,6 @@
 /* App Topbar & Centered User Info + Clock */.topbar{height:64px;background:#fff;border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 18px;gap:12px;position:sticky;top:0;z-index:50}.brand{font-weight:800;font-size:18px;margin-right:auto}.header-center-clock{position:absolute;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:10px;background:#f1f5f9;border:1px solid #cbd5e1;border-radius:999px;padding:6px 18px;font-weight:800;font-size:13px;color:#0f172a;box-shadow:0 2px 5px rgba(0,0,0,0.04)}.badge{padding:5px 9px;border-radius:999px;font-size:12px;font-weight:700;background:#eaf2ff;color:#1d4ed8}.container{padding:18px;max-width:100%;overflow:hidden}
 /* Top-Right Live AUX Status Dropdown */.aux-dropdown-container{position:relative;margin-left:auto;display:flex;align-items:center}.aux-status-pill{display:flex;align-items:center;gap:8px;background:#f1f5f9;border:1px solid #cbd5e1;border-radius:999px;padding:6px 14px;font-size:13px;font-weight:800;cursor:pointer;box-shadow:0 2px 5px #0001;transition:all 0.2s}.aux-status-pill:hover{background:#e2e8f0}.status-dot{width:10px;height:10px;border-radius:50%;display:inline-block}.aux-dropdown-menu{position:absolute;top:110%;right:0;width:260px;background:#fff;border:1px solid var(--border);border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,0.15);padding:10px;z-index:200}.aux-search-input{width:100%;padding:8px 12px;border:1px solid #3b82f6;border-radius:8px;margin-bottom:8px;font-size:13px;outline:none}.aux-option-list{max-height:260px;overflow-y:auto;display:flex;flex-direction:column;gap:4px}.aux-option-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;color:#334155}.aux-option-item:hover{background:#f1f5f9}.aux-option-item.active{background:#e2e8f0;font-weight:800}
 /* Toolbar & Tabs */.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:14px}.toolbar input,.toolbar select{padding:9px;border:1px solid var(--border);border-radius:8px;background:#fff}.tabs{display:flex;gap:4px;margin-bottom:14px}.tab{padding:9px 14px;border-radius:8px;background:#e8edf4;font-weight:700}.tab.active{background:var(--primary);color:#fff}.sub-tabs{display:flex;gap:6px;margin-bottom:14px;border-bottom:1px solid var(--border);padding-bottom:8px}.sub-tab{padding:6px 12px;border-radius:6px;background:#f1f5f9;font-size:12px;font-weight:700;color:#475569;border:1px solid #cbd5e1}.sub-tab.active{background:#0052ff;color:#fff;border-color:#0052ff}.card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:14px}.legend{display:flex;gap:7px;flex-wrap:wrap}.legend span{padding:6px 9px;border-radius:6px;font-size:12px;font-weight:700;cursor:grab}
-/* CONTACT BUTTONS STYLING */.contact-group{display:inline-flex;align-items:center;gap:4px;vertical-align:middle}.contact-btn{display:inline-flex;align-items:center;justify-content:center;padding:4px 8px;border-radius:999px;font-size:11px;font-weight:700;text-decoration:none;line-height:1;transition:all 0.15s ease;box-shadow:0 1px 2px rgba(0,0,0,0.08);cursor:pointer}.contact-btn:hover{transform:translateY(-1px);box-shadow:0 2px 4px rgba(0,0,0,0.15)}.btn-call{background:#2563eb;color:#ffffff!important}.btn-call:hover{background:#1d4ed8}.btn-wa{background:#16a34a;color:#ffffff!important}.btn-wa:hover{background:#15803d}.btn-sms{background:#64748b;color:#ffffff!important}.btn-sms:hover{background:#475569}.compact-contact .contact-btn{padding:3px 6px;font-size:10px}.no-phone-tag{font-size:10px;font-weight:600;color:#94a3b8;font-style:italic}
 /* MODE 1: Continuous 24-Hour Timeline Plotter */.plot-wrap{border:1px solid var(--border);border-radius:10px;background:#fff;overflow:auto;max-height:70vh}.plot-grid{display:grid;grid-template-columns:360px 1440px;min-width:1800px}.timeline-header{display:flex;height:45px;background:#f8fafc;border-bottom:1px solid var(--border);border-right:1px solid var(--border)}.hour-tick{width:60px;flex-shrink:0;border-right:1px solid #e2e8f0;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;color:#64748b}.agent-head-cell{position:sticky;left:0;z-index:20;background:#f8fafc;border-right:1px solid var(--border);border-bottom:1px solid var(--border);height:45px;padding:10px;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:space-between}.agent-row-label{position:sticky;left:0;z-index:10;background:#fff;border-right:1px solid var(--border);border-bottom:1px solid var(--border);height:var(--rowH);padding:6px 10px;display:flex;align-items:center;justify-content:space-between;gap:8px}.agent-info{min-width:0}.agent-name{font-weight:700;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.agent-meta{font-size:10px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.timeline-track-container{position:relative;height:var(--rowH);background:#fafafa;border-bottom:1px solid var(--border);width:1440px;overflow:hidden;cursor:crosshair}.timeline-grid-overlay{position:absolute;top:0;bottom:0;left:0;right:0;display:flex;pointer-events:none}.grid-hour{width:60px;border-right:1px dashed #e2e8f0;height:100%}
 /* AUX Block Styling */.aux-block{position:absolute;top:6px;bottom:6px;border-radius:6px;padding:2px 6px;font-size:10px;font-weight:800;color:#fff;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 5px rgba(0,0,0,0.25);cursor:grab;overflow:hidden;white-space:nowrap;transition:box-shadow 0.2s}.aux-block:active{cursor:grabbing;box-shadow:0 4px 10px rgba(0,0,0,0.35);z-index:30}.aux-block .delete-btn{font-size:11px;font-weight:900;margin-left:6px;cursor:pointer;background:rgba(0,0,0,0.3);border-radius:50%;width:16px;height:16px;display:inline-flex;align-items:center;justify-content:center;transition:background 0.2s}.aux-block .delete-btn:hover{background:rgba(220,38,38,0.9)}
 /* MODE 2: 15-Minute Grid Interval Plotter */.plot-grid-15m{display:grid;grid-template-columns:360px repeat(96,var(--cellW));min-width:5760px}.time-head-15m{height:45px;background:#f8fafc;border-right:1px solid var(--border);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;writing-mode:vertical-rl;transform:rotate(180deg)}.aux-cell-15m{height:var(--rowH);border-right:1px solid #e8ecf2;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;user-select:none;cursor:pointer}.aux-cell-15m:hover{outline:2px solid #111;outline-offset:-2px}
@@ -23,7 +23,7 @@
 
   // REPLACE THIS BLOCK WITH YOUR CONFIG FROM FIREBASE CONSOLE PROJECT SETTINGS
   const firebaseConfig = {
-    apiKey: "AIzaSyCNeXrdwnxQYgB3O9UNZY7-6oiLojhs9MU",
+   apiKey: "AIzaSyCNeXrdwnxQYgB3O9UNZY7-6oiLojhs9MU",
   authDomain: "coindcx-wfm-crm.firebaseapp.com",
   projectId: "coindcx-wfm-crm",
   storageBucket: "coindcx-wfm-crm.firebasestorage.app",
@@ -63,7 +63,6 @@
           renderDashboard();
           renderAttendance();
           renderPlot();
-          renderAdmin();
         } else {
           renderPlot();
           renderAgentHistory();
@@ -112,10 +111,10 @@
 
    <!-- SUB-TAB TOGGLES FOR ATTENDANCE & INACTIVITY FREQUENCY -->   <div class="sub-tabs">    <button id="subTabSummary" class="sub-tab active" onclick="switchAttendanceSubTab('summary')">Daily Summary Logs</button>    <button id="subTabInactivity" class="sub-tab" onclick="switchAttendanceSubTab('inactivity')">Agent Inactivity Frequency Logs</button>   </div>
 
-   <!-- SUB-PANEL 1: DAILY SUMMARY LOGS -->   <div id="attendanceSummaryView">    <h3 style="margin-top:0">Agent Daily First Login & Last Logout Logs</h3>    <div class="table-scroll"><table class="data-table"><thead><tr>     <th>Agent Name</th><th>Username / Email</th><th>Start Date</th><th>End Date</th><th>Assigned Shift</th><th>Assigned Shift AUX Code</th>     <th>First Available AUX Timestamp</th><th>Last Offline AUX Timestamp</th><th>Contact</th>    </tr></thead><tbody id="attendanceBody"></tbody></table></div>   </div>
+   <!-- SUB-PANEL 1: DAILY SUMMARY LOGS -->   <div id="attendanceSummaryView">    <h3 style="margin-top:0">Agent Daily First Login & Last Logout Logs</h3>    <div class="table-scroll"><table class="data-table"><thead><tr>     <th>Agent Name</th><th>Username / Email</th><th>Start Date</th><th>End Date</th><th>Assigned Shift</th><th>Assigned Shift AUX Code</th>     <th>First Available AUX Timestamp</th><th>Last Offline AUX Timestamp</th>    </tr></thead><tbody id="attendanceBody"></tbody></table></div>   </div>
 
    <!-- SUB-PANEL 2: AGENT INACTIVITY FREQUENCY LOGS -->   <div id="attendanceInactivityView" class="hidden">    <h3 style="margin-top:0">Agent Inactivity Frequency & Duration Timestamp Logs</h3>    <div class="table-scroll"><table class="data-table"><thead><tr>     <th>Agent Name</th><th>Username / Email</th><th>Date</th><th>Occurrence Count</th>     <th>Inactivity Start Timestamp</th><th>Inactivity End Timestamp</th><th>Inactivity Duration</th>    </tr></thead><tbody id="inactivityBody"></tbody></table></div>   </div>  </div> </section>
- <!-- ADMIN --> <section id="adminSection" class="hidden">  <div class="card">   <h3>Agent & Credential Management</h3>   <div class="table-scroll"><table class="data-table"><thead><tr>    <th>Name</th><th>Username</th><th>Email</th><th>Phone</th><th>Contact</th><th>Agency</th><th>Department</th><th>Queue</th><th>Shift</th><th>Role</th><th>Action</th>   </tr></thead><tbody id="adminBody"></tbody></table></div>  </div> </section>
+ <!-- ADMIN --> <section id="adminSection" class="hidden">  <div class="card">   <h3>Agent & Credential Management</h3>   <div class="table-scroll"><table class="data-table"><thead><tr>    <th>Name</th><th>Username</th><th>Email</th><th>Agency</th><th>Department</th><th>Queue</th><th>Shift</th><th>Role</th><th>Action</th>   </tr></thead><tbody id="adminBody"></tbody></table></div>  </div> </section>
  <!-- SETTINGS TAB (ROLE MANAGEMENT & PERMISSIONS CONFIGURATION) --> <section id="settingsSection" class="hidden">  <div class="card">   <h2 style="margin-top:0;margin-bottom:6px">System Role & Access Settings</h2>   <p style="color:var(--muted);font-size:13px;margin-top:0;margin-bottom:18px">    Configure end-to-end Read/Write permissions for WFM Admin, Team Leaders, Agents, and Custom System Roles.   </p>   <div style="display:grid;grid-template-columns:1fr 2fr;gap:18px">    <div style="background:#f8fafc;padding:16px;border-radius:12px;border:1px solid var(--border)">     <h3 style="margin-top:0;font-size:15px">Create New System Role</h3>     <div class="field">      <label>Role Key / ID</label>      <input id="newRoleKey" placeholder="e.g. team_leader">     </div>     <div class="field">      <label>Role Display Label</label>      <input id="newRoleLabel" placeholder="e.g. Team Leader">     </div>     <div class="field">      <label>Access Matrix Mode</label>      <select id="newRoleAccessMode">       <option value="write">Full Read & Write Access (WFM Admin)</option>       <option value="read">View & Download All Agents Access (Team Leader)</option>       <option value="agent">Self Only Access (Agent)</option>      </select>     </div>     <button class="primary" style="width:100%;margin-top:8px" onclick="createCustomRole()">+ Create & Save Role</button>    </div>    <div>     <h3 style="margin-top:0;font-size:15px">Configured Role Permissions Matrix</h3>     <div class="table-scroll">      <table class="data-table">       <thead>        <tr>         <th>Role Name</th>         <th>Role ID</th>         <th>Schedule Plotter</th>         <th>Reporting & Attendance</th>         <th>CSV / Excel Downloads</th>         <th>System Settings</th>        </tr>       </thead>       <tbody id="rolesTableBody"></tbody>      </table>     </div>    </div>   </div>  </div> console</section></main></section>
 <script>
 /* LOCAL FALLBACK STORAGE WRAPPER */
@@ -142,54 +141,6 @@ const safeSession = {
   removeItem(key){ try { if(__realSession){ __realSession.removeItem(key); return; } } catch(e){} delete __memoryStore['s_' + key]; }
 };
 
-/* CONTACT BUTTON HELPER FUNCTIONS */
-function phoneDigitsOnly(phone) {
-  if (!phone) return "";
-  return String(phone).replace(/[^\d]/g, "");
-}
-
-function telHref(phone) {
-  const digits = phoneDigitsOnly(phone);
-  return digits ? `tel:+${digits}` : "";
-}
-
-function smsHref(phone, text = "") {
-  const digits = phoneDigitsOnly(phone);
-  if (!digits) return "";
-  const encoded = text ? encodeURIComponent(text) : "";
-  return encoded ? `sms:+${digits}?&body=${encoded}` : `sms:+${digits}`;
-}
-
-function waHref(phone, text = "") {
-  let digits = phoneDigitsOnly(phone);
-  if (!digits) return "";
-  digits = digits.replace(/^0+/, "");
-  const encoded = text ? encodeURIComponent(text) : "";
-  return encoded ? `https://wa.me/${digits}?text=${encoded}` : `https://wa.me/${digits}`;
-}
-
-function contactButtonsHtml(agent, opts = {}) {
-  if (!agent || !agent.phone || !phoneDigitsOnly(agent.phone)) {
-    return `<span class="no-phone-tag">No phone on file</span>`;
-  }
-  const phone = agent.phone;
-  const firstName = (agent.name || agent.username || "Agent").split(" ")[0];
-  const waText = opts.waText || `Hi ${firstName}, this is regarding your schedule`;
-  const smsText = opts.smsText || waText;
-
-  const compactClass = opts.compact ? "compact-contact" : "";
-  
-  const callUrl = telHref(phone);
-  const waUrl = waHref(phone, waText);
-  const smsUrl = smsHref(phone, smsText);
-
-  return `<span class="contact-group ${compactClass}" onclick="event.stopPropagation()">
-    <a href="${callUrl}" class="contact-btn btn-call" title="Call ${phone}">📞 Call</a>
-    <a href="${waUrl}" target="_blank" rel="noopener" class="contact-btn btn-wa" title="WhatsApp ${phone}">💬 WA</a>
-    <a href="${smsUrl}" class="contact-btn btn-sms" title="SMS ${phone}">✉️ SMS</a>
-  </span>`;
-}
-
 const LIVE_DROPDOWN_AUX = [ {key:"unavailable", label:"Unavailable", short:"UN", color:"#ef4444"}, {key:"available", label:"Available", short:"AV", color:"#22c55e"}, {key:"break", label:"Break", short:"BR", color:"#3b82f6"}, {key:"lunch", label:"Lunch", short:"LU", color:"#f59e0b"}, {key:"bio", label:"Bio Break", short:"BB", color:"#06b6d4"}, {key:"breakpending", label:"Break Pending", short:"BP", color:"#fde047"}, {key:"meeting", label:"Team Meeting", short:"TM", color:"#a855f7"}, {key:"tlfeedback", label:"TL Feedback", short:"TL", color:"#ec4899"}, {key:"qafeedback", label:"QA Feedback", short:"QA", color:"#8b5cf6"}, {key:"nht", label:"NHT Training", short:"NH", color:"#14b8a6"}, {key:"pkt", label:"PKT Training", short:"PK", color:"#0ea5e9"}, {key:"training", label:"Training", short:"TR", color:"#6366f1"}, {key:"coaching", label:"Coaching", short:"CO", color:"#f97316"}, {key:"offline", label:"Offline", short:"OF", color:"#64748b"}];
 const LEAVE_SCHEDULE_AUX = [ {key:"weekoff", label:"Week Off", short:"WO", color:"#64748b"}, {key:"plannedleave", label:"Planned Leave", short:"PL", color:"#0284c7"}, {key:"sickleave", label:"Sick Leave", short:"SL", color:"#e11d48"}, {key:"ncns", label:"NCNS", short:"NC", color:"#881337"}, {key:"unpaidleave", label:"Unpaid Leave", short:"UL", color:"#475569"}, {key:"casualleave", label:"Casual Leave", short:"CL", color:"#d97706"}, {key:"holiday", label:"Holiday", short:"HD", color:"#059669"}, {key:"compoff", label:"Comp Off", short:"CO", color:"#7c3aed"}, {key:"unplannedleave", label:"Unplanned Leave", short:"UP", color:"#b91c1c"}];
 const ALL_AUX = [...LIVE_DROPDOWN_AUX, ...LEAVE_SCHEDULE_AUX];
@@ -205,12 +156,12 @@ let systemRoles = __safeParse(safeStorage.getItem("wfm_system_roles"), null) || 
 let ROLE_OPTIONS = systemRoles.map(r => r.label);
 
 const defaultUsers = [ 
-  {id:"wfm@coindcx.com",name:"WFM Admin",username:"wfm@coindcx.com",email:"wfm@coindcx.com",phone:"+919876543210",password:"Admin@007",role:"admin",agency:"Internal",unit:"WFM",department:"WFM",queue:"All",shift:"09:00-18:00",requirePasswordReset:false}, 
-  {id:"agent001@company.com",name:"Rahul Sharma",username:"agent001",email:"agent001@company.com",phone:"+919845890465",password:"Agent@123",role:"agent",agency:"RM",unit:"Support",department:"CS Delivery",queue:"Livechat",shift:"08:00-17:00",requirePasswordReset:false}, 
-  {id:"agent002@company.com",name:"Priya Nair",username:"agent002",email:"agent002@company.com",phone:"+919812345678",password:"Agent@123",role:"agent",agency:"RM",unit:"Support",department:"Quality",queue:"Email",shift:"11:00-20:00",requirePasswordReset:false}, 
-  {id:"agent003@company.com",name:"Amit Kumar",username:"agent003",email:"agent003@company.com",phone:"+919823456789",password:"Agent@123",role:"agent",agency:"CNX",unit:"Support",department:"Growth",queue:"Campaign Specialist",shift:"15:00-00:00",requirePasswordReset:false}, 
-  {id:"agent004@company.com",name:"Sneha Das",username:"agent004",email:"agent004@company.com",phone:"+919834567890",password:"Agent@123",role:"agent",agency:"FiveS",unit:"Support",department:"Training",queue:"Calling Sales",shift:"23:00-08:00",requirePasswordReset:false}, 
-  {id:"tl001@company.com",name:"Team Lead CS",username:"tl001",email:"tl001@company.com",phone:"+919890123456",password:"Agent@123",role:"team_leader",agency:"Internal",unit:"Support",department:"Growth",queue:"Campaign Specialist",shift:"09:00-18:00",requirePasswordReset:false}
+  {id:"wfm@coindcx.com",name:"WFM Admin",username:"wfm@coindcx.com",email:"wfm@coindcx.com",password:"Admin@007",role:"admin",agency:"Internal",unit:"WFM",department:"WFM",queue:"All",shift:"09:00-18:00",requirePasswordReset:false}, 
+  {id:"agent001@company.com",name:"Rahul Sharma",username:"agent001",email:"agent001@company.com",password:"Agent@123",role:"agent",agency:"RM",unit:"Support",department:"CS Delivery",queue:"Livechat",shift:"08:00-17:00",requirePasswordReset:false}, 
+  {id:"agent002@company.com",name:"Priya Nair",username:"agent002",email:"agent002@company.com",password:"Agent@123",role:"agent",agency:"RM",unit:"Support",department:"Quality",queue:"Email",shift:"11:00-20:00",requirePasswordReset:false}, 
+  {id:"agent003@company.com",name:"Amit Kumar",username:"agent003",email:"agent003@company.com",password:"Agent@123",role:"agent",agency:"CNX",unit:"Support",department:"Growth",queue:"Campaign Specialist",shift:"15:00-00:00",requirePasswordReset:false}, 
+  {id:"agent004@company.com",name:"Sneha Das",username:"agent004",email:"agent004@company.com",password:"Agent@123",role:"agent",agency:"FiveS",unit:"Support",department:"Training",queue:"Calling Sales",shift:"23:00-08:00",requirePasswordReset:false}, 
+  {id:"tl001@company.com",name:"Team Lead CS",username:"tl001",email:"tl001@company.com",password:"Agent@123",role:"team_leader",agency:"Internal",unit:"Support",department:"Growth",queue:"Campaign Specialist",shift:"09:00-18:00",requirePasswordReset:false}
 ];
 
 let users = __safeParse(safeStorage.getItem("wfm_users"), null) || defaultUsers;
@@ -351,7 +302,7 @@ function login(){
   );
 
   if(!found && (u === "wfm@coindcx.com" || u === "wfm.admin" || u === "admin")){  
-    found = { id: "wfm@coindcx.com", name: "WFM Admin", username: "wfm@coindcx.com", email: "wfm@coindcx.com", phone: "+919876543210", password: "Admin@007", role: "admin", agency: "Internal", unit: "WFM", department: "WFM", queue: "All", shift: "09:00-18:00", requirePasswordReset: false };  
+    found = { id: "wfm@coindcx.com", name: "WFM Admin", username: "wfm@coindcx.com", email: "wfm@coindcx.com", password: "Admin@007", role: "admin", agency: "Internal", unit: "WFM", department: "WFM", queue: "All", shift: "09:00-18:00", requirePasswordReset: false };  
     users.push(found);  
     saveAll(); 
   }
@@ -365,7 +316,6 @@ function login(){
         name: cleanName,    
         username: uInput,    
         email: u.includes("@") ? uInput : uInput + "@company.com",    
-        phone: "",
         role: u.startsWith("tl") ? "team_leader" : "agent",    
         agency: "External",    
         unit: "Support",    
@@ -801,8 +751,7 @@ function renderMultiDateTimelineView(agents, dateList){
     agents.forEach(agent => {   
       const lbl=document.createElement("div");   
       lbl.className="agent-row-label";   
-      const contactBtns = contactButtonsHtml(agent, { compact: true });
-      lbl.innerHTML=`<div class="agent-info"><div class="agent-name">📅 ${dateStr} • ${esc(agent.name)}</div> <div class="agent-meta">${esc(agent.agency)} • ${esc(agent.queue)}</div> <div style="margin-top:2px">${contactBtns}</div></div> ${isWriteAdmin()?` <div style="display:flex;gap:4px"> <button class="secondary" style="padding:4px 8px;font-size:10px;font-weight:bold" onclick="copySchedule('${agent.id}', '${dateStr}')">Copy</button> <button class="primary" style="padding:4px 8px;font-size:10px;font-weight:bold" onclick="pasteSchedule('${agent.id}', '${dateStr}')">Paste</button> <button class="danger" style="padding:4px 8px;font-size:10px;font-weight:bold;background:#dc2626" onclick="clearAgentDaySchedule('${agent.id}', '${dateStr}')">Clear</button> </div>`:""}`;   
+      lbl.innerHTML=`<div class="agent-info"><div class="agent-name">📅 ${dateStr} • ${esc(agent.name)}</div> <div class="agent-meta">${esc(agent.agency)} • ${esc(agent.queue)}</div></div> ${isWriteAdmin()?` <div style="display:flex;gap:4px"> <button class="secondary" style="padding:4px 8px;font-size:10px;font-weight:bold" onclick="copySchedule('${agent.id}', '${dateStr}')">Copy</button> <button class="primary" style="padding:4px 8px;font-size:10px;font-weight:bold" onclick="pasteSchedule('${agent.id}', '${dateStr}')">Paste</button> <button class="danger" style="padding:4px 8px;font-size:10px;font-weight:bold;background:#dc2626" onclick="clearAgentDaySchedule('${agent.id}', '${dateStr}')">Clear</button> </div>`:""}`;   
       labelsCol.appendChild(lbl);
 
       const track=document.createElement("div");   
@@ -872,8 +821,7 @@ function renderMultiDate15mGridView(agents, dateList){
   dateList.forEach(dateStr => {  
     agents.forEach(agent=>{   
       const ac=document.createElement("div");ac.className="agent-row-label";   
-      const contactBtns = contactButtonsHtml(agent, { compact: true });
-      ac.innerHTML=`<div class="agent-info"><div class="agent-name">📅 ${dateStr} • ${esc(agent.name)}</div> <div class="agent-meta">${esc(agent.agency)} • ${esc(agent.queue)}</div> <div style="margin-top:2px">${contactBtns}</div></div> ${isWriteAdmin()?` <div style="display:flex;gap:4px"> <button class="secondary" style="padding:4px 8px;font-size:10px;font-weight:bold" onclick="copySchedule('${agent.id}', '${dateStr}')">Copy</button> <button class="primary" style="padding:4px 8px;font-size:10px;font-weight:bold" onclick="pasteSchedule('${agent.id}', '${dateStr}')">Paste</button> </div>`:""}`;   
+      ac.innerHTML=`<div class="agent-info"><div class="agent-name">📅 ${dateStr} • ${esc(agent.name)}</div> <div class="agent-meta">${esc(agent.agency)} • ${esc(agent.queue)}</div></div> ${isWriteAdmin()?` <div style="display:flex;gap:4px"> <button class="secondary" style="padding:4px 8px;font-size:10px;font-weight:bold" onclick="copySchedule('${agent.id}', '${dateStr}')">Copy</button> <button class="primary" style="padding:4px 8px;font-size:10px;font-weight:bold" onclick="pasteSchedule('${agent.id}', '${dateStr}')">Paste</button> </div>`:""}`;   
       container.appendChild(ac);   
       const day=get15mGridSchedule(agent.id, dateStr);   
       for(let i=0;i<96;i++){    
@@ -1098,11 +1046,11 @@ function saveSchedules(){saveAll();alert("Schedules saved successfully.");}
 
 function downloadSampleTemplate(){ 
   const sampleLines = [  
-    "Start_Date,End Date,Username,Queue,AUX_Code,Start_Time,End_Time,Phone",  
-    "9/7/26,9/7/26,external-syed.pasha@coindcx.com,Onboarding Ops,Available,7:00,16:00,+919876543210",  
-    "9/7/26,9/7/26,external-kumara.krishna@coindcx.com,Onboarding Ops,Week Off,7:00,16:00,+919812345678",  
-    "9/7/26,9/8/26,external-kuna.kandi@coindcx.com,Onboarding Ops,Available,23:00,8:00,+919845890465",  
-    "9/7/26,9/7/26,external-pritam.kumar@coindcx.com,Onboarding Ops,Available,15:00,0:00,+919823456789" 
+    "Start_Date,End Date,Username,Queue,AUX_Code,Start_Time,End_Time",  
+    "9/7/26,9/7/26,external-syed.pasha@coindcx.com,Onboarding Ops,Available,7:00,16:00",  
+    "9/7/26,9/7/26,external-kumara.krishna@coindcx.com,Onboarding Ops,Week Off,7:00,16:00",  
+    "9/7/26,9/8/26,external-kuna.kandi@coindcx.com,Onboarding Ops,Available,23:00,8:00",  
+    "9/7/26,9/7/26,external-pritam.kumar@coindcx.com,Onboarding Ops,Available,15:00,0:00" 
   ]; 
   const sampleContent = sampleLines.join("\n"); 
   const blob = new Blob([sampleContent], {type: "text/csv;charset=utf-8"}); 
@@ -1205,12 +1153,12 @@ function insertAndTrimOverlaps(existingBlocks, newS, newE, auxKey) {
   return updated.sort((a, b) => a.startMin - b.startMin);
 }
 
-/* IMPORT MATRIX WITH UNIFIED USERNAME KEYING & PHONE DETECTOR */
+/* IMPORT MATRIX WITH UNIFIED USERNAME KEYING & PRE-CLEARING BATCH PASS */
 function processImportedMatrix(rows, fileName){ 
   if(!rows || rows.length < 2) { alert("The uploaded file contains no data rows."); return; } 
   let count = 0;  
   let header = rows[0].map(c => String(c || '').trim().toLowerCase().replace(/_/g, ' '));  
-  let idxStartDate = -1, idxEndDate = -1, idxUsername = -1, idxAux = -1, idxStartTime = -1, idxEndTime = -1, idxQueue = -1, idxPhone = -1;
+  let idxStartDate = -1, idxEndDate = -1, idxUsername = -1, idxAux = -1, idxStartTime = -1, idxEndTime = -1, idxQueue = -1;
 
   for(let j = 0; j < header.length; j++){  
     let h = header[j];  
@@ -1228,8 +1176,6 @@ function processImportedMatrix(rows, fileName){
       idxEndTime = j;  
     } else if(h.includes('queue')){
       idxQueue = j;
-    } else if(h.includes('phone') || h.includes('mobile') || h.includes('contact')){
-      idxPhone = j;
     }
   }
 
@@ -1301,7 +1247,6 @@ function processImportedMatrix(rows, fileName){
     let auxLabel = String(cols[idxAux] || '').trim();  
     let startTime = String(cols[idxStartTime] || '').trim();  
     let endTime = String(cols[idxEndTime] || '').trim();
-    let phoneVal = idxPhone >= 0 ? String(cols[idxPhone] || '').trim() : '';
 
     if(!username || username.toLowerCase().includes('username')) continue;  
     if(!startDate) continue;
@@ -1322,7 +1267,6 @@ function processImportedMatrix(rows, fileName){
         name: cleanName,    
         username: username,    
         email: username.includes("@") ? username : username + "@coindcx.com",    
-        phone: phoneVal || "",
         password: "Agent@123",    
         role: "agent",    
         agency: "External",    
@@ -1333,9 +1277,8 @@ function processImportedMatrix(rows, fileName){
         requirePasswordReset: false   
       };   
       users.push(agent);  
-    } else {
-      if(queueVal) agent.queue = queueVal;
-      if(phoneVal && (!agent.phone || !phoneDigitsOnly(agent.phone))) agent.phone = phoneVal;
+    } else if(queueVal) {
+      agent.queue = queueVal;
     }
 
     const aux = matchAuxCode(auxLabel);
@@ -1518,7 +1461,7 @@ function formatTimeDisplay(rawVal) {
   return str || "N/A";
 }
 
-/* EXPANDED REAL-TIME REPORTING DASHBOARD WITH DYNAMIC AUX ACCUMULATION */
+/* EXPANDED REAL-TIME REPORTING DASHBOARD WITH INACTIVE SUMMARY TIME COLUMN */
 function renderDashboard(){ 
   if(!currentUser||!isManagerOrAdmin())return; 
   syncStorageData(); 
@@ -1707,13 +1650,11 @@ function renderAttendance(){
         }
       }
 
-      const contactBtns = contactButtonsHtml(a, { compact: true });
-
-      summaryRows += `<tr> <td><b>${esc(a.name)}</b></td> <td>${esc(a.username || a.email)}</td> <td>${date}</td> <td>${date}</td> <td><b>${esc(assignedShiftStr)}</b></td> <td><span class="status-dot" style="background:${assignedAuxColor}"></span> <b>${esc(assignedAuxLabel)}</b></td> <td><span style="color:#15803d;font-weight:bold">${firstAvailTime}</span></td> <td><span style="color:#b91c1c;font-weight:bold">${lastOfflineTime}</span></td> <td>${contactBtns}</td> </tr>`;  
+      summaryRows += `<tr> <td><b>${esc(a.name)}</b></td> <td>${esc(a.username || a.email)}</td> <td>${date}</td> <td>${date}</td> <td><b>${esc(assignedShiftStr)}</b></td> <td><span class="status-dot" style="background:${assignedAuxColor}"></span> <b>${esc(assignedAuxLabel)}</b></td> <td><span style="color:#15803d;font-weight:bold">${firstAvailTime}</span></td> <td><span style="color:#b91c1c;font-weight:bold">${lastOfflineTime}</span></td> </tr>`;  
     }); 
   });
 
-  if(!summaryRows){ summaryRows = `<tr><td colspan="9" style="text-align:center;color:#667085">No attendance logs found for selected date range (${fromVal} to ${toVal}).</td></tr>`; } 
+  if(!summaryRows){ summaryRows = `<tr><td colspan="8" style="text-align:center;color:#667085">No attendance logs found for selected date range (${fromVal} to ${toVal}).</td></tr>`; } 
   document.getElementById("attendanceBody").innerHTML = summaryRows;
 
   // 2. Render Inactivity Frequency Table
@@ -1847,7 +1788,6 @@ function renderAdmin(){
     const currQueue = u.queue || "Livechat";  
     const currShift = u.shift || "09:00-18:00";  
     const currRoleKey = u.role || "agent";
-    const currPhone = u.phone || "";
 
     let agencyOpts = AGENCY_OPTIONS.map(opt => `<option value="${esc(opt)}" ${opt.toLowerCase()===currAgency.toLowerCase()?'selected':''}>${esc(opt)}</option>`).join("");  
     if(!AGENCY_OPTIONS.some(opt => opt.toLowerCase() === currAgency.toLowerCase())){ agencyOpts += `<option value="${esc(currAgency)}" selected>${esc(currAgency)}</option>`; }
@@ -1864,9 +1804,7 @@ function renderAdmin(){
 
     let roleOpts = systemRoles.map(r => `<option value="${esc(r.key)}" ${r.key===currRoleKey?'selected':''}>${esc(r.label)}</option>`).join("");
 
-    const contactBtns = contactButtonsHtml(u, { compact: true });
-
-    return `<tr> <td><b>${esc(u.name)}</b></td> <td>${esc(u.username)}</td> <td>${esc(u.email||"-")}</td> <td><input style="padding:4px 8px;border-radius:6px;border:1px solid #cbd5e1;font-weight:600;width:120px" value="${esc(currPhone)}" placeholder="+91XXXXXXXXXX" onchange="updateAdminUserField('${u.id}', 'phone', this.value)"></td> <td>${contactBtns}</td> <td><select style="padding:4px 8px;border-radius:6px;border:1px solid #cbd5e1;font-weight:600" onchange="updateAdminUserField('${u.id}', 'agency', this.value)">${agencyOpts}</select></td> <td><select style="padding:4px 8px;border-radius:6px;border:1px solid #cbd5e1;font-weight:600" onchange="updateAdminUserField('${u.id}', 'department', this.value)">${deptOpts}</select></td> <td><select style="padding:4px 8px;border-radius:6px;border:1px solid #cbd5e1;font-weight:600" onchange="updateAdminUserField('${u.id}', 'queue', this.value)">${queueOpts}</select></td> <td><select style="padding:4px 8px;border-radius:6px;border:1px solid #cbd5e1;font-weight:600" onchange="updateAdminUserField('${u.id}', 'shift', this.value)">${shiftOpts}</select></td> <td><select style="padding:4px 8px;border-radius:6px;border:1px solid #cbd5e1;font-weight:600" onchange="updateAdminUserField('${u.id}', 'role', this.value)">${roleOpts}</select></td> <td><button class="danger" style="padding:4px 10px;font-size:11px" onclick="deleteAgent('${u.id}')">Delete</button> <button class="secondary" style="padding:4px 10px;font-size:11px" onclick="editPassword('${u.id}')">Password</button></td> </tr>`; 
+    return `<tr> <td><b>${esc(u.name)}</b></td> <td>${esc(u.username)}</td> <td>${esc(u.email||"-")}</td> <td><select style="padding:4px 8px;border-radius:6px;border:1px solid #cbd5e1;font-weight:600" onchange="updateAdminUserField('${u.id}', 'agency', this.value)">${agencyOpts}</select></td> <td><select style="padding:4px 8px;border-radius:6px;border:1px solid #cbd5e1;font-weight:600" onchange="updateAdminUserField('${u.id}', 'department', this.value)">${deptOpts}</select></td> <td><select style="padding:4px 8px;border-radius:6px;border:1px solid #cbd5e1;font-weight:600" onchange="updateAdminUserField('${u.id}', 'queue', this.value)">${queueOpts}</select></td> <td><select style="padding:4px 8px;border-radius:6px;border:1px solid #cbd5e1;font-weight:600" onchange="updateAdminUserField('${u.id}', 'shift', this.value)">${shiftOpts}</select></td> <td><select style="padding:4px 8px;border-radius:6px;border:1px solid #cbd5e1;font-weight:600" onchange="updateAdminUserField('${u.id}', 'role', this.value)">${roleOpts}</select></td> <td><button class="danger" style="padding:4px 10px;font-size:11px" onclick="deleteAgent('${u.id}')">Delete</button> <button class="secondary" style="padding:4px 10px;font-size:11px" onclick="editPassword('${u.id}')">Password</button></td> </tr>`; 
   }).join("");
 }
 
@@ -1923,10 +1861,9 @@ function addAgent(){
   const username=prompt("Unique Username");if(!username)return; 
   if(users.some(u=>u.username.toLowerCase()===username.toLowerCase()))return alert("Username exists."); 
   const email=prompt("Agent Email Address", username+"@coindcx.com");if(!email)return; 
-  const phone=prompt("Agent Phone Number (optional, e.g. +919845890465)","")||"";
   const password=prompt("Unique Password for Agent","Agent@123");if(!password||password.length<6)return alert("Password must be at least 6 characters."); 
   const agency=prompt("Agency","RM")||"RM",unit=prompt("Unit","Support")||"Support", queue=prompt("Queue","Livechat")||"Livechat"; 
-  users.push({id:username.toLowerCase(),name,username,email,phone,password,role:"agent",agency,unit,department:"CS Delivery",queue,shift:"09:00-18:00",requirePasswordReset:false}); 
+  users.push({id:username.toLowerCase(),name,username,email,password,role:"agent",agency,unit,department:"CS Delivery",queue,shift:"09:00-18:00",requirePasswordReset:false}); 
   saveAll();populateFilters();renderPlot();renderAdmin();
 }
 
@@ -2052,7 +1989,7 @@ document.getElementById("historyDate").value=today();
     if(savedUserId){   
       let found = users.find(x => x.username.toLowerCase() === savedUserId.toLowerCase() || x.id === savedUserId || (x.email && x.email.toLowerCase() === savedUserId.toLowerCase()));   
       if(!found && (savedUserId === "wfm@coindcx.com" || savedUserId.toLowerCase() === "wfm@coindcx.com")){    
-        found = {id:"wfm@coindcx.com", name:"WFM Admin", username:"wfm@coindcx.com", email:"wfm@coindcx.com", phone:"+919876543210", password:"Admin@007", role:"admin", agency:"Internal", unit:"WFM", queue:"All", shift:"09:00-18:00", requirePasswordReset:false};   
+        found = {id:"wfm@coindcx.com", name:"WFM Admin", username:"wfm@coindcx.com", email:"wfm@coindcx.com", password:"Admin@007", role:"admin", agency:"Internal", unit:"WFM", queue:"All", shift:"09:00-18:00", requirePasswordReset:false};   
       }   
       if(found && !found.requirePasswordReset){    
         currentUser = found;    
