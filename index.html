@@ -1,3 +1,4 @@
+
 <!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>CoinDCX | WFM Schedule Plotter</title><style>:root{ --bg:#f5f7fb; --card:#fff; --text:#172033; --muted:#667085; --border:#dfe4ec; --primary:#0052ff; --primary-hover:#0038b8; --danger:#dc2626; --rowH:52px; --cellW:56px;}*{box-sizing:border-box}body{margin:0;font-family:Inter,Arial,sans-serif;background:var(--bg);color:var(--text);user-select:none}button,input,select{font:inherit}button{cursor:pointer;border:0}.hidden{display:none!important}
 /* ENTERPRISE COINDCX CRM LOGIN SCREEN */.login-screen{  min-height:100vh;  display:flex;  align-items:center;  justify-content:center;  padding:24px;  background: radial-gradient(circle at 50% 30%, #1e3a8a 0%, #0f172a 50%, #080d1a 100%);  position:relative;  overflow:hidden;}.login-screen::before {  content: "";  position: absolute;  top: 0; left: 0; right: 0; bottom: 0;  background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 0);  background-size: 28px 28px;  pointer-events: none;}.login-brand-watermark {  position: absolute;  right: 6vw;  top: 6vh;  font-size: 48px;  font-weight: 900;  letter-spacing: -1.5px;  color: #ffffff;  opacity: 0.95;  text-shadow: 0 10px 30px rgba(0,0,0,0.5);  display: flex;  align-items: center;  gap: 14px;}.login-brand-watermark .coindcx-blue { color: #ffffff; }.login-brand-watermark .coindcx-red { color: #f97316; }.login-brand-watermark span.sub-badge {  font-size: 16px;  font-weight: 600;  color: #60a5fa;  background: rgba(37, 99, 235, 0.2);  padding: 4px 12px;  border-radius: 999px;  border: 1px solid rgba(96, 165, 250, 0.3);  letter-spacing: 0;}
 .login-card{  width:420px;  background:#ffffff;  border-radius:20px;  padding:36px;  box-shadow:0 25px 60px rgba(0, 0, 0, 0.5);  position:relative;  z-index:10;  border:1px solid rgba(255,255,255,0.15);}
@@ -117,7 +118,7 @@
 
  <!-- CALLING LEADS TAB FOR ADMINS, TLS & AGENTS --> <section id="leadsSection" class="hidden">  <div class="card">   <div class="toolbar" style="margin-bottom:14px; gap:12px;">    <input id="searchLeadInput" placeholder="🔍 Search customer name, phone, queue, assignee..." oninput="renderLeads()" style="width:280px">    <select id="leadStatusFilter" onchange="renderLeads()">     <option value="">All Statuses</option>     <option value="Pending">Pending</option>     <option value="In Progress">In Progress</option>     <option value="Completed">Completed</option>     <option value="Follow Up">Follow Up</option>    </select>    <input type="file" id="leadsFileInput" accept=".xlsx, .xls, .csv" class="hidden" onchange="handleLeadsImport(event)">    <button class="primary managerOnly" onclick="document.getElementById('leadsFileInput').click()">📤 Import Leads (.csv / .xlsx)</button>    <button class="secondary managerOnly" onclick="downloadSampleLeadsTemplate()">📥 Download Leads Template (.csv)</button>    <button class="danger adminOnly" onclick="clearAllCallingLeads()" style="background:#dc2626">🗑️ Clear All Leads</button>   </div>   <h3 style="margin-top:0">Assigned Calling Customer Leads Matrix</h3>   <p style="color:var(--muted);font-size:12px;margin-top:-6px;margin-bottom:14px" id="leadsSubNotice">    Agents will only see customer calling leads where their name/username is assigned as the owner/caller.   </p>   <div class="table-scroll">    <table class="data-table">     <thead>      <tr>       <th>Customer Name</th>       <th>Phone Number</th>       <th>Queue / Campaign</th>       <th>Assignee / Owner / Caller</th>       <th>Status</th>       <th>Action Contact</th>      </tr>     </thead>     <tbody id="leadsTableBody"></tbody>    </table>   </div>  </div> </section>
 
- <!-- DASHBOARD WITH INACTIVE SUMMARY TIME COLUMN & MULTI-SELECT DROPDOWNS --> <section id="dashboardSection" class="hidden">  <div class="card">   <div class="toolbar" style="margin-bottom:10px; gap:8px;">    <label style="font-size:12px;font-weight:700">From:</label>    <input id="dashFromDate" type="date" onchange="renderDashboard()" oninput="renderDashboard()" style="width:130px">    <label style="font-size:12px;font-weight:700">To:</label>    <input id="dashToDate" type="date" onchange="renderDashboard()" oninput="renderDashboard()" style="width:130px">    <input id="reportDate" class="hidden" type="date" onchange="renderDashboard()">    <label style="font-size:12px;font-weight:700;margin-left:6px">Agencies:</label>    <select id="dashAgencyFilter" class="multi-select" multiple onchange="renderDashboard()" title="Hold Ctrl/Cmd to select multiple agencies"></select>    <label style="font-size:12px;font-weight:700;margin-left:6px">Queues:</label>    <select id="dashQueueFilter" class="multi-select" multiple onchange="renderDashboard()" title="Hold Ctrl/Cmd to select multiple queues"></select>    <button class="secondary managerOnly" onclick="exportCSV()">Export Detailed AUX Report</button>   </div>   <div id="dashboardKpis" class="kpis"></div>   <h3>Agent Status Summary</h3>   <div class="table-scroll"><table class="data-table"><thead><tr>    <th>Agent</th><th>Agency</th><th>Queue</th><th>Shift</th><th>Current AUX</th>    <th>Available</th><th>Inactive Time</th><th>Break</th><th>Lunch</th><th>Bio Break</th><th>Team Meeting</th>    <th>TL Feedback</th><th>QA Feedback</th><th>NHT Training</th><th>PKT Training</th>    <th>Training</th><th>Coaching</th><th>Unavailable</th><th>Offline</th>   </tr></thead><tbody id="dashboardBody"></tbody></table></div>  </div> </section>
+ <!-- DASHBOARD WITH INACTIVE SUMMARY TIME COLUMN & MULTI-SELECT DROPDOWNS --> <section id="dashboardSection" class="hidden">  <div class="toolbar">   <input id="reportDate" type="date" onchange="renderDashboard()">   <label style="font-size:12px;font-weight:700;margin-left:6px">Agencies:</label>   <select id="dashAgencyFilter" class="multi-select" multiple onchange="renderDashboard()" title="Hold Ctrl/Cmd to select multiple agencies"></select>   <label style="font-size:12px;font-weight:700;margin-left:6px">Queues:</label>   <select id="dashQueueFilter" class="multi-select" multiple onchange="renderDashboard()" title="Hold Ctrl/Cmd to select multiple queues"></select>   <button class="secondary managerOnly" onclick="exportCSV()">Export Detailed AUX Report</button>  </div>  <div id="dashboardKpis" class="kpis"></div>  <div class="card">   <h3>Agent Status Summary</h3>   <div class="table-scroll"><table class="data-table"><thead><tr>    <th>Agent</th><th>Agency</th><th>Queue</th><th>Shift</th><th>Current AUX</th>    <th>Available</th><th>Inactive Time</th><th>Break</th><th>Lunch</th><th>Bio Break</th><th>Team Meeting</th>    <th>TL Feedback</th><th>QA Feedback</th><th>NHT Training</th><th>PKT Training</th>    <th>Training</th><th>Coaching</th><th>Unavailable</th><th>Offline</th>   </tr></thead><tbody id="dashboardBody"></tbody></table></div>  </div> </section>
 
  <!-- AGENT ATTENDANCE SUB-DASHBOARD WITH SUB-TABS & MULTI-SELECT DROPDOWNS --> <section id="attendanceSection" class="hidden">  <div class="card">   <div class="toolbar" style="margin-bottom:10px; gap:8px;">    <label style="font-size:12px;font-weight:700">From:</label>    <input id="attendanceFromDate" type="date" onchange="renderAttendance()" oninput="renderAttendance()" style="width:130px">    <label style="font-size:12px;font-weight:700">To:</label>    <input id="attendanceToDate" type="date" onchange="renderAttendance()" oninput="renderAttendance()" style="width:130px">    <input id="searchAttendanceAgent" placeholder="Search agent name/username..." oninput="renderAttendance()" style="width:180px">    <label style="font-size:12px;font-weight:700">Agencies:</label>    <select id="attAgencyFilter" class="multi-select" multiple onchange="renderAttendance()" title="Hold Ctrl/Cmd to select multiple agencies"></select>    <label style="font-size:12px;font-weight:700">Queues:</label>    <select id="attQueueFilter" class="multi-select" multiple onchange="renderAttendance()" title="Hold Ctrl/Cmd to select multiple queues"></select>    <button class="secondary managerOnly" onclick="exportAttendanceCSV()">Export Attendance CSV</button>   </div>
 
@@ -533,12 +534,6 @@ function initializeAppView(){
   const schedToElem = document.getElementById("scheduleToDate"); 
   if(schedFromElem) schedFromElem.value = selectedDate; 
   if(schedToElem) schedToElem.value = selectedDate;
-
-  // Initialize Dashboard Date Pickers
-  const dashFromElem = document.getElementById("dashFromDate");
-  const dashToElem = document.getElementById("dashToDate");
-  if(dashFromElem && !dashFromElem.value) dashFromElem.value = selectedDate;
-  if(dashToElem && !dashToElem.value) dashToElem.value = selectedDate;
 
   document.getElementById("reportDate").value=selectedDate; 
   document.getElementById("historyDate").value=selectedDate;  
@@ -1077,6 +1072,767 @@ function clearAllCallingLeads() {
   alert("All customer calling leads wiped successfully.");
 }
 
+/* RENDER PLOTTER WITH AGENT SCHEDULING ISOLATION & DYNAMIC FILTERING */
+function renderPlot(){ 
+  syncStorageData(); 
+  renderTimelineHeader(); 
+  let agents=users.filter(u=>u.role==="agent" || u.role==="team_leader");
+
+  if(currentUser && !isManagerOrAdmin()){  
+    let targetAgent = agents.find(u =>    
+      u.id === currentUser.id ||    
+      u.username.toLowerCase() === currentUser.username.toLowerCase() ||    
+      (u.email && currentUser.email && u.email.toLowerCase() === currentUser.email.toLowerCase())  
+    );  
+    if(!targetAgent) targetAgent = currentUser;    
+    agents = [targetAgent];
+    const agentDates = getAgentScheduleDates(targetAgent.id);  
+    if(activePlotMode==="timeline"){ renderAgentAllDaysTimelineView(targetAgent, agentDates); }  
+    else { renderAgentAllDays15mGridView(targetAgent, agentDates); } 
+  } else {  
+    let fromVal = document.getElementById("scheduleFromDate")?.value;  
+    let toVal = document.getElementById("scheduleToDate")?.value;    
+    if(!fromVal) { fromVal = today(); if(document.getElementById("scheduleFromDate")) document.getElementById("scheduleFromDate").value = fromVal; }  
+    if(!toVal) { toVal = fromVal; if(document.getElementById("scheduleToDate")) document.getElementById("scheduleToDate").value = toVal; }  
+    selectedDate = fromVal;
+
+    const dateList = getDateRangeArray(fromVal, toVal);  
+    const search=document.getElementById("searchAgent").value.toLowerCase();  
+    const agency=document.getElementById("agencyFilter").value;  
+    const queue=document.getElementById("queueFilter").value;  
+    agents=agents.filter(u=> (!search||u.name.toLowerCase().includes(search)||u.username.toLowerCase().includes(search)) && (!agency||u.agency===agency)&&(!queue||u.queue===queue) );    
+    if(activePlotMode==="timeline"){ renderMultiDateTimelineView(agents, dateList); }  
+    else { renderMultiDate15mGridView(agents, dateList); } 
+  }
+}
+
+function renderMultiDateTimelineView(agents, dateList){ 
+  const labelsCol=document.getElementById("agentRowsContainer"); 
+  const tracksCol=document.getElementById("timelineTracksContainer"); 
+  labelsCol.innerHTML=""; 
+  tracksCol.innerHTML="";
+
+  dateList.forEach(dateStr => {  
+    agents.forEach(agent => {   
+      const lbl=document.createElement("div");   
+      lbl.className="agent-row-label";   
+      const contactBtns = contactButtonsHtml(agent, { compact: true });
+      lbl.innerHTML=`<div class="agent-info"><div class="agent-name">📅 ${dateStr} • ${esc(agent.name)}</div> <div class="agent-meta">${esc(agent.agency)} • ${esc(agent.queue)}</div> <div style="margin-top:2px">${contactBtns}</div></div> ${isWriteAdmin()?` <div style="display:flex;gap:4px"> <button class="secondary" style="padding:4px 8px;font-size:10px;font-weight:bold" onclick="copySchedule('${agent.id}', '${dateStr}')">Copy</button> <button class="primary" style="padding:4px 8px;font-size:10px;font-weight:bold" onclick="pasteSchedule('${agent.id}', '${dateStr}')">Paste</button> <button class="danger" style="padding:4px 8px;font-size:10px;font-weight:bold;background:#dc2626" onclick="clearAgentDaySchedule('${agent.id}', '${dateStr}')">Clear</button> </div>`:""}`;   
+      labelsCol.appendChild(lbl);
+
+      const track=document.createElement("div");   
+      track.className="timeline-track-container";   
+      const bgGrid=document.createElement("div");   
+      bgGrid.className="timeline-grid-overlay";   
+      for(let h=0; h<24; h++){ const gh=document.createElement("div"); gh.className="grid-hour"; bgGrid.appendChild(gh); }   
+      track.appendChild(bgGrid);
+
+      if(isWriteAdmin()){    
+        track.ondragover=(e)=>e.preventDefault();    
+        track.ondrop=(e)=>{     
+          e.preventDefault();     
+          const auxKey=e.dataTransfer.getData("text/plain");     
+          if(auxKey){      
+            const rect=track.getBoundingClientRect();      
+            const dropX=Math.max(0, Math.min(1439, Math.floor(e.clientX - rect.left)));      
+            const snappedStart=Math.floor(dropX/15)*15;      
+            const blocks=getAgentBlocks(agent.id, dateStr);      
+            const trimmed = insertAndTrimOverlaps(blocks, snappedStart, Math.min(1440, snappedStart+60), auxKey);
+            continuousSchedules[dayKey(dateStr, agent.username.toLowerCase())] = trimmed;
+            saveAll(); renderPlot();     
+          }    
+        };   
+      }
+
+      const blocks=getAgentBlocks(agent.id, dateStr);   
+      blocks.forEach((blk, idx)=>{    
+        const blockEl=document.createElement("div");    
+        const a=auxByKey(blk.auxKey);    
+        blockEl.className=`aux-block ${blk.auxKey}`;    
+        blockEl.style.left=blk.startMin+"px";    
+        blockEl.style.width=(blk.endMin-blk.startMin)+"px";    
+        blockEl.innerHTML=`<span>${a?.short||""} ${timeLabel(blk.startMin)}-${timeLabel(blk.endMin)}</span> ${isWriteAdmin()?`<span class="delete-btn" title="Delete AUX Block" onclick="deleteAuxBlock(event, '${agent.id}', '${dateStr}', ${idx})">✕</span>`:""}`;    
+        if(isWriteAdmin()){     
+          blockEl.onmousedown=(e)=>{      
+            if(e.target.classList.contains("delete-btn")) return;      
+            e.stopPropagation();      
+            initDragMoveBlock(e, agent.id, dateStr, idx, track);     
+          };     
+          blockEl.oncontextmenu=(e)=>{ e.preventDefault(); deleteAuxBlock(e, agent.id, dateStr, idx); };    
+        }    
+        track.appendChild(blockEl);   
+      });
+
+      if(isWriteAdmin()){    
+        track.ondblclick=(e)=>{     
+          if(e.target!==track && !e.target.classList.contains("timeline-grid-overlay")) return;     
+          const rect=track.getBoundingClientRect();     
+          const clickedMin=Math.max(0, Math.min(1439, Math.floor(e.clientX - rect.left)));     
+          selectedDate = dateStr;     
+          openTimePlotModal(agent.id, clickedMin);    
+        };   
+      }   
+      tracksCol.appendChild(track);  
+    }); 
+  });
+}
+
+function renderMultiDate15mGridView(agents, dateList){ 
+  const container=document.getElementById("grid15mContainer"); 
+  container.innerHTML=""; 
+  const head=document.createElement("div");head.className="agent-head-cell"; 
+  head.innerHTML="<b>Date / Agent Info</b><br><small>15-Min Plotter</small>";container.appendChild(head); 
+  for(let i=0;i<96;i++){ const h=document.createElement("div");h.className="time-head-15m";h.textContent=timeLabel15m(i);container.appendChild(h); }
+
+  dateList.forEach(dateStr => {  
+    agents.forEach(agent=>{   
+      const ac=document.createElement("div");ac.className="agent-row-label";   
+      const contactBtns = contactButtonsHtml(agent, { compact: true });
+      ac.innerHTML=`<div class="agent-info"><div class="agent-name">📅 ${dateStr} • ${esc(agent.name)}</div> <div class="agent-meta">${esc(agent.agency)} • ${esc(agent.queue)}</div> <div style="margin-top:2px">${contactBtns}</div></div> ${isWriteAdmin()?` <div style="display:flex;gap:4px"> <button class="secondary" style="padding:4px 8px;font-size:10px;font-weight:bold" onclick="copySchedule('${agent.id}', '${dateStr}')">Copy</button> <button class="primary" style="padding:4px 8px;font-size:10px;font-weight:bold" onclick="pasteSchedule('${agent.id}', '${dateStr}')">Paste</button> </div>`:""}`;   
+      container.appendChild(ac);   
+      const day=get15mGridSchedule(agent.id, dateStr);   
+      for(let i=0;i<96;i++){    
+        const c=document.createElement("div"); const key=day[i];    
+        c.className="aux-cell-15m "+(key||"empty"); c.textContent=key?(auxByKey(key)?.short||""):"";    
+        c.title=`${dateStr} ${timeLabel15m(i)} - ${auxByKey(key)?.label||"Unplotted"}`;    
+        if(isWriteAdmin()){     
+          c.onmousedown=()=>{set15mSlot(agent.id, dateStr, i, selectedAux)};     
+          c.onmouseenter=()=>{if(isMouseDown)set15mSlot(agent.id, dateStr, i, selectedAux)};     
+          c.oncontextmenu=(e)=>{e.preventDefault(); set15mSlot(agent.id, dateStr, i, "")};    
+        }    
+        container.appendChild(c);   
+      }  
+    }); 
+  });
+}
+
+function renderAgentAllDaysTimelineView(agent, dates){ 
+  const labelsCol=document.getElementById("agentRowsContainer"); 
+  const tracksCol=document.getElementById("timelineTracksContainer"); 
+  labelsCol.innerHTML=""; 
+  tracksCol.innerHTML="";
+
+  dates.forEach(dateStr=>{  
+    const lbl=document.createElement("div");  
+    lbl.className="agent-row-label";  
+    lbl.innerHTML=`<div class="agent-info"><div class="agent-name">📅 ${dateStr}</div> <div class="agent-meta">${esc(agent.name)} • ${esc(agent.shift || "Shift N/A")} • ${esc(agent.queue)}</div></div>`;  
+    labelsCol.appendChild(lbl);
+
+    const track=document.createElement("div");  
+    track.className="timeline-track-container";  
+    const bgGrid=document.createElement("div");  
+    bgGrid.className="timeline-grid-overlay";  
+    for(let h=0; h<24; h++){ const gh=document.createElement("div"); gh.className="grid-hour"; bgGrid.appendChild(gh); }  
+    track.appendChild(bgGrid);
+
+    const blocks=getAgentBlocks(agent.id, dateStr);  
+    blocks.forEach((blk, idx)=>{   
+      const blockEl=document.createElement("div");   
+      const a=auxByKey(blk.auxKey);   
+      blockEl.className=`aux-block ${blk.auxKey}`;   
+      blockEl.style.left=blk.startMin+"px";   
+      blockEl.style.width=(blk.endMin-blk.startMin)+"px";   
+      blockEl.innerHTML=`<span>${a?.short||""} ${timeLabel(blk.startMin)}-${timeLabel(blk.endMin)}</span>`;   
+      track.appendChild(blockEl);  
+    });  
+    tracksCol.appendChild(track); 
+  });
+}
+
+function renderAgentAllDays15mGridView(agent, dates){ 
+  const container=document.getElementById("grid15mContainer"); 
+  container.innerHTML=""; 
+  const head=document.createElement("div");head.className="agent-head-cell"; 
+  head.innerHTML="<b>Date / Agent Info</b><br><small>15-Min Schedules</small>";container.appendChild(head); 
+  for(let i=0;i<96;i++){ const h=document.createElement("div");h.className="time-head-15m";h.textContent=timeLabel15m(i);container.appendChild(h); }
+
+  dates.forEach(dateStr=>{  
+    const ac=document.createElement("div");ac.className="agent-row-label";  
+    ac.innerHTML=`<div class="agent-info"><div class="agent-name">📅 ${dateStr}</div> <div class="agent-meta">${esc(agent.name)} • ${esc(agent.shift || "Shift N/A")} • ${esc(agent.queue)}</div></div>`;  
+    container.appendChild(ac);  
+    const day=get15mGridSchedule(agent.id, dateStr);  
+    for(let i=0;i<96;i++){   
+      const c=document.createElement("div"); const key=day[i];   
+      c.className="aux-cell-15m "+(key||"empty"); c.textContent=key?(auxByKey(key)?.short||""):"";   
+      c.title=`${timeLabel15m(i)} - ${auxByKey(key)?.label||"Unplotted"}`;   
+      container.appendChild(c);  
+    } 
+  });
+}
+
+function renderTimelineHeader(){ 
+  const hdr=document.getElementById("timelineHeader"); 
+  if(!hdr) return; 
+  hdr.innerHTML=""; 
+  for(let h=0; h<24; h++){  
+    const tick=document.createElement("div");  
+    tick.className="hour-tick";  
+    tick.textContent=String(h).padStart(2,"0")+":00";  
+    hdr.appendChild(tick); 
+  }
+}
+
+function initDragMoveBlock(e, agentId, date, blockIdx, track){ 
+  const blocks=getAgentBlocks(agentId, date); 
+  const target=blocks[blockIdx]; 
+  const duration = target.endMin - target.startMin; 
+  const startMouseX = e.clientX; 
+  const origStartMin = target.startMin;
+
+  function onMouseMove(me){  
+    const deltaX = Math.floor(me.clientX - startMouseX);  
+    let newStart = Math.max(0, Math.min(1440 - duration, origStartMin + deltaX));  
+    newStart = Math.round(newStart / 15) * 15;  
+    target.startMin = newStart;  
+    target.endMin = newStart + duration;  
+    renderPlot(); 
+  }
+
+  function onMouseUp(){  
+    document.removeEventListener("mousemove", onMouseMove);  
+    document.removeEventListener("mouseup", onMouseUp);  
+    saveAll(); 
+  }
+
+  document.addEventListener("mousemove", onMouseMove); 
+  document.addEventListener("mouseup", onMouseUp);
+}
+
+function set15mSlot(agentId, date, i, auxKey){ 
+  const day=get15mGridSchedule(agentId, date); 
+  day[i]=day[i]===auxKey ? "" : auxKey; 
+  const agent = users.find(u=>u.id===agentId || u.username===agentId);
+  const userKey = agent ? agent.username.toLowerCase() : String(agentId).toLowerCase();
+  grid15mSchedules[dayKey(date, userKey)]=day; 
+  saveAll(); 
+  renderPlot();
+}
+
+function deleteAuxBlock(event, agentId, date, blockIdx){ 
+  event.stopPropagation(); 
+  const blocks=getAgentBlocks(agentId, date); 
+  blocks.splice(blockIdx, 1); 
+  saveAll(); 
+  renderPlot();
+}
+
+function timeLabel(min){ const h=Math.floor(min/60), m=min%60; return String(h).padStart(2,"0")+":"+String(m).padStart(2,"0");}
+
+function copySchedule(agentId, dateStr){ 
+  const date = dateStr || selectedDate; 
+  if(activePlotMode==="timeline"){ 
+    copiedScheduleBuffer={mode:"timeline", date: date, data:[...getAgentBlocks(agentId, date)]}; 
+  } else { 
+    copiedScheduleBuffer={mode:"grid15m", date: date, data:[...get15mGridSchedule(agentId, date)]}; 
+  } 
+  const agentObj = users.find(u=>u.id===agentId || u.username===agentId); 
+  document.getElementById("copiedNotice").textContent=`Copied (${agentObj?.name || 'Agent'})`; 
+  alert(`Copied schedule for ${agentObj?.name || 'Agent'} on ${date}`);
+}
+
+function pasteSchedule(targetAgentId, dateStr){ 
+  if(!copiedScheduleBuffer){ return alert("No schedule copied! Click 'Copy' on an agent row first."); } 
+  const date = dateStr || selectedDate; 
+  const agent = users.find(u=>u.id===targetAgentId || u.username===targetAgentId);
+  const userKey = agent ? agent.username.toLowerCase() : String(targetAgentId).toLowerCase();
+
+  if(activePlotMode==="timeline"){ 
+    continuousSchedules[dayKey(date, userKey)]=JSON.parse(JSON.stringify(copiedScheduleBuffer.data)); 
+  } else { 
+    grid15mSchedules[dayKey(date, userKey)]=[...copiedScheduleBuffer.data]; 
+  } 
+  saveAll(); 
+  renderPlot(); 
+  alert(`Pasted schedule to ${agent?.name || 'Agent'} on ${date}`);
+}
+
+function clearWholeDaySchedule(){ 
+  if(!isWriteAdmin())return; 
+  if(!confirm(`Are you sure you want to clear ALL agent schedules for ${selectedDate}?`)) return; 
+  const agents = users.filter(u=>u.role==="agent" || u.role==="team_leader"); 
+  agents.forEach(agent=>{  
+    const uKey = agent.username.toLowerCase();
+    continuousSchedules[dayKey(selectedDate, uKey)] = [];  
+    grid15mSchedules[dayKey(selectedDate, uKey)] = Array(96).fill(""); 
+  }); 
+  saveAll(); 
+  renderPlot(); 
+  alert(`Successfully cleared all agent schedules for ${selectedDate}.`);
+}
+
+function clearSelectedAgent(){ 
+  if(!isWriteAdmin())return; 
+  const inputName = prompt("Enter Agent Name, Username, or Email to clear schedule for " + selectedDate + ":"); 
+  if(!inputName || !inputName.trim()) return; 
+  const q = inputName.trim().toLowerCase(); 
+  const agent = users.find(u => (u.username && u.username.toLowerCase() === q) || (u.email && u.email.toLowerCase() === q) || (u.name && u.name.toLowerCase() === q) || (u.username && u.username.toLowerCase().includes(q)) || (u.email && u.email.toLowerCase().includes(q)) || (u.name && u.name.toLowerCase().includes(q)) ); 
+  if(!agent) {  
+    let foundId = null;  
+    Object.keys(continuousSchedules).concat(Object.keys(grid15mSchedules)).forEach(k => {   
+      if(k.toLowerCase().includes(q)){ const parts = k.split("_"); foundId = parts.slice(1).join("_"); }  
+    });  
+    if(foundId){ clearAgentDaySchedule(foundId, selectedDate); return; }  
+    return alert("Agent not found with name/email: '" + inputName + "'. Please check the spelling or select from the list."); 
+  } 
+  clearAgentDaySchedule(agent.id, selectedDate);
+}
+
+function clearAgentDaySchedule(agentId, dateStr){ 
+  if(!isWriteAdmin())return; 
+  const agent = users.find(u=>u.id===agentId || u.username===agentId || u.email===agentId); 
+  const uKey = agent ? agent.username.toLowerCase() : String(agentId).toLowerCase();
+
+  continuousSchedules[dayKey(dateStr, uKey)] = [];  
+  grid15mSchedules[dayKey(dateStr, uKey)] = Array(96).fill("");  
+  
+  if(agent){
+    const ids = getAgentIdentifiers(agent);
+    ids.forEach(idVal => {
+      continuousSchedules[dayKey(dateStr, idVal)] = [];
+      grid15mSchedules[dayKey(dateStr, idVal)] = Array(96).fill("");
+    });
+  }
+
+  saveAll(); 
+  renderPlot(); 
+  alert(`Cleared schedule for ${agent?.name || 'Agent'} on ${dateStr}.`);
+}
+
+function clearEntireDatabaseSchedules(){ 
+  if(!isWriteAdmin())return; 
+  if(!confirm("CRITICAL WARNING: Are you sure you want to PERMANENTLY ERASE ALL SCHEDULES across ALL uploaded dates for ALL agents in the system?")) return; 
+  if(!confirm("Please confirm a second time to wipe the schedule database:")) return; 
+  continuousSchedules = {}; 
+  grid15mSchedules = {}; 
+  saveAll(); 
+  renderPlot(); 
+  alert("System Schedule Database has been completely reset and wiped.");
+}
+
+function saveSchedules(){saveAll();alert("Schedules saved successfully.");}
+
+function downloadSampleTemplate(){ 
+  const sampleLines = [  
+    "Start_Date,End Date,Username,Queue,AUX_Code,Start_Time,End_Time,Phone",  
+    "9/7/26,9/7/26,external-syed.pasha@coindcx.com,Onboarding Ops,Available,7:00,16:00,+919876543210",  
+    "9/7/26,9/7/26,external-kumara.krishna@coindcx.com,Onboarding Ops,Week Off,7:00,16:00,+919812345678",  
+    "9/7/26,9/8/26,external-kuna.kandi@coindcx.com,Onboarding Ops,Available,23:00,8:00,+919845890465",  
+    "9/7/26,9/7/26,external-pritam.kumar@coindcx.com,Onboarding Ops,Available,15:00,0:00,+919823456789" 
+  ]; 
+  const sampleContent = sampleLines.join("\n"); 
+  const blob = new Blob([sampleContent], {type: "text/csv;charset=utf-8"}); 
+  const url = URL.createObjectURL(blob); 
+  const a = document.createElement("a"); 
+  a.href = url; 
+  a.download = "WFM_Schedule_Upload_Template.csv"; 
+  a.click(); 
+  URL.revokeObjectURL(url);
+}
+
+function handleExcelImport(event){ 
+  const file = event.target.files[0]; 
+  if(!file) return;
+
+  const parseTextCSV = (text) => {  
+    const lines = text.split(/\r?\n/).filter(line => line.trim().length > 0);  
+    return lines.map(line => {   
+      let cells = [];   
+      let inQuotes = false;   
+      let current = '';   
+      for(let i=0; i<line.length; i++){    
+        let char = line[i];    
+        if(char === '"' || char === "'"){ inQuotes = !inQuotes; }    
+        else if(char === ',' && !inQuotes){ cells.push(current.trim()); current = ''; }    
+        else { current += char; }   
+      }   
+      cells.push(current.trim());   
+      return cells;  
+    }); 
+  };
+
+  const reader = new FileReader(); 
+  reader.onload = function(e){  
+    try {   
+      let rows = [];   
+      if(typeof XLSX !== 'undefined') {    
+        const data = new Uint8Array(e.target.result);    
+        const workbook = XLSX.read(data, {type: 'array', cellDates: true, dateNF: 'yyyy-mm-dd'});    
+        const firstSheetName = workbook.SheetNames[0];    
+        const worksheet = workbook.Sheets[firstSheetName];    
+        rows = XLSX.utils.sheet_to_json(worksheet, {header: 1, raw: false, dateNF: 'yyyy-mm-dd'});   
+      } else {    
+        const text = new TextDecoder().decode(e.target.result);    
+        rows = parseTextCSV(text);   
+      }   
+      processImportedMatrix(rows, file.name);  
+    } catch(err) {   
+      const textReader = new FileReader();   
+      textReader.onload = function(evt) {    
+        const rows = parseTextCSV(evt.target.result);    
+        processImportedMatrix(rows, file.name);   
+      };   
+      textReader.readAsText(file);  
+    } 
+  }; 
+  reader.readAsArrayBuffer(file);
+}
+
+function matchAuxCode(rawVal) { 
+  if(!rawVal) return null; 
+  const query = rawVal.trim().toLowerCase().replace(/_/g, " ").replace(/-/g, " ");  
+  const direct = ALL_AUX.find(a => a.label.toLowerCase() === query || a.key.toLowerCase() === query || a.short.toLowerCase() === query); 
+  if(direct) return direct;
+
+  if(query.includes("off") || query.includes("wo")) return ALL_AUX.find(a=>a.key==="weekoff"); 
+  if(query.includes("avail") || query.includes("shift") || query.includes("work")) return ALL_AUX.find(a=>a.key==="available"); 
+  if(query.includes("lunch")) return ALL_AUX.find(a=>a.key==="lunch"); 
+  if(query.includes("break")) return ALL_AUX.find(a=>a.key==="break"); 
+  if(query.includes("plan") || query.includes("pl")) return ALL_AUX.find(a=>a.key==="plannedleave"); 
+  if(query.includes("sick") || query.includes("sl")) return ALL_AUX.find(a=>a.key==="sickleave"); 
+  if(query.includes("comp")) return ALL_AUX.find(a=>a.key==="compoff"); 
+  if(query.includes("meet")) return ALL_AUX.find(a=>a.key==="meeting");  
+  return ALL_AUX.find(a=>a.key==="available");
+}
+
+/* INTERVAL TRIMMING & OVERLAP RESOLVER ENGINE */
+function insertAndTrimOverlaps(existingBlocks, newS, newE, auxKey) {
+  let updated = [];
+  for (let b of existingBlocks) {
+    let bs = b.startMin, be = b.endMin;
+    if (bs >= newS && be <= newE) {
+      continue;
+    }
+    else if (bs < newS && be > newE) {
+      updated.push({ auxKey: b.auxKey, startMin: bs, endMin: newS });
+      updated.push({ auxKey: b.auxKey, startMin: newE, endMin: be });
+    }
+    else if (bs < newS && be > newS) {
+      updated.push({ auxKey: b.auxKey, startMin: bs, endMin: newS });
+    }
+    else if (bs < newE && be > newE) {
+      updated.push({ auxKey: b.auxKey, startMin: newE, endMin: be });
+    }
+    else {
+      updated.push(b);
+    }
+  }
+  updated.push({ auxKey: auxKey, startMin: newS, endMin: newE });
+  return updated.sort((a, b) => a.startMin - b.startMin);
+}
+
+/* IMPORT MATRIX WITH UNIFIED USERNAME KEYING & PHONE DETECTOR */
+function processImportedMatrix(rows, fileName){ 
+  if(!rows || rows.length < 2) { alert("The uploaded file contains no data rows."); return; } 
+  let count = 0;  
+  let header = rows[0].map(c => String(c || '').trim().toLowerCase().replace(/_/g, ' '));  
+  let idxStartDate = -1, idxEndDate = -1, idxUsername = -1, idxAux = -1, idxStartTime = -1, idxEndTime = -1, idxQueue = -1, idxPhone = -1;
+
+  for(let j = 0; j < header.length; j++){  
+    let h = header[j];  
+    if(h === 'start date' || h === 'date' || h === 'sdate' || h === 'startdate'){   
+      idxStartDate = j;  
+    } else if(h === 'end date' || h === 'edate' || h === 'enddate'){   
+      idxEndDate = j;  
+    } else if(h.includes('user') || h.includes('email') || h.includes('agent')){   
+      idxUsername = j;  
+    } else if(h.includes('aux') || h.includes('code') || h.includes('status')){   
+      idxAux = j;  
+    } else if(h === 'start time' || h === 'starttime' || h === 'stime' || h === 'start'){   
+      idxStartTime = j;  
+    } else if(h === 'end time' || h === 'endtime' || h === 'etime' || h === 'end'){   
+      idxEndTime = j;  
+    } else if(h.includes('queue')){
+      idxQueue = j;
+    } else if(h.includes('phone') || h.includes('mobile') || h.includes('contact')){
+      idxPhone = j;
+    }
+  }
+
+  if(idxStartDate === -1) idxStartDate = 0; 
+  if(idxEndDate === -1) idxEndDate = 1; 
+  if(idxUsername === -1) idxUsername = 2; 
+  if(idxQueue === -1) idxQueue = 3;
+  if(idxAux === -1) idxAux = 4; 
+  if(idxStartTime === -1) idxStartTime = 5; 
+  if(idxEndTime === -1) idxEndTime = 6;
+
+  let minImportDate = null;
+  let maxImportDate = null;
+
+  const updateDateBounds = (dStr) => {
+    if (!dStr) return;
+    if (!minImportDate || dStr < minImportDate) minImportDate = dStr;
+    if (!maxImportDate || dStr > maxImportDate) maxImportDate = dStr;
+  };
+
+  // PASS 1: Pre-clear all target user accounts across all legacy keys before importing new dataset
+  for(let i = 1; i < rows.length; i++){
+    let cols = rows[i];
+    if(!cols || cols.length === 0) continue;
+    let startDate = String(cols[idxStartDate] || '').trim();
+    let endDate = String(cols[idxEndDate] || '').trim();
+    let username = String(cols[idxUsername] || '').trim();
+    if(!username || username.toLowerCase().includes('username')) continue;
+    if(!startDate) continue;
+
+    const normStartDate = normalizeDateStr(startDate);
+    const normEndDate = endDate ? normalizeDateStr(endDate) : normStartDate;
+
+    updateDateBounds(normStartDate);
+    updateDateBounds(normEndDate);
+
+    const uClean = username.toLowerCase();
+    let agent = users.find(u =>    
+      u.username.trim().toLowerCase() === uClean ||    
+      (u.email && u.email.trim().toLowerCase() === uClean)
+    );
+
+    const idsToClear = agent ? getAgentIdentifiers(agent) : new Set([uClean]);
+    idsToClear.add(uClean);
+
+    idsToClear.forEach(idVal => {
+      continuousSchedules[dayKey(normStartDate, idVal)] = [];
+      grid15mSchedules[dayKey(normStartDate, idVal)] = Array(96).fill("");
+      if(normEndDate && normEndDate !== normStartDate) {
+        continuousSchedules[dayKey(normEndDate, idVal)] = [];
+        grid15mSchedules[dayKey(normEndDate, idVal)] = Array(96).fill("");
+      }
+      const nextDay = calculateNextDate(normStartDate);
+      continuousSchedules[dayKey(nextDay, idVal)] = [];
+      grid15mSchedules[dayKey(nextDay, idVal)] = Array(96).fill("");
+      updateDateBounds(nextDay);
+    });
+  }
+
+  // PASS 2: Populate blocks under canonical account keys
+  for(let i = 1; i < rows.length; i++){  
+    let cols = rows[i];  
+    if(!cols || cols.length === 0) continue;
+
+    let startDate = String(cols[idxStartDate] || '').trim();  
+    let endDate = String(cols[idxEndDate] || '').trim();  
+    let username = String(cols[idxUsername] || '').trim();  
+    let queueVal = idxQueue >= 0 ? String(cols[idxQueue] || '').trim() : '';
+    let auxLabel = String(cols[idxAux] || '').trim();  
+    let startTime = String(cols[idxStartTime] || '').trim();  
+    let endTime = String(cols[idxEndTime] || '').trim();
+    let phoneVal = idxPhone >= 0 ? String(cols[idxPhone] || '').trim() : '';
+
+    if(!username || username.toLowerCase().includes('username')) continue;  
+    if(!startDate) continue;
+
+    const normStartDate = normalizeDateStr(startDate);  
+    const normEndDate = endDate ? normalizeDateStr(endDate) : normStartDate;
+    const uClean = username.toLowerCase();
+
+    let agent = users.find(u =>    
+      u.username.trim().toLowerCase() === uClean ||    
+      (u.email && u.email.trim().toLowerCase() === uClean)
+    );    
+
+    if(!agent){   
+      const cleanName = username.split("@")[0].replace("external-","").replace("."," ").replace(/\b\w/g, l => l.toUpperCase());   
+      agent = {    
+        id: uClean,    
+        name: cleanName,    
+        username: username,    
+        email: username.includes("@") ? username : username + "@coindcx.com",    
+        phone: phoneVal || "",
+        password: "Agent@123",    
+        role: "agent",    
+        agency: "External",    
+        unit: "Support",    
+        department: "CS Delivery",    
+        queue: queueVal || "Livechat",    
+        shift: (startTime && endTime) ? `${startTime}-${endTime}` : "09:00-18:00",    
+        requirePasswordReset: false   
+      };   
+      users.push(agent);  
+    } else {
+      if(queueVal) agent.queue = queueVal;
+      if(phoneVal && (!agent.phone || !phoneDigitsOnly(agent.phone))) agent.phone = phoneVal;
+    }
+
+    const aux = matchAuxCode(auxLabel);
+
+    let parseT = function(tStr, isEndTime = false) {   
+      if(!tStr && tStr !== 0) return isEndTime ? 1440 : 0;   
+      let raw = String(tStr).trim().toUpperCase();   
+      if(raw === "0" || raw === "0:00" || raw === "00:00" || raw === "24:00") {
+        return isEndTime ? 1440 : 0;
+      }   
+      if(!isNaN(raw) && parseFloat(raw) < 1) {    
+        let mins = Math.round(parseFloat(raw) * 1440);
+        return (isEndTime && mins === 0) ? 1440 : mins;
+      }   
+      let match = raw.match(/(\d{1,2}):(\d{2})/);   
+      if (match) {    
+        let h = parseInt(match[1], 10);    
+        let m = parseInt(match[2], 10);    
+        if (raw.includes("PM") && h < 12) h += 12;    
+        if (raw.includes("AM") && h === 12) h = 0;    
+        let mins = h * 60 + m;
+        return (isEndTime && mins === 0) ? 1440 : mins;
+      }   
+      let hOnly = raw.replace(/[^\d]/g, "");   
+      if (hOnly.length >= 1 && hOnly.length <= 4) {    
+        let num = parseInt(hOnly, 10);    
+        if (num <= 24) {
+          let mins = num * 60;
+          return (isEndTime && mins === 0) ? 1440 : mins;
+        }
+      }   
+      return isEndTime ? 1440 : 0;  
+    };
+
+    const startMin = parseT(startTime, false);  
+    let endMin = parseT(endTime, true);  
+
+    if(aux){   
+      const addBlockToDate = (targetDate, sMin, eMin) => {
+        const canonicalKey = dayKey(targetDate, agent.username.toLowerCase());
+        const existingBlocks = continuousSchedules[canonicalKey] || [];
+
+        // Apply trimming engine to cleanly insert non-overlapping interval
+        const trimmedBlocks = insertAndTrimOverlaps(existingBlocks, sMin, eMin, aux.key);
+        continuousSchedules[canonicalKey] = trimmedBlocks;
+
+        // Sync 15-minute grid plotter
+        const grid15m = Array(96).fill("");
+        trimmedBlocks.forEach(b => {
+          const startSlot = Math.floor(b.startMin / 15);
+          const endSlot = Math.min(96, Math.ceil(b.endMin / 15));
+          for (let slot = startSlot; slot < endSlot; slot++) {
+            grid15m[slot] = b.auxKey;
+          }
+        });
+        grid15mSchedules[canonicalKey] = grid15m;
+      };
+
+      // Overnight shift detection (e.g., 23:00 to 08:00)
+      if (endMin <= startMin && endMin > 0 && endMin !== 1440) {
+        // Block 1: Evening portion on Start Date (23:00 to 24:00)
+        addBlockToDate(normStartDate, startMin, 1440);
+
+        // Block 2: Morning spillover portion on Next Date (00:00 to 08:00)
+        const nextDayDate = (normEndDate && normEndDate !== normStartDate) ? normEndDate : calculateNextDate(normStartDate);
+        addBlockToDate(nextDayDate, 0, endMin);
+      } else {
+        // Standard daytime shift
+        addBlockToDate(normStartDate, startMin, endMin);
+      }
+
+      count++;
+    } 
+  }
+
+  // Automatically adjust view filters to span imported CSV date bounds
+  if(minImportDate && maxImportDate){
+    const fromEl = document.getElementById("scheduleFromDate");
+    const toEl = document.getElementById("scheduleToDate");
+    if(fromEl) fromEl.value = minImportDate;
+    if(toEl) toEl.value = maxImportDate;
+  }
+
+  saveAll(); 
+  populateFilters(); 
+  renderAdmin(); 
+  renderPlot(); 
+  alert(`Successfully imported ${count} schedule entries from ${fileName}! Overlaps trimmed and dates displayed from ${minImportDate} to ${maxImportDate}.`);
+}
+
+function renderAgentHistory(){ 
+  if(!currentUser)return; 
+  const histDate=document.getElementById("historyDate").value||today(); 
+  document.getElementById("historyDateLabel").textContent=histDate; 
+  document.getElementById("historyLogLabel").textContent=histDate;
+
+  const logs=auxLogs[histDate+"_"+currentUser.username.toLowerCase()]||auxLogs[histDate+"_"+currentUser.id]||[]; 
+  const totals={}; 
+  LIVE_DROPDOWN_AUX.forEach(a=>totals[a.key]=0); 
+  logs.forEach(l=>{ if(totals[l.auxKey]!==undefined) totals[l.auxKey]+=l.durationSec; });
+
+  if(histDate === today() && currentActiveAux){  
+    const currentElapsed = Math.floor((Date.now() - auxStartTime) / 1000);  
+    if(totals[currentActiveAux] !== undefined){ totals[currentActiveAux] += currentElapsed; } 
+  }
+
+  function getKpiStyle(key, sec){  
+    if(key === "available"){   
+      if(sec < 27000) return 'style="background:#ffc7ce;color:#9c0006;border:1px solid #f87171"';   
+      if(sec <= 28799) return 'style="background:#ffeb9c;color:#9c6500;border:1px solid #fbbf24"';   
+      return 'style="background:#c6efce;color:#006100;border:1px solid #4ade80"';  
+    }  
+    if(key === "break" || key === "lunch"){   
+      if(sec <= 1800) return 'style="background:#c6efce;color:#006100;border:1px solid #4ade80"';   
+      return 'style="background:#ffc7ce;color:#9c0006;border:1px solid #f87171"';  
+    }  
+    if(key === "bio"){   
+      if(sec <= 600) return 'style="background:#c6efce;color:#006100;border:1px solid #4ade80"';   
+      return 'style="background:#ffc7ce;color:#9c0006;border:1px solid #f87171"';  
+    }  
+    return ''; 
+  }
+
+  const trackKeys = ["available", "break", "lunch", "bio"]; 
+  let html = '<div class="kpis">'; 
+  trackKeys.forEach(k => {  
+    const a = auxByKey(k) || {label: k};  
+    const sec = totals[k] || 0;  
+    const styleAttr = getKpiStyle(k, sec);  
+    html += `<div class="kpi" ${styleAttr} id="kpi_${k}"><b>${fmt(sec)}</b><small>${a.label}</small></div>`; 
+  }); 
+  html += '</div>'; 
+  document.getElementById("todaySummary").innerHTML = html;
+
+  let rows="<table class='summary-table'><tr><th>AUX Status</th><th>Start Time</th><th>End Time</th><th>Duration</th></tr>"; 
+  if(logs.length===0){  
+    rows+="<tr><td colspan='4' style='text-align:center;color:#667085'>No historical logs for this date.</td></tr>"; 
+  } else {  
+    logs.forEach(l=>{   
+      const a=auxByKey(l.auxKey);   
+      rows+=`<tr><td><span class="status-dot" style="background:${a?.color}"></span> <b>${a?.label}</b></td> <td>${l.startTime}</td><td>${l.endTime}</td><td>${fmt(l.durationSec)}</td></tr>`;  
+    }); 
+  } 
+  rows+="</table>"; 
+  document.getElementById("agentUsageTable").innerHTML=rows;
+}
+
+function matchLiveStatusObj(liveStatus, agent) { 
+  if(!liveStatus || !agent) return null; 
+  const userKey = String(agent.username || agent.id || "").toLowerCase();
+  if(liveStatus[userKey]) return liveStatus[userKey];
+
+  const a_u = String(agent.username || "").toLowerCase().replace("external-", "").split("@")[0]; 
+  const a_e = String(agent.email || "").toLowerCase().replace("external-", "").split("@")[0]; 
+  const a_n = String(agent.name || "").toLowerCase();
+
+  return Object.values(liveStatus).find(ls => {  
+    if(!ls) return false;  
+    const ls_u = String(ls.username || "").toLowerCase().replace("external-", "").split("@")[0];  
+    const ls_e = String(ls.email || "").toLowerCase().replace("external-", "").split("@")[0];  
+    const ls_n = String(ls.name || "").toLowerCase();
+
+    if(ls_u && a_u && (ls_u === a_u || ls_u.includes(a_u) || a_u.includes(ls_u))) return true;  
+    if(ls_e && a_e && (ls_e === a_e || ls_e.includes(a_e) || a_e.includes(ls_e))) return true;  
+    if(ls_n && a_n && (ls_n === a_n || ls_n.includes(a_n) || a_n.includes(ls_n))) return true;  
+    return false; 
+  }) || null;
+}
+
+function formatTimeDisplay(rawVal) { 
+  if(!rawVal) return "N/A"; 
+  if(typeof rawVal === "number") {  
+    return new Date(rawVal).toLocaleTimeString("en-IN", {hour12:false}); 
+  } 
+  let str = String(rawVal).trim(); 
+  if(str.length >= 5 && str.includes(":")) return str; 
+  if(!isNaN(str) && parseFloat(str) > 100000) {  
+    return new Date(parseFloat(str)).toLocaleTimeString("en-IN", {hour12:false}); 
+  } 
+  return str || "N/A";
+}
+
 /* HELPER TO EXTRACT MULTI-SELECT VALUES */
 function getMultiSelectValues(selectId) {
   const selectElem = document.getElementById(selectId);
@@ -1084,17 +1840,11 @@ function getMultiSelectValues(selectId) {
   return Array.from(selectElem.selectedOptions).map(opt => opt.value).filter(Boolean);
 }
 
-/* EXPANDED REAL-TIME REPORTING DASHBOARD WITH MULTI-SELECT AGENCY & QUEUE FILTERS AND DATE RANGE */
+/* EXPANDED REAL-TIME REPORTING DASHBOARD WITH MULTI-SELECT AGENCY & QUEUE FILTERS */
 function renderDashboard(){ 
   if(!currentUser||!isManagerOrAdmin())return; 
   syncStorageData(); 
-  
-  let fromVal = document.getElementById("dashFromDate")?.value;
-  let toVal = document.getElementById("dashToDate")?.value;
-  if(!fromVal) { fromVal = today(); if(document.getElementById("dashFromDate")) document.getElementById("dashFromDate").value = fromVal; }
-  if(!toVal) { toVal = fromVal; if(document.getElementById("dashToDate")) document.getElementById("dashToDate").value = toVal; }
-
-  const dateList = getDateRangeArray(fromVal, toVal);
+  const date=document.getElementById("reportDate").value||today(); 
   let agents=users.filter(u=>u.role !== "admin" || u.id === currentUser.id); 
 
   // Multi-Select Filtering for Agencies & Queues
@@ -1119,29 +1869,23 @@ function renderDashboard(){
 
   agents.forEach(a=>{  
     const uKey = a.username.toLowerCase();
+    const logs = auxLogs[date+"_"+uKey] || auxLogs[date+"_"+a.id] || [];  
+    const iLogs = inactivityLogs[date+"_"+uKey] || inactivityLogs[date+"_"+a.id] || [];
+
     const auxTotals = {};
     trackedAuxList.forEach(k => auxTotals[k] = 0);
+
+    // 1. Calculate sum of completed historical AUX sessions
+    logs.forEach(l=>{   
+      if(auxTotals[l.auxKey] !== undefined) {
+        auxTotals[l.auxKey] += l.durationSec;
+      }
+    });
+
+    // Calculate cumulative inactivity time
     let inactiveSec = 0;
-    let hasLogsInRange = false;
-
-    // Aggregate durations across selected From/To date range
-    dateList.forEach(date => {
-      const logs = auxLogs[date+"_"+uKey] || auxLogs[date+"_"+a.id] || [];  
-      const iLogs = inactivityLogs[date+"_"+uKey] || inactivityLogs[date+"_"+a.id] || [];
-
-      if (logs.length > 0) hasLogsInRange = true;
-
-      // 1. Calculate sum of completed historical AUX sessions
-      logs.forEach(l=>{   
-        if(auxTotals[l.auxKey] !== undefined) {
-          auxTotals[l.auxKey] += l.durationSec;
-        }
-      });
-
-      // Calculate cumulative inactivity time
-      iLogs.forEach(il => {
-        inactiveSec += (il.durationSec || 0);
-      });
+    iLogs.forEach(il => {
+      inactiveSec += (il.durationSec || 0);
     });
 
     let agentLiveAuxKey = "unavailable";  
@@ -1156,8 +1900,8 @@ function renderDashboard(){
       liveStartTimeMs = liveObj.startTime;   
     }
 
-    // 2. Dynamically add active ongoing session duration if date range includes today
-    if(dateList.includes(today()) && agentLiveAuxKey !== "unavailable" && liveStartTimeMs){  
+    // 2. Dynamically add active ongoing session duration into specific AUX total
+    if(date === today() && agentLiveAuxKey !== "unavailable" && liveStartTimeMs){  
       const currentElapsed = Math.max(0, Math.floor((Date.now() - liveStartTimeMs) / 1000));  
       if(auxTotals[agentLiveAuxKey] !== undefined) {
         auxTotals[agentLiveAuxKey] += currentElapsed;
@@ -1167,11 +1911,11 @@ function renderDashboard(){
     availableSec += auxTotals["available"]; 
     breakSec += auxTotals["break"];  
 
-    if(hasLogsInRange || (dateList.includes(today()) && agentLiveAuxKey !== "unavailable")) online++;
+    if(logs.length>0 || (date === today() && agentLiveAuxKey !== "unavailable")) online++;
 
     const currentAuxObj = auxByKey(agentLiveAuxKey);  
     let liveTimerText = "";  
-    if(dateList.includes(today()) && agentLiveAuxKey !== "unavailable" && liveStartTimeMs){   
+    if(date === today() && agentLiveAuxKey !== "unavailable" && liveStartTimeMs){   
       const currentElapsed = Math.max(0, Math.floor((Date.now() - liveStartTimeMs) / 1000));   
       liveTimerText = ` (${fmt(currentElapsed)})`;  
     }
