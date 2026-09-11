@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CoinDCX | WFM Schedule Plotter</title>
+<title>CoinDCX | Enterprise WFM CRM Schedule Plotter</title>
 <style>
 :root{ --bg:#f5f7fb; --card:#fff; --text:#172033; --muted:#667085; --border:#dfe4ec; --primary:#0052ff; --primary-hover:#0038b8; --danger:#dc2626; --rowH:52px; --cellW:56px;}
 *{box-sizing:border-box}
@@ -617,7 +617,7 @@ button{cursor:pointer;border:0}
 </section>
 
 <script>
-// COMPLETE CORE APPLICATION SCRIPT
+/* FULL EXTENSIVE APPLICATION RUNTIME LOGIC */
 const auxCodes = [
   { code: 'AVAILABLE', label: 'Available', cls: 'available', category: 'work' },
   { code: 'UNAVAILABLE', label: 'Unavailable', cls: 'unavailable', category: 'work' },
@@ -780,7 +780,6 @@ function initializeAppView() {
   buildFilters();
   setupAuxDropdownOptions();
 
-  // Initialize live AUX if missing
   const liveStatusMap = __safeParse(safeStorage.getItem("wfm_live_agent_status"), {});
   if(!liveStatusMap[currentUser.id]) {
     liveStatusMap[currentUser.id] = { code: 'UNAVAILABLE', startTime: new Date().getTime() };
@@ -941,7 +940,6 @@ function syncLiveAuxTopPill(liveStatusMap) {
   if(document.getElementById('currentAux')) document.getElementById('currentAux').innerText = found.label;
 }
 
-// TIMELINE & PLOTTER
 function switchPlotMode() {
   const mode = document.getElementById('plotModeSelect').value;
   currentPlotMode = mode;
@@ -1003,7 +1001,6 @@ function renderTimelineRows(filteredUsers, fromDate, toDate) {
     const rowLabel = document.createElement('div');
     rowLabel.className = 'agent-row-label';
     
-    // Contact buttons formatting
     let contactHTML = '';
     if(u.phone) {
       contactHTML = `
@@ -1037,7 +1034,6 @@ function renderTimelineRows(filteredUsers, fromDate, toDate) {
     }
     track.appendChild(overlay);
 
-    // Retrieve blocks for date range
     let blocks = [];
     const key = `${u.id}_${fromDate}`;
     blocks = continuousSchedules[key] || [];
@@ -1114,7 +1110,6 @@ function renderGrid15m(filteredUsers, dateStr) {
   if(!container) return;
   container.innerHTML = '';
 
-  // Header corner
   const corner = document.createElement('div');
   corner.className = 'agent-head-cell';
   corner.innerText = 'Agent / 15-Min Slots';
@@ -1144,7 +1139,7 @@ function renderGrid15m(filteredUsers, dateStr) {
       cell.innerText = code !== 'EMPTY' ? code.substring(0,3) : '';
       
       cell.onclick = () => {
-        const activeCode = auxCodes[0].code; // default AVAILABLE or prompt
+        const activeCode = auxCodes[0].code;
         slots[i] = activeCode;
         grid15mSchedules[key] = slots;
         safeStorage.setItem("wfm_grid15m_schedules", JSON.stringify(grid15mSchedules));
@@ -1190,7 +1185,6 @@ function confirmTimePlot() {
   renderPlot();
 }
 
-// AGENT STATUS & HISTORY
 function renderAgentHistory() {
   if(!currentUser) return;
   const hDate = document.getElementById('historyDate').value || getTodayStr();
@@ -1216,7 +1210,6 @@ function renderAgentHistory() {
   html += `</table>`;
   if(document.getElementById('todaySummary')) document.getElementById('todaySummary').innerHTML = html;
 
-  // Logs table
   let logHtml = `<table class="summary-table"><tr><th>Start Time</th><th>End Time</th><th>AUX Code</th></tr>`;
   blocks.forEach(b => {
     logHtml += `<tr><td>${b.start}</td><td>${b.end}</td><td>${b.code}</td></tr>`;
@@ -1231,7 +1224,6 @@ function resetHistoryToToday() {
   renderAgentHistory();
 }
 
-// CALLING LEADS
 function renderLeads() {
   const tbody = document.getElementById('leadsTableBody');
   if(!tbody) return;
@@ -1291,7 +1283,6 @@ function clearAllCallingLeads() {
   }
 }
 
-// DASHBOARD
 function renderDashboard() {
   const tbody = document.getElementById('dashboardBody');
   if(!tbody) return;
@@ -1338,14 +1329,12 @@ function formatHours(mins) {
   return `${Math.floor(mins/60)}h ${mins%60}m`;
 }
 
-// ATTENDANCE LOGS
 function renderAttendance() {
   const cont = document.getElementById('attendanceContent');
   if(!cont) return;
   cont.innerHTML = `<h3>Agent Attendance Records</h3><p style="color:var(--muted)">Attendance tracking based on daily login schedules and first AUX punch.</p>`;
 }
 
-// ADMIN USERS
 function renderAdmin() {
   const tbody = document.getElementById('adminUsersBody');
   if(!tbody) return;
@@ -1393,7 +1382,6 @@ function deleteUser(idx) {
   }
 }
 
-// EXPORT / IMPORT & SAMPLES
 function exportCSV() {
   let csv = "AgentID,AgentName,Date,AUXCode,StartTime,EndTime\n";
   for(let key in continuousSchedules) {
