@@ -218,14 +218,19 @@ function leadContactButtonsHtml(phone, name) {
   </span>`;
 }
 
-const LIVE_DROPDOWN_AUX = [ {key:"unavailable", label:"Unavailable", short:"UN", color:"#ef4444"}, {key:"available", label:"Available", short:"AV", color:"#22c55e"}, {key:"break", label:"Break", short:"BR", color:"#3b82f6"}, {key:"lunch", label:"Lunch", short:"LU", color:"#f59e0b"}, {key:"bio", label:"Bio Break", short:"BB", color:"#06b6d4"}, {key:"meeting", label:"Team Meeting", short:"TM", color:"#a855f7"}, {key:"tlfeedback", label:"TL Feedback", short:"TL", color:"#ec4899"}, {key:"qafeedback", label:"QA Feedback", short:"QA", color:"#8b5cf6"}, {key:"nht", label:"NHT Training", short:"NH", color:"#14b8a6"}, {key:"pkt", label:"PKT Training", short:"PK", color:"#0ea5e9"}, {key:"training", label:"Training", short:"TR", color:"#6366f1"}, {key:"coaching", label:"Coaching", short:"CO", color:"#f97316"}, {key:"offline", label:"Offline", short:"OF", color:"#64748b"}];
+const LIVE_DROPDOWN_AUX = [ {key:"unavailable", label:"Unavailable", short:"UN", color:"#ef4444"}, {key:"available", label:"Available", short:"AV", color:"#22c55e"}, {key:"break", label:"Break", short:"BR", color:"#3b82f6"}, {key:"lunch", label:"Lunch", short:"LU", color:"#f59e0b"}, {key:"bio", label:"Bio Break", short:"BB", color:"#06b6d4"}, {key:"breakpending", label:"Break Pending", short:"BP", color:"#fde047"}, {key:"meeting", label:"Team Meeting", short:"TM", color:"#a855f7"}, {key:"tlfeedback", label:"TL Feedback", short:"TL", color:"#ec4899"}, {key:"qafeedback", label:"QA Feedback", short:"QA", color:"#8b5cf6"}, {key:"nht", label:"NHT Training", short:"NH", color:"#14b8a6"}, {key:"pkt", label:"PKT Training", short:"PK", color:"#0ea5e9"}, {key:"training", label:"Training", short:"TR", color:"#6366f1"}, {key:"coaching", label:"Coaching", short:"CO", color:"#f97316"}, {key:"offline", label:"Offline", short:"OF", color:"#64748b"}];
 const LEAVE_SCHEDULE_AUX = [ {key:"weekoff", label:"Week Off", short:"WO", color:"#64748b"}, {key:"plannedleave", label:"Planned Leave", short:"PL", color:"#0284c7"}, {key:"sickleave", label:"Sick Leave", short:"SL", color:"#e11d48"}, {key:"ncns", label:"NCNS", short:"NC", color:"#881337"}, {key:"unpaidleave", label:"Unpaid Leave", short:"UL", color:"#475569"}, {key:"casualleave", label:"Casual Leave", short:"CL", color:"#d97706"}, {key:"holiday", label:"Holiday", short:"HD", color:"#059669"}, {key:"compoff", label:"Comp Off", short:"CO", color:"#7c3aed"}, {key:"unplannedleave", label:"Unplanned Leave", short:"UP", color:"#b91c1c"}];
 const ALL_AUX = [...LIVE_DROPDOWN_AUX, ...LEAVE_SCHEDULE_AUX];
 const AGENCY_OPTIONS = ["internal", "external", "Radical Minds", "Concentrix", "CoinDCX"];
 const DEPARTMENT_OPTIONS = ["WFM", "CS Delivery", "Quality", "Training", "Process Excellence", "Growth"];
 const QUEUE_OPTIONS = ["Livechat", "Email", "Calling Sales", "Onboarding Ops", "Verifiers/Auditors", "Campaign Specialist"];
 
-const defaultRoles = [ {key:"admin", label:"WFM Admin", accessMode:"write", canEdit:true, canViewAll:true, canDownload:true, canAdmin:true}, {key:"team_leader", label:"Team Leader", accessMode:"read", canEdit:false, canViewAll:true, canDownload:true, canAdmin:false}, {key:"agent", label:"Agent", accessMode:"agent", canEdit:false, canViewAll:false, canDownload:false, canAdmin:false}];
+const defaultRoles = [ 
+  {key:"admin", label:"WFM Admin", accessMode:"write", canEdit:true, canViewAll:true, canDownload:true, canAdmin:true}, 
+  {key:"team_leader", label:"Team Leader", accessMode:"read", canEdit:false, canViewAll:true, canDownload:true, canAdmin:false}, 
+  {key:"sme", label:"SME", accessMode:"read", canEdit:false, canViewAll:true, canDownload:true, canAdmin:false}, 
+  {key:"agent", label:"Agent", accessMode:"agent", canEdit:false, canViewAll:false, canDownload:false, canAdmin:false}
+];
 
 function __safeParse(raw, fallback){ try { const parsed = JSON.parse(raw); return (parsed === null || parsed === undefined) ? fallback : parsed; } catch(e){ return fallback; }}
 
@@ -469,6 +474,34 @@ function login(){
         email: u.includes("@") ? uInput : uInput + "@company.com",    
         phone: "",
         role: u.startsWith("tl") ? "team_leader" : "agent",    
+        agency: "External",    
+        unit: "Support",    
+        department: "CS Delivery",    
+        queue: "Livechat",    
+        shift: "09:00-18:00",    
+        requirePasswordReset: false   
+      };   
+      found.password = pInput;
+      users.push(found);   
+      saveAll();  
+    } 
+  }
+
+if(!found){  
+    const userHasSchedules = Object.keys(continuousSchedules).concat(Object.keys(grid15mSchedules)).some(k => k.toLowerCase().includes(u));  
+    if(userHasSchedules || u.includes("@") || u.startsWith("agent") || u.startsWith("tl") || u.startsWith("sme")){   
+      const cleanName = u.split("@")[0].replace("external-","").replace("."," ").replace(/\b\w/g, l => l.toUpperCase());   
+      let defaultRole = "agent";
+      if(u.startsWith("tl")) defaultRole = "team_leader";
+      if(u.startsWith("sme")) defaultRole = "sme";
+
+      found = {    
+        id: uInput.toLowerCase(),    
+        name: cleanName,    
+        username: uInput,    
+        email: u.includes("@") ? uInput : uInput + "@company.com",    
+        phone: "",
+        role: defaultRole,    
         agency: "External",    
         unit: "Support",    
         department: "CS Delivery",    
@@ -2350,12 +2383,7 @@ function isWriteAdmin(){
   return r.canEdit || r.canAdmin || r.accessMode === "write";
 }
 
-function isManagerOrAdmin(){ 
-  if(!currentUser) return false; 
-  const rKey = String(currentUser.role || "").toLowerCase(); 
-  if(rKey === "admin" || rKey === "team_leader" || rKey === "team leader" || rKey === "wfm_admin" || rKey === "wfm admin") return true; 
-  const r = getRoleObj(currentUser.role); 
-  return r.canViewAll || r.accessMode === "read" || r.accessMode === "write";
+function isManagerOrAdmin(){ if(!currentUser) return false; const rKey = String(currentUser.role || "").toLowerCase(); if(rKey === "admin" || rKey === "team_leader" || rKey === "team leader" || rKey === "sme" || rKey === "wfm_admin" || rKey === "wfm admin") return true; const r = getRoleObj(currentUser.role); return r.canViewAll || r.accessMode === "read" || r.accessMode === "write"; 
 }
 
 function applyPermissions(){ 
@@ -2401,6 +2429,175 @@ function renderLegend(){
     }  
     box.appendChild(s); 
   });
+}
+
+/* REMOTE ADMIN AUX STATUS CHANGE ENGINE */
+function adminRemoteChangeAux(targetUsername, newAuxKey) {
+  if (!isWriteAdmin()) return alert("Only Admins have permission to modify live agent AUX statuses.");
+  const uKey = targetUsername.toLowerCase();
+  let liveStatus = JSON.parse(safeStorage.getItem("wfm_live_agent_status") || "{}");
+  const now = Date.now();
+
+  const prevObj = liveStatus[uKey];
+  if (prevObj && prevObj.auxKey) {
+    const elapsed = (now - (prevObj.startTime || now)) / 1000;
+    logAuxSession(uKey, today(), prevObj.auxKey, prevObj.startTime || now, now, elapsed);
+  }
+
+  liveStatus[uKey] = {
+    auxKey: newAuxKey,
+    startTime: now,
+    firstAvailableTime: prevObj?.firstAvailableTime || (newAuxKey === "available" ? now : null),
+    userRole: prevObj?.userRole || "agent",
+    username: uKey,
+    email: prevObj?.email || uKey,
+    name: prevObj?.name || uKey
+  };
+
+  safeStorage.setItem("wfm_live_agent_status", JSON.stringify(liveStatus));
+  saveAll();
+  renderDashboard();
+  renderAttendance();
+  alert(`Successfully updated live AUX status for agent '${targetUsername}' to '${auxByKey(newAuxKey)?.label || newAuxKey}'.`);
+}
+
+/* REMOTE ADMIN FORCE LOGOUT ENGINE */
+function adminForceLogout(targetUsername) {
+  if (!isWriteAdmin()) return alert("Only Admins can execute remote agent logouts.");
+  if (!confirm(`Are you sure you want to forcibly log out agent '${targetUsername}'?`)) return;
+
+  const uKey = targetUsername.toLowerCase();
+  let liveStatus = JSON.parse(safeStorage.getItem("wfm_live_agent_status") || "{}");
+  const now = Date.now();
+
+  const prevObj = liveStatus[uKey];
+  if (prevObj && prevObj.auxKey) {
+    const elapsed = (now - (prevObj.startTime || now)) / 1000;
+    logAuxSession(uKey, today(), prevObj.auxKey, prevObj.startTime || now, now, elapsed);
+  }
+
+  liveStatus[uKey] = {
+    auxKey: "offline",
+    startTime: now,
+    userRole: prevObj?.userRole || "agent",
+    username: uKey,
+    email: prevObj?.email || uKey,
+    name: prevObj?.name || uKey
+  };
+
+  safeStorage.setItem("wfm_live_agent_status", JSON.stringify(liveStatus));
+  saveAll();
+  renderDashboard();
+  renderAttendance();
+  renderAdmin();
+  alert(`Agent '${targetUsername}' has been logged out remotely.`);
+}
+
+function renderDashboard(){ 
+  if(!currentUser||!isManagerOrAdmin())return; 
+  syncStorageData(); 
+  
+  let fromVal = document.getElementById("dashFromDate")?.value;
+  let toVal = document.getElementById("dashToDate")?.value;
+  if(!fromVal) { fromVal = today(); if(document.getElementById("dashFromDate")) document.getElementById("dashFromDate").value = fromVal; }
+  if(!toVal) { toVal = fromVal; if(document.getElementById("dashToDate")) document.getElementById("dashToDate").value = toVal; }
+
+  const dateList = getDateRangeArray(fromVal, toVal);
+  let agents=users.filter(u=>u.role !== "admin" || u.id === currentUser.id); 
+
+  const selAgencies = getMultiSelectValues("dashAgencyFilter");
+  const selQueues = getMultiSelectValues("dashQueueFilter");
+
+  if (selAgencies.length > 0) {
+    agents = agents.filter(a => selAgencies.includes(a.agency));
+  }
+  if (selQueues.length > 0) {
+    agents = agents.filter(a => selQueues.includes(a.queue));
+  }
+
+  let liveStatus = JSON.parse(safeStorage.getItem("wfm_live_agent_status") || "{}"); 
+  let online=0,availableSec=0,breakSec=0; 
+  let rows=""; 
+
+  const trackedAuxList = [
+    "available", "break", "lunch", "bio", "meeting", 
+    "tlfeedback", "qafeedback", "nht", "pkt", "training", "coaching", "unavailable", "offline"
+  ];
+
+  agents.forEach(a=>{  
+    const uKey = a.username.toLowerCase();
+    const auxTotals = {};
+    trackedAuxList.forEach(k => auxTotals[k] = 0);
+    let inactiveSec = 0;
+    let hasLogsInRange = false;
+
+    // Aggregate durations across selected From/To date range
+    dateList.forEach(date => {
+      const logs = auxLogs[date+"_"+uKey] || auxLogs[date+"_"+a.id] || [];  
+      const iLogs = inactivityLogs[date+"_"+uKey] || inactivityLogs[date+"_"+a.id] || [];
+
+      if (logs.length > 0) hasLogsInRange = true;
+
+      logs.forEach(l=>{   
+        if(auxTotals[l.auxKey] !== undefined) {
+          auxTotals[l.auxKey] += l.durationSec;
+        }
+      });
+
+      iLogs.forEach(il => {
+        inactiveSec += (il.durationSec || 0);
+      });
+    });
+
+    let agentLiveAuxKey = "unavailable";  
+    let liveStartTimeMs = null;  
+    let liveObj = matchLiveStatusObj(liveStatus, a);
+
+    if(a.username.toLowerCase() === currentUser.username.toLowerCase()){   
+      agentLiveAuxKey = currentActiveAux;   
+      liveStartTimeMs = auxStartTime;   
+    } else if(liveObj){   
+      agentLiveAuxKey = liveObj.auxKey || "unavailable";   
+      liveStartTimeMs = liveObj.startTime;   
+    }
+
+    if(dateList.includes(today()) && agentLiveAuxKey !== "unavailable" && liveStartTimeMs){  
+      const currentElapsed = Math.max(0, Math.floor((Date.now() - liveStartTimeMs) / 1000));  
+      if(auxTotals[agentLiveAuxKey] !== undefined) {
+        auxTotals[agentLiveAuxKey] += currentElapsed;
+      }
+    }  
+
+    availableSec += auxTotals["available"]; 
+    breakSec += auxTotals["break"];  
+
+    if(hasLogsInRange || (dateList.includes(today()) && agentLiveAuxKey !== "unavailable")) online++;
+
+    const currentAuxObj = auxByKey(agentLiveAuxKey);  
+    let liveTimerText = "";  
+    if(dateList.includes(today()) && agentLiveAuxKey !== "unavailable" && liveStartTimeMs){   
+      const currentElapsed = Math.max(0, Math.floor((Date.now() - liveStartTimeMs) / 1000));   
+      liveTimerText = ` (${fmt(currentElapsed)})`;  
+    }
+
+    const isEditable = isWriteAdmin();
+    const adminAuxControlHtml = isEditable ? `
+      <select class="admin-aux-select" onchange="adminRemoteChangeAux('${a.username}', this.value)">
+        ${LIVE_DROPDOWN_AUX.map(aux => `<option value="${aux.key}" ${aux.key===agentLiveAuxKey?'selected':''}>${aux.label}</option>`).join("")}
+      </select>
+    ` : `<span class="badge">${esc(currentAuxObj?.label||'Unavailable')}</span>`;
+
+    let auxCellsHtml = `<td>${fmt(auxTotals["available"])}</td><td style="color:#b91c1c;font-weight:bold">${fmt(inactiveSec)}</td>`;
+    
+    trackedAuxList.slice(1).forEach(k => {
+      auxCellsHtml += `<td>${fmt(auxTotals[k])}</td>`;
+    });
+
+    rows+=`<tr><td>${esc(a.name)}</td><td>${esc(a.agency)}</td><td>${esc(a.queue)}</td><td>${esc(a.shift)}</td> <td><span class="status-dot" style="background:${currentAuxObj?.color||'#ef4444'}"></span> <b>${esc(currentAuxObj?.label||'Unavailable')}${liveTimerText}</b></td> <td>${adminAuxControlHtml}</td> ${auxCellsHtml}</tr>`; 
+  });
+
+  document.getElementById("dashboardKpis").innerHTML=` <div class="kpi"><b>${agents.length}</b><small>Total Tracked Users</small></div> <div class="kpi"><b>${online}</b><small>Active Users Logged</small></div> <div class="kpi"><b>${fmt(availableSec)}</b><small>Total Available Time</small></div> <div class="kpi"><b>${fmt(breakSec)}</b><small>Total Break Time</small></div>`; 
+  document.getElementById("dashboardBody").innerHTML=rows;
 }
 
 function populateFilters(){ 
