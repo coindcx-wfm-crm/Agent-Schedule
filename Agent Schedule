@@ -1,3 +1,4 @@
+
 <!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>CoinDCX | WFM Schedule Plotter</title><style>:root{ --bg:#f5f7fb; --card:#fff; --text:#172033; --muted:#667085; --border:#dfe4ec; --primary:#0052ff; --primary-hover:#0038b8; --danger:#dc2626; --rowH:52px; --cellW:56px;}*{box-sizing:border-box}body{margin:0;font-family:Inter,Arial,sans-serif;background:var(--bg);color:var(--text);user-select:none}button,input,select{font:inherit}button{cursor:pointer;border:0}.hidden{display:none!important}
 /* ENTERPRISE COINDCX CRM LOGIN SCREEN */.login-screen{  min-height:100vh;  display:flex;  align-items:center;  justify-content:center;  padding:24px;  background: radial-gradient(circle at 50% 30%, #1e3a8a 0%, #0f172a 50%, #080d1a 100%);  position:relative;  overflow:hidden;}.login-screen::before {  content: "";  position: absolute;  top: 0; left: 0; right: 0; bottom: 0;  background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 0);  background-size: 28px 28px;  pointer-events: none;}.login-brand-watermark {  position: absolute;  right: 6vw;  top: 6vh;  font-size: 48px;  font-weight: 900;  letter-spacing: -1.5px;  color: #ffffff;  opacity: 0.95;  text-shadow: 0 10px 30px rgba(0,0,0,0.5);  display: flex;  align-items: center;  gap: 14px;}.login-brand-watermark .coindcx-blue { color: #ffffff; }.login-brand-watermark .coindcx-red { color: #f97316; }.login-brand-watermark span.sub-badge {  font-size: 16px;  font-weight: 600;  color: #60a5fa;  background: rgba(37, 99, 235, 0.2);  padding: 4px 12px;  border-radius: 999px;  border: 1px solid rgba(96, 165, 250, 0.3);  letter-spacing: 0;}
 .login-card{  width:420px;  background:#ffffff;  border-radius:20px;  padding:36px;  box-shadow:0 25px 60px rgba(0, 0, 0, 0.5);  position:relative;  z-index:10;  border:1px solid rgba(255,255,255,0.15);}
@@ -7,8 +8,6 @@
 /* App Topbar & Centered User Info + Clock */.topbar{height:64px;background:#fff;border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 18px;gap:12px;position:sticky;top:0;z-index:50}.brand{font-weight:800;font-size:18px;margin-right:auto}.header-center-clock{position:absolute;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:10px;background:#f1f5f9;border:1px solid #cbd5e1;border-radius:999px;padding:6px 18px;font-weight:800;font-size:13px;color:#0f172a;box-shadow:0 2px 5px rgba(0,0,0,0.04)}.badge{padding:5px 9px;border-radius:999px;font-size:12px;font-weight:700;background:#eaf2ff;color:#1d4ed8}.container{padding:18px;max-width:100%;overflow:hidden}
 /* Top-Right Live AUX Status Dropdown */.aux-dropdown-container{position:relative;margin-left:auto;display:flex;align-items:center}.aux-status-pill{display:flex;align-items:center;gap:8px;background:#f1f5f9;border:1px solid #cbd5e1;border-radius:999px;padding:6px 14px;font-size:13px;font-weight:800;cursor:pointer;box-shadow:0 2px 5px #0001;transition:all 0.2s}.aux-status-pill:hover{background:#e2e8f0}.status-dot{width:10px;height:10px;border-radius:50%;display:inline-block}.aux-dropdown-menu{position:absolute;top:110%;right:0;width:260px;background:#fff;border:1px solid var(--border);border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,0.15);padding:10px;z-index:200}.aux-search-input{width:100%;padding:8px 12px;border:1px solid #3b82f6;border-radius:8px;margin-bottom:8px;font-size:13px;outline:none}.aux-option-list{max-height:260px;overflow-y:auto;display:flex;flex-direction:column;gap:4px}.aux-option-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;color:#334155}.aux-option-item:hover{background:#f1f5f9}.aux-option-item.active{background:#e2e8f0;font-weight:800}
 /* Toolbar & Tabs */.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:14px}.toolbar input,.toolbar select{padding:9px;border:1px solid var(--border);border-radius:8px;background:#fff}.tabs{display:flex;gap:4px;margin-bottom:14px}.tab{padding:9px 14px;border-radius:8px;background:#e8edf4;font-weight:700}.tab.active{background:var(--primary);color:#fff}.sub-tabs{display:flex;gap:6px;margin-bottom:14px;border-bottom:1px solid var(--border);padding-bottom:8px}.sub-tab{padding:6px 12px;border-radius:6px;background:#f1f5f9;font-size:12px;font-weight:700;color:#475569;border:1px solid #cbd5e1}.sub-tab.active{background:#0052ff;color:#fff;border-color:#0052ff}.card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:14px}.legend{display:flex;gap:7px;flex-wrap:wrap}.legend span{padding:6px 9px;border-radius:6px;font-size:12px;font-weight:700;cursor:grab}
-/* CONTACT BUTTONS STYLING */.contact-group{display:inline-flex;align-items:center;gap:4px;vertical-align:middle}.contact-btn{display:inline-flex;align-items:center;justify-content:center;padding:4px 8px;border-radius:999px;font-size:11px;font-weight:700;text-decoration:none;line-height:1;transition:all 0.15s ease;box-shadow:0 1px 2px rgba(0,0,0,0.08);cursor:pointer}.contact-btn:hover{transform:translateY(-1px);box-shadow:0 2px 4px rgba(0,0,0,0.15)}.btn-call{background:#2563eb;color:#ffffff!important}.btn-call:hover{background:#1d4ed8}.btn-wa{background:#16a34a;color:#ffffff!important}.btn-wa:hover{background:#15803d}.btn-sms{background:#64748b;color:#ffffff!important}.btn-sms:hover{background:#475569}.compact-contact .contact-btn{padding:3px 6px;font-size:10px}.no-phone-tag{font-size:10px;font-weight:600;color:#94a3b8;font-style:italic}
-/* MULTI SELECT STYLING */.multi-select{height:38px;padding:4px 8px!important;border:1px solid var(--border);border-radius:8px;background:#fff;font-size:12px;min-width:140px;outline:none}
 /* MODE 1: Continuous 24-Hour Timeline Plotter */.plot-wrap{border:1px solid var(--border);border-radius:10px;background:#fff;overflow:auto;max-height:70vh}.plot-grid{display:grid;grid-template-columns:360px 1440px;min-width:1800px}.timeline-header{display:flex;height:45px;background:#f8fafc;border-bottom:1px solid var(--border);border-right:1px solid var(--border)}.hour-tick{width:60px;flex-shrink:0;border-right:1px solid #e2e8f0;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;color:#64748b}.agent-head-cell{position:sticky;left:0;z-index:20;background:#f8fafc;border-right:1px solid var(--border);border-bottom:1px solid var(--border);height:45px;padding:10px;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:space-between}.agent-row-label{position:sticky;left:0;z-index:10;background:#fff;border-right:1px solid var(--border);border-bottom:1px solid var(--border);height:var(--rowH);padding:6px 10px;display:flex;align-items:center;justify-content:space-between;gap:8px}.agent-info{min-width:0}.agent-name{font-weight:700;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.agent-meta{font-size:10px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.timeline-track-container{position:relative;height:var(--rowH);background:#fafafa;border-bottom:1px solid var(--border);width:1440px;overflow:hidden;cursor:crosshair}.timeline-grid-overlay{position:absolute;top:0;bottom:0;left:0;right:0;display:flex;pointer-events:none}.grid-hour{width:60px;border-right:1px dashed #e2e8f0;height:100%}
 /* AUX Block Styling */.aux-block{position:absolute;top:6px;bottom:6px;border-radius:6px;padding:2px 6px;font-size:10px;font-weight:800;color:#fff;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 5px rgba(0,0,0,0.25);cursor:grab;overflow:hidden;white-space:nowrap;transition:box-shadow 0.2s}.aux-block:active{cursor:grabbing;box-shadow:0 4px 10px rgba(0,0,0,0.35);z-index:30}.aux-block .delete-btn{font-size:11px;font-weight:900;margin-left:6px;cursor:pointer;background:rgba(0,0,0,0.3);border-radius:50%;width:16px;height:16px;display:inline-flex;align-items:center;justify-content:center;transition:background 0.2s}.aux-block .delete-btn:hover{background:rgba(220,38,38,0.9)}
 /* MODE 2: 15-Minute Grid Interval Plotter */.plot-grid-15m{display:grid;grid-template-columns:360px repeat(96,var(--cellW));min-width:5760px}.time-head-15m{height:45px;background:#f8fafc;border-right:1px solid var(--border);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;writing-mode:vertical-rl;transform:rotate(180deg)}.aux-cell-15m{height:var(--rowH);border-right:1px solid #e8ecf2;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;user-select:none;cursor:pointer}.aux-cell-15m:hover{outline:2px solid #111;outline-offset:-2px}
@@ -37,7 +36,7 @@
   const db = getFirestore(app);
   const globalDocRef = doc(db, "wfm_store", "central_state");
 
-  // Real-time Cloud Data Listener (Broadcasts edits, live AUX, inactivity, calling leads & IP logs)
+  // Real-time Cloud Data Listener (Broadcasts edits, live AUX & inactivity logs across all devices)
   onSnapshot(globalDocRef, (docSnap) => {
     if (docSnap.exists()) {
       const data = docSnap.data();
@@ -46,8 +45,6 @@
       if (data.grid15mSchedules) { grid15mSchedules = data.grid15mSchedules; safeStorage.setItem("wfm_grid15m_schedules", JSON.stringify(grid15mSchedules)); }
       if (data.auxLogs) { auxLogs = data.auxLogs; safeStorage.setItem("wfm_aux_logs", JSON.stringify(auxLogs)); }
       if (data.inactivityLogs) { inactivityLogs = data.inactivityLogs; safeStorage.setItem("wfm_inactivity_logs", JSON.stringify(inactivityLogs)); }
-      if (data.locationLogs) { locationLogs = data.locationLogs; safeStorage.setItem("wfm_location_logs", JSON.stringify(locationLogs)); }
-      if (data.callingLeads) { callingLeads = data.callingLeads; safeStorage.setItem("wfm_calling_leads", JSON.stringify(callingLeads)); }
       if (data.systemRoles) { systemRoles = data.systemRoles; safeStorage.setItem("wfm_system_roles", JSON.stringify(systemRoles)); }
       if (data.liveStatus) { 
         safeStorage.setItem("wfm_live_agent_status", JSON.stringify(data.liveStatus));
@@ -66,12 +63,9 @@
           renderDashboard();
           renderAttendance();
           renderPlot();
-          renderAdmin();
-          renderLeads();
         } else {
           renderPlot();
           renderAgentHistory();
-          renderLeads();
         }
       }
     }
@@ -85,8 +79,6 @@
       grid15mSchedules: typeof grid15mSchedules !== 'undefined' ? grid15mSchedules : {},
       auxLogs: typeof auxLogs !== 'undefined' ? auxLogs : {},
       inactivityLogs: typeof inactivityLogs !== 'undefined' ? inactivityLogs : {},
-      locationLogs: typeof locationLogs !== 'undefined' ? locationLogs : {},
-      callingLeads: typeof callingLeads !== 'undefined' ? callingLeads : [],
       systemRoles: typeof systemRoles !== 'undefined' ? systemRoles : [],
       liveStatus: __safeParse(safeStorage.getItem("wfm_live_agent_status"), {})
     };
@@ -108,27 +100,21 @@
  <!-- CENTERED AGENT NAME, ROLE, SYSTEM DATE & TIME DISPLAY FOR ALL LOGINS --> <div class="header-center-clock">  <span style="color:#0052ff;font-weight:900">👤 <span id="centerUserNameRole"></span></span>  <span style="color:#cbd5e1">|</span>  <span>📅 <span id="liveHeaderDate"></span></span>  <span style="color:#cbd5e1">|</span>  <span>⏰ <span id="liveClock"></span></span> </div>
  <span id="roleBadge" class="badge"></span> <span id="topUser" class="badge"></span>
  <div class="aux-dropdown-container">  <div class="aux-status-pill" onclick="toggleAuxDropdown()">   <span id="pillDot" class="status-dot" style="background:#ef4444"></span>   <span id="pillText">Unavailable</span>   <span id="pillTimer" style="margin-left:4px">00:00:00</span>  </div>  <div id="auxDropdownMenu" class="aux-dropdown-menu hidden">   <input id="auxSearchInput" class="aux-search-input" placeholder="🔍 Search AUX status..." oninput="filterAuxDropdown()">   <div id="auxOptionList" class="aux-option-list"></div>  </div> </div> <button class="secondary" style="margin-left:8px" onclick="logout()">Logout</button></header>
-<main class="container"> <div class="tabs">  <button id="plotTab" class="tab active" onclick="showTab('plot')">Schedule Plotter</button>  <button id="agentTab" class="tab" onclick="showTab('agent')">My Status & History</button>  <button id="leadsTab" class="tab" onclick="showTab('leads')">Calling Leads</button>  <button id="dashboardTab" class="tab managerOnly" onclick="showTab('dashboard')">Reporting Dashboard</button>  <button id="attendanceTab" class="tab managerOnly" onclick="showTab('attendance')">Agent Attendance Logs</button>  <button id="adminTab" class="tab adminOnly" onclick="showTab('admin')">Admin</button>  <button id="settingsTab" class="tab adminOnly" onclick="showTab('settings')">Settings</button> </div>
+<main class="container"> <div class="tabs">  <button id="plotTab" class="tab active" onclick="showTab('plot')">Schedule Plotter</button>  <button id="agentTab" class="tab" onclick="showTab('agent')">My Status & History</button>  <button id="dashboardTab" class="tab managerOnly" onclick="showTab('dashboard')">Reporting Dashboard</button>  <button id="attendanceTab" class="tab managerOnly" onclick="showTab('attendance')">Agent Attendance Logs</button>  <button id="adminTab" class="tab adminOnly" onclick="showTab('admin')">Admin</button>  <button id="settingsTab" class="tab adminOnly" onclick="showTab('settings')">Settings</button> </div>
  <!-- PLOTTER --> <section id="plotSection">  <div class="toolbar">   <label class="managerOnly" style="font-size:13px;font-weight:700">From Date:</label>   <input id="scheduleFromDate" class="managerOnly" type="date" onchange="renderPlot()" oninput="renderPlot()">   <label class="managerOnly" style="font-size:13px;font-weight:700">To Date:</label>   <input id="scheduleToDate" class="managerOnly" type="date" onchange="renderPlot()" oninput="renderPlot()">      <input id="scheduleDate" class="hidden" type="date" onchange="renderPlot()">      <input id="searchAgent" class="managerOnly" placeholder="Search agent..." oninput="renderPlot()">   <select id="agencyFilter" class="managerOnly" onchange="renderPlot()"><option value="">All Agencies</option></select>   <select id="queueFilter" class="managerOnly" onchange="renderPlot()"><option value="">All Queues</option></select>   <select id="plotModeSelect" class="managerOnly" onchange="switchPlotMode()" style="font-weight:700;border:1px solid #2563eb;color:#2563eb">    <option value="timeline">24-Hour Continuous Timeline View</option>    <option value="grid15m">15-Minute Grid Interval Plotter View</option>   </select>   <input type="file" id="excelFileInput" accept=".xlsx, .xls, .csv" class="hidden" onchange="handleExcelImport(event)">   <button class="secondary managerOnly" onclick="downloadSampleTemplate()">📥 Download Sample Template (.csv)</button>   <button class="secondary adminOnly" onclick="document.getElementById('excelFileInput').click()">📤 Import Excel/CSV</button>   <button class="primary adminOnly" onclick="addAgent()">+ Add Agent</button>   <button class="danger adminOnly" onclick="clearWholeDaySchedule()" style="background:#dc2626">🗑️ Clear Active Date (All Agents)</button>   <button class="secondary adminOnly" onclick="clearSelectedAgent()">Clear Particular Agent Schedule</button>   <button class="danger adminOnly" onclick="clearEntireDatabaseSchedules()" style="background:#991b1b">⚠️ Clear ALL System Schedules (All Dates)</button>   <button class="secondary adminOnly" onclick="saveSchedules()">Save Schedule</button>   <button class="secondary managerOnly" onclick="exportCSV()">Export AUX CSV</button>  </div>
   <div class="card managerOnly">   <b>Schedule Plotter Tools:</b>   <div id="modeInstructionText" style="font-size:12px;color:#667085;margin-top:4px">    • <b>Drag from Legend:</b> Drag any AUX code onto the 24-hour timeline to create a block.<br>    • <b>Drag Plotted Blocks:</b> Drag an existing block horizontally to reposition it. Movement snaps to 15 minutes.<br>    • <b>Double-click:</b> Choose exact AUX/start/end time.<br>    • <b>15-minute view:</b> Click/drag across cells to paint an AUX code; right-click to clear.<br>    • <b>Excel:</b> Upload multiple agents/dates/AUX rows. Intersecting block ranges are automatically trimmed and split so schedules never overlap visually!   </div>   <div style="font-size:12px;font-weight:700;margin-top:10px">Work & Leave AUX Codes (Drag or click to plot):</div>   <div class="legend" id="legend" style="margin-top:6px"></div>  </div>
   <div id="timelinePlotWrap" class="plot-wrap">   <div class="plot-grid">    <div>     <div class="agent-head-cell">      <span id="agentHeadLabel">Agent Info / All Uploaded Schedule Dates</span>      <small id="copiedNotice" style="color:#2563eb;font-weight:bold"></small>     </div>     <div id="agentRowsContainer"></div>    </div>    <div>     <div class="timeline-header" id="timelineHeader"></div>     <div id="timelineTracksContainer"></div>    </div>   </div>  </div>
   <div id="grid15mPlotWrap" class="plot-wrap hidden">   <div id="grid15mContainer" class="plot-grid-15m"></div>  </div> </section>
  <!-- MY STATUS & HISTORICAL CALENDAR --> <section id="agentSection" class="hidden">  <div class="toolbar">   <label style="font-size:13px;font-weight:700">Historical Date Filter:</label>   <input id="historyDate" type="date" onchange="renderAgentHistory()">   <button class="secondary" onclick="resetHistoryToToday()">Today</button>  </div>  <div class="agent-panel">   <div class="card">    <h2 style="margin-top:0">Live AUX Running Status</h2>    <div class="current-status">     <div><div style="color:#667085;font-size:12px">Current AUX</div><div id="currentAux" class="status-code">-</div></div>     <div style="text-align:right"><div style="color:#667085;font-size:12px">Running Duration</div><div id="currentTimer" class="status-timer">00:00:00</div></div>    </div>    <p style="font-size:12px;color:#667085">Changes made in the top-right status dropdown automatically calculate and record live session durations.</p>   </div>   <div class="card">    <h3 style="margin-top:0">Total Summary (<span id="historyDateLabel"></span>)</h3>    <div id="todaySummary"></div>   </div>  </div>  <div class="card">   <h3>Historical AUX Logs (<span id="historyLogLabel"></span>)</h3>   <div id="agentUsageTable"></div>  </div> </section>
+ <!-- DASHBOARD WITH INACTIVE SUMMARY TIME COLUMN --> <section id="dashboardSection" class="hidden">  <div class="toolbar">   <input id="reportDate" type="date" onchange="renderDashboard()">   <button class="secondary managerOnly" onclick="exportCSV()">Export Detailed AUX Report</button>  </div>  <div id="dashboardKpis" class="kpis"></div>  <div class="card">   <h3>Agent Status Summary</h3>   <div class="table-scroll"><table class="data-table"><thead><tr>    <th>Agent</th><th>Agency</th><th>Queue</th><th>Shift</th><th>Current AUX</th>    <th>Available</th><th>Inactive Time</th><th>Break</th><th>Lunch</th><th>Bio Break</th><th>Team Meeting</th>    <th>TL Feedback</th><th>QA Feedback</th><th>NHT Training</th><th>PKT Training</th>    <th>Training</th><th>Coaching</th><th>Unavailable</th><th>Offline</th>   </tr></thead><tbody id="dashboardBody"></tbody></table></div>  </div> </section>
+ <!-- AGENT ATTENDANCE SUB-DASHBOARD WITH SUB-TABS --> <section id="attendanceSection" class="hidden">  <div class="card">   <div class="toolbar" style="margin-bottom:10px; gap:12px;">    <label style="font-size:13px;font-weight:700">From Date:</label>    <input id="attendanceFromDate" type="date" onchange="renderAttendance()" oninput="renderAttendance()">    <label style="font-size:13px;font-weight:700">To Date:</label>    <input id="attendanceToDate" type="date" onchange="renderAttendance()" oninput="renderAttendance()">    <input id="searchAttendanceAgent" placeholder="Search agent name/username..." oninput="renderAttendance()">    <button class="secondary managerOnly" onclick="exportAttendanceCSV()">Export Attendance CSV</button>   </div>
 
- <!-- CALLING LEADS TAB FOR ADMINS, TLS & AGENTS --> <section id="leadsSection" class="hidden">  <div class="card">   <div class="toolbar" style="margin-bottom:14px; gap:12px;">    <input id="searchLeadInput" placeholder="🔍 Search customer name, phone, queue, assignee..." oninput="renderLeads()" style="width:280px">    <select id="leadStatusFilter" onchange="renderLeads()">     <option value="">All Statuses</option>     <option value="Pending">Pending</option>     <option value="In Progress">In Progress</option>     <option value="Completed">Completed</option>     <option value="Follow Up">Follow Up</option>    </select>    <input type="file" id="leadsFileInput" accept=".xlsx, .xls, .csv" class="hidden" onchange="handleLeadsImport(event)">    <button class="primary managerOnly" onclick="document.getElementById('leadsFileInput').click()">📤 Import Leads (.csv / .xlsx)</button>    <button class="secondary managerOnly" onclick="downloadSampleLeadsTemplate()">📥 Download Leads Template (.csv)</button>    <button class="danger adminOnly" onclick="clearAllCallingLeads()" style="background:#dc2626">🗑️ Clear All Leads</button>   </div>   <h3 style="margin-top:0">Assigned Calling Customer Leads Matrix</h3>   <p style="color:var(--muted);font-size:12px;margin-top:-6px;margin-bottom:14px" id="leadsSubNotice">    Agents will only see customer calling leads where their name/username is assigned as the owner/caller.   </p>   <div class="table-scroll">    <table class="data-table">     <thead>      <tr>       <th>Customer Name</th>       <th>Phone Number</th>       <th>Queue / Campaign</th>       <th>Assignee / Owner / Caller</th>       <th>Status</th>       <th>Action Contact</th>      </tr>     </thead>     <tbody id="leadsTableBody"></tbody>    </table>   </div>  </div> </section>
+   <!-- SUB-TAB TOGGLES FOR ATTENDANCE & INACTIVITY FREQUENCY -->   <div class="sub-tabs">    <button id="subTabSummary" class="sub-tab active" onclick="switchAttendanceSubTab('summary')">Daily Summary Logs</button>    <button id="subTabInactivity" class="sub-tab" onclick="switchAttendanceSubTab('inactivity')">Agent Inactivity Frequency Logs</button>   </div>
 
- <!-- DASHBOARD WITH INACTIVE SUMMARY TIME COLUMN & MULTI-SELECT DROPDOWNS --> <section id="dashboardSection" class="hidden">  <div class="toolbar">   <input id="reportDate" type="date" onchange="renderDashboard()">   <label style="font-size:12px;font-weight:700;margin-left:6px">Agencies:</label>   <select id="dashAgencyFilter" class="multi-select" multiple onchange="renderDashboard()" title="Hold Ctrl/Cmd to select multiple agencies"></select>   <label style="font-size:12px;font-weight:700;margin-left:6px">Queues:</label>   <select id="dashQueueFilter" class="multi-select" multiple onchange="renderDashboard()" title="Hold Ctrl/Cmd to select multiple queues"></select>   <button class="secondary managerOnly" onclick="exportCSV()">Export Detailed AUX Report</button>  </div>  <div id="dashboardKpis" class="kpis"></div>  <div class="card">   <h3>Agent Status Summary</h3>   <div class="table-scroll"><table class="data-table"><thead><tr>    <th>Agent</th><th>Agency</th><th>Queue</th><th>Shift</th><th>Current AUX</th>    <th>Available</th><th>Inactive Time</th><th>Break</th><th>Lunch</th><th>Bio Break</th><th>Team Meeting</th>    <th>TL Feedback</th><th>QA Feedback</th><th>NHT Training</th><th>PKT Training</th>    <th>Training</th><th>Coaching</th><th>Unavailable</th><th>Offline</th>   </tr></thead><tbody id="dashboardBody"></tbody></table></div>  </div> </section>
+   <!-- SUB-PANEL 1: DAILY SUMMARY LOGS -->   <div id="attendanceSummaryView">    <h3 style="margin-top:0">Agent Daily First Login & Last Logout Logs</h3>    <div class="table-scroll"><table class="data-table"><thead><tr>     <th>Agent Name</th><th>Username / Email</th><th>Start Date</th><th>End Date</th><th>Assigned Shift</th><th>Assigned Shift AUX Code</th>     <th>First Available AUX Timestamp</th><th>Last Offline AUX Timestamp</th>    </tr></thead><tbody id="attendanceBody"></tbody></table></div>   </div>
 
- <!-- AGENT ATTENDANCE SUB-DASHBOARD WITH SUB-TABS & MULTI-SELECT DROPDOWNS --> <section id="attendanceSection" class="hidden">  <div class="card">   <div class="toolbar" style="margin-bottom:10px; gap:8px;">    <label style="font-size:12px;font-weight:700">From:</label>    <input id="attendanceFromDate" type="date" onchange="renderAttendance()" oninput="renderAttendance()" style="width:130px">    <label style="font-size:12px;font-weight:700">To:</label>    <input id="attendanceToDate" type="date" onchange="renderAttendance()" oninput="renderAttendance()" style="width:130px">    <input id="searchAttendanceAgent" placeholder="Search agent name/username..." oninput="renderAttendance()" style="width:180px">    <label style="font-size:12px;font-weight:700">Agencies:</label>    <select id="attAgencyFilter" class="multi-select" multiple onchange="renderAttendance()" title="Hold Ctrl/Cmd to select multiple agencies"></select>    <label style="font-size:12px;font-weight:700">Queues:</label>    <select id="attQueueFilter" class="multi-select" multiple onchange="renderAttendance()" title="Hold Ctrl/Cmd to select multiple queues"></select>    <button class="secondary managerOnly" onclick="exportAttendanceCSV()">Export Attendance CSV</button>   </div>
-
-   <!-- SUB-TAB TOGGLES FOR ATTENDANCE, INACTIVITY FREQUENCY & IP/LOCATION LOGS -->   <div class="sub-tabs">    <button id="subTabSummary" class="sub-tab active" onclick="switchAttendanceSubTab('summary')">Daily Summary Logs</button>    <button id="subTabInactivity" class="sub-tab" onclick="switchAttendanceSubTab('inactivity')">Agent Inactivity Frequency Logs</button>    <button id="subTabLocation" class="sub-tab" onclick="switchAttendanceSubTab('location')">Agent Login Location & IP Logs</button>   </div>
-
-   <!-- SUB-PANEL 1: DAILY SUMMARY LOGS -->   <div id="attendanceSummaryView">    <h3 style="margin-top:0">Agent Daily First Login & Last Logout Logs</h3>    <div class="table-scroll"><table class="data-table"><thead><tr>     <th>Agent Name</th><th>Username / Email</th><th>Start Date</th><th>End Date</th><th>Assigned Shift</th><th>Assigned Shift AUX Code</th>     <th>First Available AUX Timestamp</th><th>Last Offline AUX Timestamp</th><th>Contact</th>    </tr></thead><tbody id="attendanceBody"></tbody></table></div>   </div>
-
-   <!-- SUB-PANEL 2: AGENT INACTIVITY FREQUENCY LOGS -->   <div id="attendanceInactivityView" class="hidden">    <h3 style="margin-top:0">Agent Inactivity Frequency & Duration Timestamp Logs</h3>    <div class="table-scroll"><table class="data-table"><thead><tr>     <th>Agent Name</th><th>Username / Email</th><th>Date</th><th>Occurrence Count</th>     <th>Inactivity Start Timestamp</th><th>Inactivity End Timestamp</th><th>Inactivity Duration</th>    </tr></thead><tbody id="inactivityBody"></tbody></table></div>   </div>
-
-   <!-- SUB-PANEL 3: AGENT LOGIN LOCATION & IP LOGS -->   <div id="attendanceLocationView" class="hidden">    <h3 style="margin-top:0">Agent Login IP Address & Geolocation Logs</h3>    <div class="table-scroll"><table class="data-table"><thead><tr>     <th>Agent Name</th><th>Username / Email</th><th>Date</th><th>Login Timestamp</th>     <th>IP Address</th><th>Precise Location (City, Area, Country)</th>    </tr></thead><tbody id="locationBody"></tbody></table></div>   </div>  </div> </section>
- <!-- ADMIN --> <section id="adminSection" class="hidden">  <div class="card">   <h3>Agent & Credential Management</h3>   <div class="table-scroll"><table class="data-table"><thead><tr>    <th>Name</th><th>Username</th><th>Email</th><th>Phone</th><th>Contact</th><th>Agency</th><th>Department</th><th>Queue</th><th>Shift</th><th>Role</th><th>Action</th>   </tr></thead><tbody id="adminBody"></tbody></table></div>  </div> </section>
+   <!-- SUB-PANEL 2: AGENT INACTIVITY FREQUENCY LOGS -->   <div id="attendanceInactivityView" class="hidden">    <h3 style="margin-top:0">Agent Inactivity Frequency & Duration Timestamp Logs</h3>    <div class="table-scroll"><table class="data-table"><thead><tr>     <th>Agent Name</th><th>Username / Email</th><th>Date</th><th>Occurrence Count</th>     <th>Inactivity Start Timestamp</th><th>Inactivity End Timestamp</th><th>Inactivity Duration</th>    </tr></thead><tbody id="inactivityBody"></tbody></table></div>   </div>  </div> </section>
+ <!-- ADMIN --> <section id="adminSection" class="hidden">  <div class="card">   <h3>Agent & Credential Management</h3>   <div class="table-scroll"><table class="data-table"><thead><tr>    <th>Name</th><th>Username</th><th>Email</th><th>Agency</th><th>Department</th><th>Queue</th><th>Shift</th><th>Role</th><th>Action</th>   </tr></thead><tbody id="adminBody"></tbody></table></div>  </div> </section>
  <!-- SETTINGS TAB (ROLE MANAGEMENT & PERMISSIONS CONFIGURATION) --> <section id="settingsSection" class="hidden">  <div class="card">   <h2 style="margin-top:0;margin-bottom:6px">System Role & Access Settings</h2>   <p style="color:var(--muted);font-size:13px;margin-top:0;margin-bottom:18px">    Configure end-to-end Read/Write permissions for WFM Admin, Team Leaders, Agents, and Custom System Roles.   </p>   <div style="display:grid;grid-template-columns:1fr 2fr;gap:18px">    <div style="background:#f8fafc;padding:16px;border-radius:12px;border:1px solid var(--border)">     <h3 style="margin-top:0;font-size:15px">Create New System Role</h3>     <div class="field">      <label>Role Key / ID</label>      <input id="newRoleKey" placeholder="e.g. team_leader">     </div>     <div class="field">      <label>Role Display Label</label>      <input id="newRoleLabel" placeholder="e.g. Team Leader">     </div>     <div class="field">      <label>Access Matrix Mode</label>      <select id="newRoleAccessMode">       <option value="write">Full Read & Write Access (WFM Admin)</option>       <option value="read">View & Download All Agents Access (Team Leader)</option>       <option value="agent">Self Only Access (Agent)</option>      </select>     </div>     <button class="primary" style="width:100%;margin-top:8px" onclick="createCustomRole()">+ Create & Save Role</button>    </div>    <div>     <h3 style="margin-top:0;font-size:15px">Configured Role Permissions Matrix</h3>     <div class="table-scroll">      <table class="data-table">       <thead>        <tr>         <th>Role Name</th>         <th>Role ID</th>         <th>Schedule Plotter</th>         <th>Reporting & Attendance</th>         <th>CSV / Excel Downloads</th>         <th>System Settings</th>        </tr>       </thead>       <tbody id="rolesTableBody"></tbody>      </table>     </div>    </div>   </div>  </div> console</section></main></section>
 <script>
 /* LOCAL FALLBACK STORAGE WRAPPER */
@@ -152,71 +138,8 @@ const safeStorage = {
 const safeSession = {
   getItem(key){ try { if(__realSession) return __realSession.getItem(key); } catch(e){} return __memoryStore.hasOwnProperty('s_' + key) ? __memoryStore['s_' + key] : null; },
   setItem(key, val){ try { if(__realSession){ __realSession.setItem(key, val); return; } } catch(e){} __memoryStore['s_' + key] = val; },
-  removeItem(key){ try { if(__realSession){ __realSession.removeItem(key); } } catch(e){} delete __memoryStore['s_' + key]; }
+  removeItem(key){ try { if(__realSession){ __realSession.removeItem(key); return; } } catch(e){} delete __memoryStore['s_' + key]; }
 };
-
-/* CONTACT BUTTON HELPER FUNCTIONS */
-function phoneDigitsOnly(phone) {
-  if (!phone) return "";
-  return String(phone).replace(/[^\d]/g, "");
-}
-
-function telHref(phone) {
-  const digits = phoneDigitsOnly(phone);
-  return digits ? `tel:+${digits}` : "";
-}
-
-function smsHref(phone, text = "") {
-  const digits = phoneDigitsOnly(phone);
-  if (!digits) return "";
-  const encoded = text ? encodeURIComponent(text) : "";
-  return encoded ? `sms:+${digits}?&body=${encoded}` : `sms:+${digits}`;
-}
-
-function waHref(phone, text = "") {
-  let digits = phoneDigitsOnly(phone);
-  if (!digits) return "";
-  digits = digits.replace(/^0+/, "");
-  const encoded = text ? encodeURIComponent(text) : "";
-  return encoded ? `https://wa.me/${digits}?text=${encoded}` : `https://wa.me/${digits}`;
-}
-
-function contactButtonsHtml(agent, opts = {}) {
-  if (!agent || !agent.phone || !phoneDigitsOnly(agent.phone)) {
-    return `<span class="no-phone-tag">No phone on file</span>`;
-  }
-  const phone = agent.phone;
-  const firstName = (agent.name || agent.username || "Agent").split(" ")[0];
-  const waText = opts.waText || `Hi ${firstName}, this is regarding your schedule`;
-  const smsText = opts.smsText || waText;
-
-  const compactClass = opts.compact ? "compact-contact" : "";
-  
-  const callUrl = telHref(phone);
-  const waUrl = waHref(phone, waText);
-  const smsUrl = smsHref(phone, smsText);
-
-  return `<span class="contact-group ${compactClass}" onclick="event.stopPropagation()">
-    <a href="${callUrl}" class="contact-btn btn-call" title="Call ${phone}">📞 Call</a>
-    <a href="${waUrl}" target="_blank" rel="noopener" class="contact-btn btn-wa" title="WhatsApp ${phone}">💬 WA</a>
-    <a href="${smsUrl}" class="contact-btn btn-sms" title="SMS ${phone}">✉️ SMS</a>
-  </span>`;
-}
-
-function leadContactButtonsHtml(phone, name) {
-  if (!phone || !phoneDigitsOnly(phone)) {
-    return `<span class="no-phone-tag">No phone</span>`;
-  }
-  const firstName = (name || "Customer").split(" ")[0];
-  const msg = `Hi ${firstName}, calling regarding your CoinDCX query`;
-  const callUrl = telHref(phone);
-  const waUrl = waHref(phone, msg);
-
-  return `<span class="contact-group compact-contact" onclick="event.stopPropagation()">
-    <a href="${callUrl}" class="contact-btn btn-call" title="Call Customer">📞 Call</a>
-    <a href="${waUrl}" target="_blank" rel="noopener" class="contact-btn btn-wa" title="WhatsApp Customer">💬 WA</a>
-  </span>`;
-}
 
 const LIVE_DROPDOWN_AUX = [ {key:"unavailable", label:"Unavailable", short:"UN", color:"#ef4444"}, {key:"available", label:"Available", short:"AV", color:"#22c55e"}, {key:"break", label:"Break", short:"BR", color:"#3b82f6"}, {key:"lunch", label:"Lunch", short:"LU", color:"#f59e0b"}, {key:"bio", label:"Bio Break", short:"BB", color:"#06b6d4"}, {key:"breakpending", label:"Break Pending", short:"BP", color:"#fde047"}, {key:"meeting", label:"Team Meeting", short:"TM", color:"#a855f7"}, {key:"tlfeedback", label:"TL Feedback", short:"TL", color:"#ec4899"}, {key:"qafeedback", label:"QA Feedback", short:"QA", color:"#8b5cf6"}, {key:"nht", label:"NHT Training", short:"NH", color:"#14b8a6"}, {key:"pkt", label:"PKT Training", short:"PK", color:"#0ea5e9"}, {key:"training", label:"Training", short:"TR", color:"#6366f1"}, {key:"coaching", label:"Coaching", short:"CO", color:"#f97316"}, {key:"offline", label:"Offline", short:"OF", color:"#64748b"}];
 const LEAVE_SCHEDULE_AUX = [ {key:"weekoff", label:"Week Off", short:"WO", color:"#64748b"}, {key:"plannedleave", label:"Planned Leave", short:"PL", color:"#0284c7"}, {key:"sickleave", label:"Sick Leave", short:"SL", color:"#e11d48"}, {key:"ncns", label:"NCNS", short:"NC", color:"#881337"}, {key:"unpaidleave", label:"Unpaid Leave", short:"UL", color:"#475569"}, {key:"casualleave", label:"Casual Leave", short:"CL", color:"#d97706"}, {key:"holiday", label:"Holiday", short:"HD", color:"#059669"}, {key:"compoff", label:"Comp Off", short:"CO", color:"#7c3aed"}, {key:"unplannedleave", label:"Unplanned Leave", short:"UP", color:"#b91c1c"}];
@@ -233,19 +156,12 @@ let systemRoles = __safeParse(safeStorage.getItem("wfm_system_roles"), null) || 
 let ROLE_OPTIONS = systemRoles.map(r => r.label);
 
 const defaultUsers = [ 
-  {id:"wfm@coindcx.com",name:"WFM Admin",username:"wfm@coindcx.com",email:"wfm@coindcx.com",phone:"+919876543210",password:"Admin@007",role:"admin",agency:"Internal",unit:"WFM",department:"WFM",queue:"All",shift:"09:00-18:00",requirePasswordReset:false}, 
-  {id:"agent001@company.com",name:"Rahul Sharma",username:"agent001",email:"agent001@company.com",phone:"+919845890465",password:"Agent@123",role:"agent",agency:"RM",unit:"Support",department:"CS Delivery",queue:"Livechat",shift:"08:00-17:00",requirePasswordReset:false}, 
-  {id:"agent002@company.com",name:"Priya Nair",username:"agent002",email:"agent002@company.com",phone:"+919812345678",password:"Agent@123",role:"agent",agency:"RM",unit:"Support",department:"Quality",queue:"Email",shift:"11:00-20:00",requirePasswordReset:false}, 
-  {id:"agent003@company.com",name:"Amit Kumar",username:"agent003",email:"agent003@company.com",phone:"+919823456789",password:"Agent@123",role:"agent",agency:"CNX",unit:"Support",department:"Growth",queue:"Campaign Specialist",shift:"15:00-00:00",requirePasswordReset:false}, 
-  {id:"agent004@company.com",name:"Sneha Das",username:"agent004",email:"agent004@company.com",phone:"+919834567890",password:"Agent@123",role:"agent",agency:"FiveS",unit:"Support",department:"Training",queue:"Calling Sales",shift:"23:00-08:00",requirePasswordReset:false}, 
-  {id:"tl001@company.com",name:"Team Lead CS",username:"tl001",email:"tl001@company.com",phone:"+919890123456",password:"Agent@123",role:"team_leader",agency:"Internal",unit:"Support",department:"Growth",queue:"Campaign Specialist",shift:"09:00-18:00",requirePasswordReset:false}
-];
-
-const defaultCallingLeads = [
-  { id: "lead_101", customerName: "Vikram Malhotra", phone: "+919876512345", queue: "Calling Sales", owner: "agent001", status: "Pending" },
-  { id: "lead_102", customerName: "Ananya Roy", phone: "+919812398765", queue: "Onboarding Ops", owner: "agent001", status: "In Progress" },
-  { id: "lead_103", customerName: "Suresh Menon", phone: "+919823412345", queue: "Calling Sales", owner: "agent002", status: "Follow Up" },
-  { id: "lead_104", customerName: "Meera Joshi", phone: "+919834598765", queue: "Calling Sales", owner: "agent003", status: "Pending" }
+  {id:"wfm@coindcx.com",name:"WFM Admin",username:"wfm@coindcx.com",email:"wfm@coindcx.com",password:"Admin@007",role:"admin",agency:"Internal",unit:"WFM",department:"WFM",queue:"All",shift:"09:00-18:00",requirePasswordReset:false}, 
+  {id:"agent001@company.com",name:"Rahul Sharma",username:"agent001",email:"agent001@company.com",password:"Agent@123",role:"agent",agency:"RM",unit:"Support",department:"CS Delivery",queue:"Livechat",shift:"08:00-17:00",requirePasswordReset:false}, 
+  {id:"agent002@company.com",name:"Priya Nair",username:"agent002",email:"agent002@company.com",password:"Agent@123",role:"agent",agency:"RM",unit:"Support",department:"Quality",queue:"Email",shift:"11:00-20:00",requirePasswordReset:false}, 
+  {id:"agent003@company.com",name:"Amit Kumar",username:"agent003",email:"agent003@company.com",password:"Agent@123",role:"agent",agency:"CNX",unit:"Support",department:"Growth",queue:"Campaign Specialist",shift:"15:00-00:00",requirePasswordReset:false}, 
+  {id:"agent004@company.com",name:"Sneha Das",username:"agent004",email:"agent004@company.com",password:"Agent@123",role:"agent",agency:"FiveS",unit:"Support",department:"Training",queue:"Calling Sales",shift:"23:00-08:00",requirePasswordReset:false}, 
+  {id:"tl001@company.com",name:"Team Lead CS",username:"tl001",email:"tl001@company.com",password:"Agent@123",role:"team_leader",agency:"Internal",unit:"Support",department:"Growth",queue:"Campaign Specialist",shift:"09:00-18:00",requirePasswordReset:false}
 ];
 
 let users = __safeParse(safeStorage.getItem("wfm_users"), null) || defaultUsers;
@@ -253,8 +169,6 @@ let continuousSchedules = __safeParse(safeStorage.getItem("wfm_continuous_schedu
 let grid15mSchedules = __safeParse(safeStorage.getItem("wfm_grid15m_schedules"), {});
 let auxLogs = __safeParse(safeStorage.getItem("wfm_aux_logs"), {});
 let inactivityLogs = __safeParse(safeStorage.getItem("wfm_inactivity_logs"), {});
-let locationLogs = __safeParse(safeStorage.getItem("wfm_location_logs"), {});
-let callingLeads = __safeParse(safeStorage.getItem("wfm_calling_leads"), null) || defaultCallingLeads;
 
 let currentUser = null;
 let selectedAux = "available";
@@ -266,69 +180,6 @@ let copiedScheduleBuffer = null;
 let currentActiveAux = "unavailable";
 let auxStartTime = Date.now();
 let targetPlotAgentId = null;
-
-/* IP ADDRESS & HYPER-LOCAL SUB-NEIGHBORHOOD GEOLOCATION CAPTURE ENGINE */
-function captureUserLocationAndIP() {
-  if (!currentUser) return;
-  const userKey = currentUser.username.toLowerCase();
-  const dateKey = today() + "_" + userKey;
-  const loginTime = new Date().toLocaleTimeString("en-IN", { hour12: false });
-
-  const recordEntry = (ipAddr, locStr) => {
-    syncStorageData();
-    if (!locationLogs[dateKey]) locationLogs[dateKey] = [];
-    const exists = locationLogs[dateKey].some(l => l.ip === ipAddr && l.time === loginTime);
-    if (!exists) {
-      locationLogs[dateKey].push({
-        ip: ipAddr,
-        location: locStr,
-        time: loginTime
-      });
-      saveAll();
-    }
-  };
-
-  // 1. Fetch IP Address
-  fetch("https://ipapi.co/json/")
-    .then(res => res.json())
-    .then(ipData => {
-      const publicIp = ipData?.ip || "103.156.19.45";
-      const fallbackLoc = [ipData?.city, ipData?.region, ipData?.country_name].filter(Boolean).join(", ") || "Bengaluru, Karnataka, India";
-
-      // 2. Attempt HTML5 Browser GPS Geolocation for Sub-Neighborhood Precision (Bellandur, HSR, Koramangala)
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          (pos) => {
-            const lat = pos.coords.latitude;
-            const lon = pos.coords.longitude;
-            // Reverse Geocode via OpenStreetMap
-            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18&addressdetails=1`)
-              .then(res => res.json())
-              .then(geo => {
-                const addr = geo.address || {};
-                const neighborhood = addr.suburb || addr.neighbourhood || addr.residential || addr.subdistrict || addr.quarter || addr.locality || "";
-                const city = addr.city || addr.town || addr.district || "Bengaluru";
-                const state = addr.state || "Karnataka";
-                const country = addr.country || "India";
-
-                const preciseLoc = neighborhood ? `${neighborhood}, ${city}, ${state}` : `${city}, ${state}, ${country}`;
-                recordEntry(publicIp, preciseLoc);
-              })
-              .catch(() => recordEntry(publicIp, fallbackLoc));
-          },
-          (err) => {
-            recordEntry(publicIp, fallbackLoc);
-          },
-          { timeout: 8000, enableHighAccuracy: true }
-        );
-      } else {
-        recordEntry(publicIp, fallbackLoc);
-      }
-    })
-    .catch(() => {
-      recordEntry("103.156.19.45", "Bengaluru, Karnataka, India");
-    });
-}
 
 /* INACTIVITY MONITORING ENGINE (5 MINUTES THRESHOLD IN AVAILABLE AUX) */
 let lastActivityTime = Date.now();
@@ -393,8 +244,6 @@ function syncStorageData(){
   grid15mSchedules = __safeParse(safeStorage.getItem("wfm_grid15m_schedules"), grid15mSchedules); 
   auxLogs = __safeParse(safeStorage.getItem("wfm_aux_logs"), auxLogs); 
   inactivityLogs = __safeParse(safeStorage.getItem("wfm_inactivity_logs"), inactivityLogs);
-  locationLogs = __safeParse(safeStorage.getItem("wfm_location_logs"), locationLogs);
-  callingLeads = __safeParse(safeStorage.getItem("wfm_calling_leads"), callingLeads);
   systemRoles = __safeParse(safeStorage.getItem("wfm_system_roles"), systemRoles);
 }
 
@@ -453,7 +302,7 @@ function login(){
   );
 
   if(!found && (u === "wfm@coindcx.com" || u === "wfm.admin" || u === "admin")){  
-    found = { id: "wfm@coindcx.com", name: "WFM Admin", username: "wfm@coindcx.com", email: "wfm@coindcx.com", phone: "+919876543210", password: "Admin@007", role: "admin", agency: "Internal", unit: "WFM", department: "WFM", queue: "All", shift: "09:00-18:00", requirePasswordReset: false };  
+    found = { id: "wfm@coindcx.com", name: "WFM Admin", username: "wfm@coindcx.com", email: "wfm@coindcx.com", password: "Admin@007", role: "admin", agency: "Internal", unit: "WFM", department: "WFM", queue: "All", shift: "09:00-18:00", requirePasswordReset: false };  
     users.push(found);  
     saveAll(); 
   }
@@ -467,7 +316,6 @@ function login(){
         name: cleanName,    
         username: uInput,    
         email: u.includes("@") ? uInput : uInput + "@company.com",    
-        phone: "",
         role: u.startsWith("tl") ? "team_leader" : "agent",    
         agency: "External",    
         unit: "Support",    
@@ -497,8 +345,6 @@ function login(){
   safeSession.setItem("wfm_current_user", currentUser.username.toLowerCase());
 
   if(currentUser.requirePasswordReset){ document.getElementById("forceChangeModal").classList.remove("hidden"); return; }
-
-  captureUserLocationAndIP();
 
   try { initializeAppView(); } catch(e){ document.getElementById("loginError").textContent = "Signed in, but the app failed to load (" + e.message + "). Check the browser console for details."; }
 }
@@ -550,8 +396,6 @@ function initializeAppView(){
     } catch(e){ changeActiveAux("unavailable"); } 
   } else { changeActiveAux("unavailable"); }
 
-  captureUserLocationAndIP();
-
   applyPermissions(); 
   populateFilters(); 
   renderLegend(); 
@@ -561,7 +405,6 @@ function initializeAppView(){
   renderDashboard(); 
   renderAdmin(); 
   renderSettings(); 
-  renderLeads();
   startClock(); 
   showTab(isManagerOrAdmin() ? "plot" : "agent");
 }
@@ -864,213 +707,6 @@ function getAgentScheduleDates(agentId){
   return arr.length > 0 ? arr : [today()];
 }
 
-/* RENDER CALLING LEADS MATRIX (ADMIN / TL GET ALL LEADS; AGENT SEES ONLY OWN ASSIGNED LEADS) */
-function renderLeads() {
-  if (!currentUser) return;
-  syncStorageData();
-
-  const search = (document.getElementById("searchLeadInput")?.value || "").toLowerCase();
-  const statusFilter = document.getElementById("leadStatusFilter")?.value || "";
-
-  const noticeElem = document.getElementById("leadsSubNotice");
-  if (noticeElem) {
-    if (isManagerOrAdmin()) {
-      noticeElem.textContent = "Admin / Team Leader View: Managing all uploaded customer calling leads across agents.";
-    } else {
-      noticeElem.textContent = `Agent View (${currentUser.name}): Displaying customer calling leads explicitly assigned to you.`;
-    }
-  }
-
-  let list = callingLeads || [];
-
-  // 1. Agent Lead Isolation: Agents see only leads assigned to their name or username
-  if (!isManagerOrAdmin()) {
-    const uName = currentUser.name.toLowerCase();
-    const uUname = currentUser.username.toLowerCase();
-    list = list.filter(lead => {
-      const owner = String(lead.owner || "").toLowerCase();
-      return owner === uName || owner === uUname || owner.includes(uUname) || owner.includes(uName);
-    });
-  }
-
-  // 2. Filters
-  if (search) {
-    list = list.filter(lead => 
-      String(lead.customerName || "").toLowerCase().includes(search) ||
-      String(lead.phone || "").toLowerCase().includes(search) ||
-      String(lead.queue || "").toLowerCase().includes(search) ||
-      String(lead.owner || "").toLowerCase().includes(search)
-    );
-  }
-
-  if (statusFilter) {
-    list = list.filter(lead => String(lead.status || "").toLowerCase() === statusFilter.toLowerCase());
-  }
-
-  const tbody = document.getElementById("leadsTableBody");
-  if (!tbody) return;
-
-  if (list.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:#667085">No calling leads found matching current criteria.</td></tr>`;
-    return;
-  }
-
-  tbody.innerHTML = list.map(lead => {
-    const contactBtns = leadContactButtonsHtml(lead.phone, lead.customerName);
-    let statusBg = "#f1f5f9", statusColor = "#334155";
-    const st = String(lead.status || "Pending").toLowerCase();
-    if (st === "completed") { statusBg = "#dcfce7"; statusColor = "#15803d"; }
-    else if (st === "in progress") { statusBg = "#dbeafe"; statusColor = "#1d4ed8"; }
-    else if (st === "follow up") { statusBg = "#fef3c7"; statusColor = "#b45309"; }
-
-    const isEditable = isManagerOrAdmin();
-    const statusSelectHtml = isEditable ? `
-      <select style="padding:4px 8px;border-radius:6px;border:1px solid #cbd5e1;font-weight:700;background:${statusBg};color:${statusColor}" onchange="updateLeadStatus('${lead.id}', this.value)">
-        <option value="Pending" ${st==='pending'?'selected':''}>Pending</option>
-        <option value="In Progress" ${st==='in progress'?'selected':''}>In Progress</option>
-        <option value="Completed" ${st==='completed'?'selected':''}>Completed</option>
-        <option value="Follow Up" ${st==='follow up'?'selected':''}>Follow Up</option>
-      </select>
-    ` : `<span class="badge" style="background:${statusBg};color:${statusColor}">${esc(lead.status || 'Pending')}</span>`;
-
-    return `<tr>
-      <td><b>${esc(lead.customerName)}</b></td>
-      <td><code>${esc(lead.phone || '-')}</code></td>
-      <td>${esc(lead.queue || 'General Calling')}</td>
-      <td><b>${esc(lead.owner || 'Unassigned')}</b></td>
-      <td>${statusSelectHtml}</td>
-      <td>${contactBtns}</td>
-    </tr>`;
-  }).join("");
-}
-
-function updateLeadStatus(leadId, newStatus) {
-  const lead = callingLeads.find(l => l.id === leadId);
-  if (lead) {
-    lead.status = newStatus;
-    saveAll();
-    renderLeads();
-  }
-}
-
-function downloadSampleLeadsTemplate() {
-  const sampleLines = [
-    "Customer_Name,Phone,Queue,Assignee_Owner,Status",
-    "Rahul Mehta,+919876543210,Calling Sales,agent001,Pending",
-    "Siddharth Rao,+919812345678,Onboarding Ops,agent001,In Progress",
-    "Anjali Verma,+919845890465,Calling Sales,agent002,Pending"
-  ];
-  const blob = new Blob([sampleLines.join("\n")], { type: "text/csv;charset=utf-8" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "WFM_Calling_Leads_Template.csv";
-  a.click();
-  URL.revokeObjectURL(url);
-}
-
-function handleLeadsImport(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-
-  const parseTextCSV = (text) => {
-    const lines = text.split(/\r?\n/).filter(line => line.trim().length > 0);
-    return lines.map(line => {
-      let cells = [], inQuotes = false, current = '';
-      for (let i = 0; i < line.length; i++) {
-        let char = line[i];
-        if (char === '"' || char === "'") { inQuotes = !inQuotes; }
-        else if (char === ',' && !inQuotes) { cells.push(current.trim()); current = ''; }
-        else { current += char; }
-      }
-      cells.push(current.trim());
-      return cells;
-    });
-  };
-
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    try {
-      let rows = [];
-      if (typeof XLSX !== 'undefined') {
-        const data = new Uint8Array(e.target.result);
-        const workbook = XLSX.read(data, { type: 'array' });
-        const firstSheetName = workbook.SheetNames[0];
-        rows = XLSX.utils.sheet_to_json(workbook.Sheets[firstSheetName], { header: 1 });
-      } else {
-        const text = new TextDecoder().decode(e.target.result);
-        rows = parseTextCSV(text);
-      }
-      processImportedLeads(rows, file.name);
-    } catch(err) {
-      const textReader = new FileReader();
-      textReader.onload = function(evt) {
-        const rows = parseTextCSV(evt.target.result);
-        processImportedLeads(rows, file.name);
-      };
-      textReader.readAsText(file);
-    }
-  };
-  reader.readAsArrayBuffer(file);
-}
-
-function processImportedLeads(rows, fileName) {
-  if (!rows || rows.length < 2) return alert("File contains no lead rows.");
-  let header = rows[0].map(c => String(c || '').trim().toLowerCase().replace(/_/g, ' '));
-
-  let idxName = -1, idxPhone = -1, idxQueue = -1, idxOwner = -1, idxStatus = -1;
-
-  for (let j = 0; j < header.length; j++) {
-    let h = header[j];
-    if (h.includes("name") || h.includes("customer")) idxName = j;
-    else if (h.includes("phone") || h.includes("mobile") || h.includes("contact")) idxPhone = j;
-    else if (h.includes("queue") || h.includes("campaign")) idxQueue = j;
-    else if (h.includes("assignee") || h.includes("owner") || h.includes("caller") || h.includes("agent")) idxOwner = j;
-    else if (h.includes("status")) idxStatus = j;
-  }
-
-  if (idxName === -1) idxName = 0;
-  if (idxPhone === -1) idxPhone = 1;
-  if (idxQueue === -1) idxQueue = 2;
-  if (idxOwner === -1) idxOwner = 3;
-
-  let count = 0;
-  for (let i = 1; i < rows.length; i++) {
-    let cols = rows[i];
-    if (!cols || cols.length === 0) continue;
-    let name = String(cols[idxName] || '').trim();
-    let phone = String(cols[idxPhone] || '').trim();
-    let queue = idxQueue >= 0 ? String(cols[idxQueue] || '').trim() : "Calling Sales";
-    let owner = idxOwner >= 0 ? String(cols[idxOwner] || '').trim() : "agent001";
-    let status = idxStatus >= 0 ? String(cols[idxStatus] || '').trim() : "Pending";
-
-    if (name) {
-      callingLeads.push({
-        id: "lead_" + Date.now() + "_" + Math.floor(Math.random()*1000),
-        customerName: name,
-        phone: phone,
-        queue: queue || "Calling Sales",
-        owner: owner || "agent001",
-        status: status || "Pending"
-      });
-      count++;
-    }
-  }
-
-  saveAll();
-  renderLeads();
-  alert(`Successfully imported ${count} calling leads from ${fileName}!`);
-}
-
-function clearAllCallingLeads() {
-  if (!isWriteAdmin()) return;
-  if (!confirm("Are you sure you want to PERMANENTLY ERASE all uploaded customer calling leads?")) return;
-  callingLeads = [];
-  saveAll();
-  renderLeads();
-  alert("All customer calling leads wiped successfully.");
-}
-
 /* RENDER PLOTTER WITH AGENT SCHEDULING ISOLATION & DYNAMIC FILTERING */
 function renderPlot(){ 
   syncStorageData(); 
@@ -1115,8 +751,7 @@ function renderMultiDateTimelineView(agents, dateList){
     agents.forEach(agent => {   
       const lbl=document.createElement("div");   
       lbl.className="agent-row-label";   
-      const contactBtns = contactButtonsHtml(agent, { compact: true });
-      lbl.innerHTML=`<div class="agent-info"><div class="agent-name">📅 ${dateStr} • ${esc(agent.name)}</div> <div class="agent-meta">${esc(agent.agency)} • ${esc(agent.queue)}</div> <div style="margin-top:2px">${contactBtns}</div></div> ${isWriteAdmin()?` <div style="display:flex;gap:4px"> <button class="secondary" style="padding:4px 8px;font-size:10px;font-weight:bold" onclick="copySchedule('${agent.id}', '${dateStr}')">Copy</button> <button class="primary" style="padding:4px 8px;font-size:10px;font-weight:bold" onclick="pasteSchedule('${agent.id}', '${dateStr}')">Paste</button> <button class="danger" style="padding:4px 8px;font-size:10px;font-weight:bold;background:#dc2626" onclick="clearAgentDaySchedule('${agent.id}', '${dateStr}')">Clear</button> </div>`:""}`;   
+      lbl.innerHTML=`<div class="agent-info"><div class="agent-name">📅 ${dateStr} • ${esc(agent.name)}</div> <div class="agent-meta">${esc(agent.agency)} • ${esc(agent.queue)}</div></div> ${isWriteAdmin()?` <div style="display:flex;gap:4px"> <button class="secondary" style="padding:4px 8px;font-size:10px;font-weight:bold" onclick="copySchedule('${agent.id}', '${dateStr}')">Copy</button> <button class="primary" style="padding:4px 8px;font-size:10px;font-weight:bold" onclick="pasteSchedule('${agent.id}', '${dateStr}')">Paste</button> <button class="danger" style="padding:4px 8px;font-size:10px;font-weight:bold;background:#dc2626" onclick="clearAgentDaySchedule('${agent.id}', '${dateStr}')">Clear</button> </div>`:""}`;   
       labelsCol.appendChild(lbl);
 
       const track=document.createElement("div");   
@@ -1186,8 +821,7 @@ function renderMultiDate15mGridView(agents, dateList){
   dateList.forEach(dateStr => {  
     agents.forEach(agent=>{   
       const ac=document.createElement("div");ac.className="agent-row-label";   
-      const contactBtns = contactButtonsHtml(agent, { compact: true });
-      ac.innerHTML=`<div class="agent-info"><div class="agent-name">📅 ${dateStr} • ${esc(agent.name)}</div> <div class="agent-meta">${esc(agent.agency)} • ${esc(agent.queue)}</div> <div style="margin-top:2px">${contactBtns}</div></div> ${isWriteAdmin()?` <div style="display:flex;gap:4px"> <button class="secondary" style="padding:4px 8px;font-size:10px;font-weight:bold" onclick="copySchedule('${agent.id}', '${dateStr}')">Copy</button> <button class="primary" style="padding:4px 8px;font-size:10px;font-weight:bold" onclick="pasteSchedule('${agent.id}', '${dateStr}')">Paste</button> </div>`:""}`;   
+      ac.innerHTML=`<div class="agent-info"><div class="agent-name">📅 ${dateStr} • ${esc(agent.name)}</div> <div class="agent-meta">${esc(agent.agency)} • ${esc(agent.queue)}</div></div> ${isWriteAdmin()?` <div style="display:flex;gap:4px"> <button class="secondary" style="padding:4px 8px;font-size:10px;font-weight:bold" onclick="copySchedule('${agent.id}', '${dateStr}')">Copy</button> <button class="primary" style="padding:4px 8px;font-size:10px;font-weight:bold" onclick="pasteSchedule('${agent.id}', '${dateStr}')">Paste</button> </div>`:""}`;   
       container.appendChild(ac);   
       const day=get15mGridSchedule(agent.id, dateStr);   
       for(let i=0;i<96;i++){    
@@ -1412,11 +1046,11 @@ function saveSchedules(){saveAll();alert("Schedules saved successfully.");}
 
 function downloadSampleTemplate(){ 
   const sampleLines = [  
-    "Start_Date,End Date,Username,Queue,AUX_Code,Start_Time,End_Time,Phone",  
-    "9/7/26,9/7/26,external-syed.pasha@coindcx.com,Onboarding Ops,Available,7:00,16:00,+919876543210",  
-    "9/7/26,9/7/26,external-kumara.krishna@coindcx.com,Onboarding Ops,Week Off,7:00,16:00,+919812345678",  
-    "9/7/26,9/8/26,external-kuna.kandi@coindcx.com,Onboarding Ops,Available,23:00,8:00,+919845890465",  
-    "9/7/26,9/7/26,external-pritam.kumar@coindcx.com,Onboarding Ops,Available,15:00,0:00,+919823456789" 
+    "Start_Date,End Date,Username,Queue,AUX_Code,Start_Time,End_Time",  
+    "9/7/26,9/7/26,external-syed.pasha@coindcx.com,Onboarding Ops,Available,7:00,16:00",  
+    "9/7/26,9/7/26,external-kumara.krishna@coindcx.com,Onboarding Ops,Week Off,7:00,16:00",  
+    "9/7/26,9/8/26,external-kuna.kandi@coindcx.com,Onboarding Ops,Available,23:00,8:00",  
+    "9/7/26,9/7/26,external-pritam.kumar@coindcx.com,Onboarding Ops,Available,15:00,0:00" 
   ]; 
   const sampleContent = sampleLines.join("\n"); 
   const blob = new Blob([sampleContent], {type: "text/csv;charset=utf-8"}); 
@@ -1519,12 +1153,12 @@ function insertAndTrimOverlaps(existingBlocks, newS, newE, auxKey) {
   return updated.sort((a, b) => a.startMin - b.startMin);
 }
 
-/* IMPORT MATRIX WITH UNIFIED USERNAME KEYING & PHONE DETECTOR */
+/* IMPORT MATRIX WITH UNIFIED USERNAME KEYING & PRE-CLEARING BATCH PASS */
 function processImportedMatrix(rows, fileName){ 
   if(!rows || rows.length < 2) { alert("The uploaded file contains no data rows."); return; } 
   let count = 0;  
   let header = rows[0].map(c => String(c || '').trim().toLowerCase().replace(/_/g, ' '));  
-  let idxStartDate = -1, idxEndDate = -1, idxUsername = -1, idxAux = -1, idxStartTime = -1, idxEndTime = -1, idxQueue = -1, idxPhone = -1;
+  let idxStartDate = -1, idxEndDate = -1, idxUsername = -1, idxAux = -1, idxStartTime = -1, idxEndTime = -1, idxQueue = -1;
 
   for(let j = 0; j < header.length; j++){  
     let h = header[j];  
@@ -1542,8 +1176,6 @@ function processImportedMatrix(rows, fileName){
       idxEndTime = j;  
     } else if(h.includes('queue')){
       idxQueue = j;
-    } else if(h.includes('phone') || h.includes('mobile') || h.includes('contact')){
-      idxPhone = j;
     }
   }
 
@@ -1615,7 +1247,6 @@ function processImportedMatrix(rows, fileName){
     let auxLabel = String(cols[idxAux] || '').trim();  
     let startTime = String(cols[idxStartTime] || '').trim();  
     let endTime = String(cols[idxEndTime] || '').trim();
-    let phoneVal = idxPhone >= 0 ? String(cols[idxPhone] || '').trim() : '';
 
     if(!username || username.toLowerCase().includes('username')) continue;  
     if(!startDate) continue;
@@ -1636,7 +1267,6 @@ function processImportedMatrix(rows, fileName){
         name: cleanName,    
         username: username,    
         email: username.includes("@") ? username : username + "@coindcx.com",    
-        phone: phoneVal || "",
         password: "Agent@123",    
         role: "agent",    
         agency: "External",    
@@ -1647,9 +1277,8 @@ function processImportedMatrix(rows, fileName){
         requirePasswordReset: false   
       };   
       users.push(agent);  
-    } else {
-      if(queueVal) agent.queue = queueVal;
-      if(phoneVal && (!agent.phone || !phoneDigitsOnly(agent.phone))) agent.phone = phoneVal;
+    } else if(queueVal) {
+      agent.queue = queueVal;
     }
 
     const aux = matchAuxCode(auxLabel);
@@ -1832,31 +1461,12 @@ function formatTimeDisplay(rawVal) {
   return str || "N/A";
 }
 
-/* HELPER TO EXTRACT MULTI-SELECT VALUES */
-function getMultiSelectValues(selectId) {
-  const selectElem = document.getElementById(selectId);
-  if (!selectElem) return [];
-  return Array.from(selectElem.selectedOptions).map(opt => opt.value).filter(Boolean);
-}
-
-/* EXPANDED REAL-TIME REPORTING DASHBOARD WITH MULTI-SELECT AGENCY & QUEUE FILTERS */
+/* EXPANDED REAL-TIME REPORTING DASHBOARD WITH INACTIVE SUMMARY TIME COLUMN */
 function renderDashboard(){ 
   if(!currentUser||!isManagerOrAdmin())return; 
   syncStorageData(); 
   const date=document.getElementById("reportDate").value||today(); 
-  let agents=users.filter(u=>u.role !== "admin" || u.id === currentUser.id); 
-
-  // Multi-Select Filtering for Agencies & Queues
-  const selAgencies = getMultiSelectValues("dashAgencyFilter");
-  const selQueues = getMultiSelectValues("dashQueueFilter");
-
-  if (selAgencies.length > 0) {
-    agents = agents.filter(a => selAgencies.includes(a.agency));
-  }
-  if (selQueues.length > 0) {
-    agents = agents.filter(a => selQueues.includes(a.queue));
-  }
-
+  const agents=users.filter(u=>u.role !== "admin" || u.id === currentUser.id); 
   let liveStatus = JSON.parse(safeStorage.getItem("wfm_live_agent_status") || "{}"); 
   let online=0,availableSec=0,breakSec=0; 
   let rows=""; 
@@ -1936,23 +1546,18 @@ function renderDashboard(){
 function switchAttendanceSubTab(subTab) {
   const btnSummary = document.getElementById("subTabSummary");
   const btnInactivity = document.getElementById("subTabInactivity");
-  const btnLocation = document.getElementById("subTabLocation");
-
   const viewSummary = document.getElementById("attendanceSummaryView");
   const viewInactivity = document.getElementById("attendanceInactivityView");
-  const viewLocation = document.getElementById("attendanceLocationView");
-
-  [btnSummary, btnInactivity, btnLocation].forEach(b => b?.classList.remove('active'));
-  [viewSummary, viewInactivity, viewLocation].forEach(v => v?.classList.add('hidden'));
 
   if (subTab === 'inactivity') {
+    btnSummary?.classList.remove('active');
     btnInactivity?.classList.add('active');
+    viewSummary?.classList.add('hidden');
     viewInactivity?.classList.remove('hidden');
-  } else if (subTab === 'location') {
-    btnLocation?.classList.add('active');
-    viewLocation?.classList.remove('hidden');
   } else {
+    btnInactivity?.classList.remove('active');
     btnSummary?.classList.add('active');
+    viewInactivity?.classList.add('hidden');
     viewSummary?.classList.remove('hidden');
   }
 }
@@ -1977,7 +1582,7 @@ function getDateRangeArray(startDateStr, endDateStr) {
   return dates;
 }
 
-/* RENDER ATTENDANCE, INACTIVITY & LOCATION LOGS WITH MULTI-SELECT DROPDOWNS */
+/* RENDER ATTENDANCE & INACTIVITY FREQUENCY LOGS WITH SUB-TAB SUPPORT */
 function renderAttendance(){ 
   if(!currentUser||!isManagerOrAdmin())return; 
   syncStorageData(); 
@@ -1988,19 +1593,7 @@ function renderAttendance(){
 
   const dateList = getDateRangeArray(fromVal, toVal); 
   const search = (document.getElementById("searchAttendanceAgent")?.value || "").toLowerCase(); 
-  let agents = users.filter(u => u.role !== "admin" || u.id === currentUser.id); 
-
-  // Multi-Select Filtering for Agencies & Queues
-  const selAgencies = getMultiSelectValues("attAgencyFilter");
-  const selQueues = getMultiSelectValues("attQueueFilter");
-
-  if (selAgencies.length > 0) {
-    agents = agents.filter(a => selAgencies.includes(a.agency));
-  }
-  if (selQueues.length > 0) {
-    agents = agents.filter(a => selQueues.includes(a.queue));
-  }
-
+  const agents = users.filter(u => u.role !== "admin" || u.id === currentUser.id); 
   let liveStatus = JSON.parse(safeStorage.getItem("wfm_live_agent_status") || "{}");
 
   // 1. Render Daily Summary Table
@@ -2057,13 +1650,11 @@ function renderAttendance(){
         }
       }
 
-      const contactBtns = contactButtonsHtml(a, { compact: true });
-
-      summaryRows += `<tr> <td><b>${esc(a.name)}</b></td> <td>${esc(a.username || a.email)}</td> <td>${date}</td> <td>${date}</td> <td><b>${esc(assignedShiftStr)}</b></td> <td><span class="status-dot" style="background:${assignedAuxColor}"></span> <b>${esc(assignedAuxLabel)}</b></td> <td><span style="color:#15803d;font-weight:bold">${firstAvailTime}</span></td> <td><span style="color:#b91c1c;font-weight:bold">${lastOfflineTime}</span></td> <td>${contactBtns}</td> </tr>`;  
+      summaryRows += `<tr> <td><b>${esc(a.name)}</b></td> <td>${esc(a.username || a.email)}</td> <td>${date}</td> <td>${date}</td> <td><b>${esc(assignedShiftStr)}</b></td> <td><span class="status-dot" style="background:${assignedAuxColor}"></span> <b>${esc(assignedAuxLabel)}</b></td> <td><span style="color:#15803d;font-weight:bold">${firstAvailTime}</span></td> <td><span style="color:#b91c1c;font-weight:bold">${lastOfflineTime}</span></td> </tr>`;  
     }); 
   });
 
-  if(!summaryRows){ summaryRows = `<tr><td colspan="9" style="text-align:center;color:#667085">No attendance logs found for selected date range (${fromVal} to ${toVal}).</td></tr>`; } 
+  if(!summaryRows){ summaryRows = `<tr><td colspan="8" style="text-align:center;color:#667085">No attendance logs found for selected date range (${fromVal} to ${toVal}).</td></tr>`; } 
   document.getElementById("attendanceBody").innerHTML = summaryRows;
 
   // 2. Render Inactivity Frequency Table
@@ -2087,28 +1678,6 @@ function renderAttendance(){
 
   if(!inactivityRows){ inactivityRows = `<tr><td colspan="7" style="text-align:center;color:#667085">No agent inactivity occurrences (>= 5 mins idle) recorded for selected date range.</td></tr>`; }
   document.getElementById("inactivityBody").innerHTML = inactivityRows;
-
-  // 3. Render Agent Login Location & IP Logs Table
-  let locationRows = "";
-  dateList.forEach(date => {
-    agents.forEach(a => {
-      if(search && !a.name.toLowerCase().includes(search) && !a.username.toLowerCase().includes(search) && (!a.email || !a.email.toLowerCase().includes(search))){    
-        return;   
-      }
-
-      const uKey = a.username.toLowerCase();
-      const lLogs = locationLogs[date + "_" + uKey] || locationLogs[date + "_" + a.id] || [];
-
-      if (lLogs.length > 0) {
-        lLogs.forEach(loc => {
-          locationRows += `<tr> <td><b>${esc(a.name)}</b></td> <td>${esc(a.username || a.email)}</td> <td>${date}</td> <td><b>${loc.time}</b></td> <td><code>${esc(loc.ip)}</code></td> <td><b>${esc(loc.location)}</b></td> </tr>`;
-        });
-      }
-    });
-  });
-
-  if(!locationRows){ locationRows = `<tr><td colspan="6" style="text-align:center;color:#667085">No agent login IP or geolocation records captured for selected date range.</td></tr>`; }
-  document.getElementById("locationBody").innerHTML = locationRows;
 }
 
 function exportAttendanceCSV(){ 
@@ -2219,7 +1788,6 @@ function renderAdmin(){
     const currQueue = u.queue || "Livechat";  
     const currShift = u.shift || "09:00-18:00";  
     const currRoleKey = u.role || "agent";
-    const currPhone = u.phone || "";
 
     let agencyOpts = AGENCY_OPTIONS.map(opt => `<option value="${esc(opt)}" ${opt.toLowerCase()===currAgency.toLowerCase()?'selected':''}>${esc(opt)}</option>`).join("");  
     if(!AGENCY_OPTIONS.some(opt => opt.toLowerCase() === currAgency.toLowerCase())){ agencyOpts += `<option value="${esc(currAgency)}" selected>${esc(currAgency)}</option>`; }
@@ -2236,9 +1804,7 @@ function renderAdmin(){
 
     let roleOpts = systemRoles.map(r => `<option value="${esc(r.key)}" ${r.key===currRoleKey?'selected':''}>${esc(r.label)}</option>`).join("");
 
-    const contactBtns = contactButtonsHtml(u, { compact: true });
-
-    return `<tr> <td><b>${esc(u.name)}</b></td> <td>${esc(u.username)}</td> <td>${esc(u.email||"-")}</td> <td><input style="padding:4px 8px;border-radius:6px;border:1px solid #cbd5e1;font-weight:600;width:120px" value="${esc(currPhone)}" placeholder="+91XXXXXXXXXX" onchange="updateAdminUserField('${u.id}', 'phone', this.value)"></td> <td>${contactBtns}</td> <td><select style="padding:4px 8px;border-radius:6px;border:1px solid #cbd5e1;font-weight:600" onchange="updateAdminUserField('${u.id}', 'agency', this.value)">${agencyOpts}</select></td> <td><select style="padding:4px 8px;border-radius:6px;border:1px solid #cbd5e1;font-weight:600" onchange="updateAdminUserField('${u.id}', 'department', this.value)">${deptOpts}</select></td> <td><select style="padding:4px 8px;border-radius:6px;border:1px solid #cbd5e1;font-weight:600" onchange="updateAdminUserField('${u.id}', 'queue', this.value)">${queueOpts}</select></td> <td><select style="padding:4px 8px;border-radius:6px;border:1px solid #cbd5e1;font-weight:600" onchange="updateAdminUserField('${u.id}', 'shift', this.value)">${shiftOpts}</select></td> <td><select style="padding:4px 8px;border-radius:6px;border:1px solid #cbd5e1;font-weight:600" onchange="updateAdminUserField('${u.id}', 'role', this.value)">${roleOpts}</select></td> <td><button class="danger" style="padding:4px 10px;font-size:11px" onclick="deleteAgent('${u.id}')">Delete</button> <button class="secondary" style="padding:4px 10px;font-size:11px" onclick="editPassword('${u.id}')">Password</button></td> </tr>`; 
+    return `<tr> <td><b>${esc(u.name)}</b></td> <td>${esc(u.username)}</td> <td>${esc(u.email||"-")}</td> <td><select style="padding:4px 8px;border-radius:6px;border:1px solid #cbd5e1;font-weight:600" onchange="updateAdminUserField('${u.id}', 'agency', this.value)">${agencyOpts}</select></td> <td><select style="padding:4px 8px;border-radius:6px;border:1px solid #cbd5e1;font-weight:600" onchange="updateAdminUserField('${u.id}', 'department', this.value)">${deptOpts}</select></td> <td><select style="padding:4px 8px;border-radius:6px;border:1px solid #cbd5e1;font-weight:600" onchange="updateAdminUserField('${u.id}', 'queue', this.value)">${queueOpts}</select></td> <td><select style="padding:4px 8px;border-radius:6px;border:1px solid #cbd5e1;font-weight:600" onchange="updateAdminUserField('${u.id}', 'shift', this.value)">${shiftOpts}</select></td> <td><select style="padding:4px 8px;border-radius:6px;border:1px solid #cbd5e1;font-weight:600" onchange="updateAdminUserField('${u.id}', 'role', this.value)">${roleOpts}</select></td> <td><button class="danger" style="padding:4px 10px;font-size:11px" onclick="deleteAgent('${u.id}')">Delete</button> <button class="secondary" style="padding:4px 10px;font-size:11px" onclick="editPassword('${u.id}')">Password</button></td> </tr>`; 
   }).join("");
 }
 
@@ -2295,11 +1861,9 @@ function addAgent(){
   const username=prompt("Unique Username");if(!username)return; 
   if(users.some(u=>u.username.toLowerCase()===username.toLowerCase()))return alert("Username exists."); 
   const email=prompt("Agent Email Address", username+"@coindcx.com");if(!email)return; 
-  const phone=prompt("Agent Phone Number (optional, e.g. +919845890465)","")||"";
   const password=prompt("Unique Password for Agent","Agent@123");if(!password||password.length<6)return alert("Password must be at least 6 characters."); 
-  const roleType=prompt("User Role (agent / team_leader / admin)","agent")||"agent";
   const agency=prompt("Agency","RM")||"RM",unit=prompt("Unit","Support")||"Support", queue=prompt("Queue","Livechat")||"Livechat"; 
-  users.push({id:username.toLowerCase(),name,username,email,phone,password,role:roleType.toLowerCase(),agency,unit,department:"CS Delivery",queue,shift:"09:00-18:00",requirePasswordReset:false}); 
+  users.push({id:username.toLowerCase(),name,username,email,password,role:"agent",agency,unit,department:"CS Delivery",queue,shift:"09:00-18:00",requirePasswordReset:false}); 
   saveAll();populateFilters();renderPlot();renderAdmin();
 }
 
@@ -2372,7 +1936,7 @@ function applyPermissions(){
 }
 
 function showTab(tab){ 
-  ["plot","agent","leads","dashboard","attendance","admin","settings"].forEach(t=>{  
+  ["plot","agent","dashboard","attendance","admin","settings"].forEach(t=>{  
     const el = document.getElementById(t+"Section");  
     if(el) el.classList.toggle("hidden", t!==tab);  
     const btn = document.getElementById(t+"Tab");  
@@ -2380,7 +1944,6 @@ function showTab(tab){
   }); 
   if(tab==="plot")renderPlot(); 
   if(tab==="agent")renderAgentHistory(); 
-  if(tab==="leads")renderLeads();
   if(tab==="dashboard")renderDashboard(); 
   if(tab==="attendance")renderAttendance(); 
   if(tab==="admin")renderAdmin(); 
@@ -2406,24 +1969,8 @@ function renderLegend(){
 function populateFilters(){ 
   const agencies=[...new Set(users.filter(u=>u.role==="agent" || u.role==="team_leader").map(u=>u.agency))]; 
   const queues=[...new Set(users.filter(u=>u.role==="agent" || u.role==="team_leader").map(u=>u.queue))]; 
-  
-  // Single Select Filter for Plotter
   document.getElementById("agencyFilter").innerHTML='<option value="">All Agencies</option>'+agencies.map(x=>`<option>${esc(x)}</option>`).join(""); 
   document.getElementById("queueFilter").innerHTML='<option value="">All Queues</option>'+queues.map(x=>`<option>${esc(x)}</option>`).join("");
-
-  // Multi-Select Filters for Dashboard & Attendance
-  const dashAgencyEl = document.getElementById("dashAgencyFilter");
-  const dashQueueEl = document.getElementById("dashQueueFilter");
-  const attAgencyEl = document.getElementById("attAgencyFilter");
-  const attQueueEl = document.getElementById("attQueueFilter");
-
-  const agencyOptionsHtml = agencies.map(x=>`<option value="${esc(x)}">${esc(x)}</option>`).join("");
-  const queueOptionsHtml = queues.map(x=>`<option value="${esc(x)}">${esc(x)}</option>`).join("");
-
-  if (dashAgencyEl) dashAgencyEl.innerHTML = agencyOptionsHtml;
-  if (dashQueueEl) dashQueueEl.innerHTML = queueOptionsHtml;
-  if (attAgencyEl) attAgencyEl.innerHTML = agencyOptionsHtml;
-  if (attQueueEl) attQueueEl.innerHTML = queueOptionsHtml;
 }
 
 function auxByKey(k){return ALL_AUX.find(a=>a.key===k)}
@@ -2442,7 +1989,7 @@ document.getElementById("historyDate").value=today();
     if(savedUserId){   
       let found = users.find(x => x.username.toLowerCase() === savedUserId.toLowerCase() || x.id === savedUserId || (x.email && x.email.toLowerCase() === savedUserId.toLowerCase()));   
       if(!found && (savedUserId === "wfm@coindcx.com" || savedUserId.toLowerCase() === "wfm@coindcx.com")){    
-        found = {id:"wfm@coindcx.com", name:"WFM Admin", username:"wfm@coindcx.com", email:"wfm@coindcx.com", phone:"+919876543210", password:"Admin@007", role:"admin", agency:"Internal", unit:"WFM", queue:"All", shift:"09:00-18:00", requirePasswordReset:false};   
+        found = {id:"wfm@coindcx.com", name:"WFM Admin", username:"wfm@coindcx.com", email:"wfm@coindcx.com", password:"Admin@007", role:"admin", agency:"Internal", unit:"WFM", queue:"All", shift:"09:00-18:00", requirePasswordReset:false};   
       }   
       if(found && !found.requirePasswordReset){    
         currentUser = found;    
